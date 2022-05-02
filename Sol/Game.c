@@ -1,6 +1,7 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 #define SEED 2022
 #include <string.h>
 #include <limits.h>
@@ -33,7 +34,7 @@ float calculateSD(float data[], float p) {
 void output(int best_round, int n, int best[n][n]){
 	
   	char buf[50];
-  	printf("\nbest round = %d\n",best_round);
+  	printf("\nBest round = %d\n",best_round);
  	FILE *infile = fopen("out", "r");
 	FILE *bestOutput = fopen("best","w");
 	for(int i = 0; i < n; i++){
@@ -58,10 +59,13 @@ void output(int best_round, int n, int best[n][n]){
 int main(void){
 	srandom(SEED);
 	int seed_input = 0;
+	seed_input = random();
+	seed_input = seed_input%100;
+	srandom(seed_input);
 	int players = 0;
 	int rounds = 0;
 	int w_count = 0;
-	
+	/*
 	printf("Enter a valid seed (int between 1-10 digits): \n");
 	scanf("%d",&seed_input);
 	if ((seed_input < 1) || (seed_input > INT_MAX)){
@@ -69,13 +73,17 @@ int main(void){
 	}else{
 		srandom(seed_input);
 	}
-	
+	*/
 	printf("How many players?\n");
 	scanf("%d",&players);
 	
 	printf("How many rounds?\n");
 	scanf("%d",&rounds);
 	
+	clock_t start, end;
+	double cpu_time_used;
+	start = clock();
+
 	int matches[players][players];
 	int best[players][players];
 	float data[players*players];
@@ -95,16 +103,23 @@ int main(void){
 	float stdev = -1.0;
 	float stdev_new = 0.0;
 	int index = 0;
-	int TESTSIZE = 10000;
+	int TESTSIZE = 20000;
 	bool no_equals;
 	int best_round = 0;
 	int sit_out[players];
 	int sit = 0;
+	//float percent = 0;
 	bool sitting = (players%4 != 0);
+	if(sitting){
+		printf("People have to sit out.\n");
+	}else{
+		printf("Nobody is sitting out.\n");
+	}
 	bool sit_pass;
 	for(int test_count = 0; test_count < TESTSIZE; test_count++){
 		fprintf(outFile,"%d",test_count+1);
-		printf("\n %f%%",((float)test_count/(float)TESTSIZE)*100.0);
+		//percent = ((float)test_count/(float)TESTSIZE)*100.0;
+		//printf("\n %f%%",((float)test_count/(float)TESTSIZE)*100.0);
 		// Clearing The Array
 		for(int i = 0; i < players; i++){
 			sit_out[i] = 0;
@@ -123,10 +138,9 @@ int main(void){
 				}
 				C[i] = true;
 			}
-			//printf("\nRound %d\n",j+1);
 			fprintf(outFile,"\nRound %d\n",j+1);
 			w_count = players;
-			while(w_count > 1){
+			while(w_count >= 4){
 				sit_pass = true;
 				no_equals = true;
 				r1 = random();
@@ -142,7 +156,7 @@ int main(void){
 				// -- quadruple --
 				int check[4] = {r1,r2,r3,r4};
 				for(int c = 0; c < 4; c++){
-					if(check[c] == sit){
+					if((check[c] == sit)&&(sitting)){
 						sit_pass = false;
 					}
 					for(int d = 0; d < 4; d++){
@@ -154,7 +168,7 @@ int main(void){
 					
 				if(C[r1]&&C[r2]&&C[r3]&&C[r4]&&no_equals&&sit_pass){
 					//printf(" | %d vs %d vs %d vs %d |",r1,r2,r3,r4);
-					fprintf(outFile," | %d vs %d vs %d vs %d |",r1,r2,r3,r4);
+					fprintf(outFile," | %d vs %d vs %d vs %d |",r1+1,r2+1,r3+1,r4+1);
 					matches[r2][r1] += 1;
 					matches[r1][r2] += 1;
 					C[r1]= false,C[r2]= false;
@@ -184,7 +198,7 @@ int main(void){
 		//printf("\nSits:\n");
 		for(int k = 0; k < players; k++){
 			//printf(" %d", sit_out[k]);
-			if(sit_out[0] != sit_out[k]){
+			if((sit_out[0] != sit_out[k])&&(sitting)){
 				sits_fair = false;
 			}
 			for(int k2 = 0; k2 < players; k2++){
@@ -201,7 +215,7 @@ int main(void){
 				zero_count++;
 			}
         	}
-		if(zero_count <= players){
+		if((zero_count <= players)||(players > rounds)){
 			stdev_new = calculateSD(data, (float) pow(players,2));
 		}
 		if((stdev_new < stdev)||(stdev == -1.0)){
@@ -228,7 +242,7 @@ int main(void){
 	}*/
 	printf("\n");
 	for(int x = 0; x < players; x++){
-                printf("\n%d:",x);
+                printf("\n%d:",x+1);
                 for(int y = 0; y < players; y++){
                         printf(" %d",best[x][y]);
                 }
@@ -236,6 +250,10 @@ int main(void){
 	fclose(outFile);
 	output(best_round,players,best);
 	printf("\n");
+	
+	end = clock();
+	cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
+	printf("Time: %0.3f \n",cpu_time_used);
 	free(C);
 }
 
