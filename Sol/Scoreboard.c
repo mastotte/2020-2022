@@ -1,0 +1,153 @@
+#include <math.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#define SEED 2022
+#include <string.h>
+#include <limits.h>
+#include <stdbool.h>
+//********************************************************************
+//*                                                                  *
+//*     Solitaire Scoreboard				             *
+//*                                                                  *
+//*     mastotte, ucsc 2024                                          *
+//*                                                                  *
+//********************************************************************
+
+void scoreBoard(int rounds){
+	FILE *infile = fopen("f2", "r");
+	FILE *SCORES = fopen("scoreboard","r");
+	char buf[100];
+	char buf_scores[100];
+	char p[50];
+	char r[50];
+	char ppG[50];
+	int players,ppg,delete;
+	int p1,p2,p3,p4;
+	float s1,s2,s3,s4;
+	char *del;
+	int s;
+	fgets(p, 50, infile);
+	players = atoi(p);
+	fgets(r, 50, infile);
+	delete = atoi(r);
+	fgets(ppG, 50, infile);
+	ppg = atoi(ppG);
+	//printf("players, rounds = ( %d , %d )\n",players,rounds);
+	float pars[players+1][rounds+1];
+	int scores[players][rounds];
+	for(int i = 1; i <= players; i++){
+		memset(buf_scores, '\0',100);
+		fgets(buf_scores, 100, SCORES);
+		//printf("(%s)\n",buf_scores);
+		del = strtok(buf_scores,"	");
+		for(int j = 1; j <= rounds; j++){
+			s = atoi(strtok(NULL, "	"));
+			scores[i][j] = s;
+			//printf("%d\n", scores[i][j]);
+		}
+		//printf("\n");
+	}
+	
+	char* buf_copy;
+	float avg = 0;
+	float sum = 0;
+	char* m[players/ppg];
+	//get input matches
+	
+	for(int j = 1; j <= rounds; j++){
+		fgets(buf, 100, infile);
+		buf_copy = strtok(buf, "-");
+		for(int k = 0; k < players/ppg; k++){
+			m[k] = buf_copy;
+			buf_copy = strtok(NULL, "-");
+		}
+			
+		
+	for(int i = 0; i < players/ppg; i++){	
+		p1 = p2 = p3 = p4 = 0;
+		p1 = atoi(strtok(m[i], "  vs  "));
+                //printf("\np1:%d",p1);
+		p2 = atoi(strtok(NULL, "  vs  "));
+        	//printf("\np2:%d",p2);
+		if(ppg>2){
+			p3 = atoi(strtok(NULL, "  vs  "));
+        		//printf("\np3:%d",p3);
+		}
+		if(ppg>3){
+			p4 = atoi(strtok(NULL, "  vs  "));
+        		//printf("\np4:%d\n",p4);
+		}
+		//printf("(%s),(%s)\n",buf,buf_copy);
+		s1 = scores[p1][j];
+		s2 = scores[p2][j];
+		if(ppg>2)s3 = scores[p3][j];
+		if(ppg>3)s4 = scores[p4][j];
+		//printf("%0.0f %0.0f %0.0f %0.0f\n",s1,s2,s3,s4);
+		sum = s1+s2;
+		if(ppg>2)sum+=s3;
+		if(ppg>3)sum+=s4;
+		avg = sum/ppg;
+		pars[p1][j] = s1-avg;
+		pars[p2][j] = s2-avg;
+		if(ppg>2)pars[p3][j] = s3-avg;
+		if(ppg>3)pars[p4][j] = s4-avg;
+		//printf("\n");
+	}
+	}
+	//output
+	//fprintf(scOut,"\n	1	2	3	4	5\n");
+	FILE* sc_out = fopen("scOut","w");
+	float standings[players][3];// players, player number & total score
+	float sum2;
+	int sorted = 1;
+	float t1,t2;
+
+	fprintf(sc_out,"Scores");
+	for(int i = 1; i <= players; i++){
+		fprintf(sc_out,"\n%d:",i);
+		for(int j = 1; j <= rounds; j++){
+			if(scores[i][j]>0&&scores[i][j]<10)fprintf(sc_out," ");
+			fprintf(sc_out," %d",scores[i][j]);
+		}
+	}
+	fprintf(sc_out,"\n\nPars");
+	for(int i = 1; i <= players; i++){
+		sum2 = 0.0;
+		fprintf(sc_out,"\n%d:",i);
+                for(int j = 1; j <= rounds; j++){
+			if((pars[i][j]>0)&&(pars[i][j]<10))fprintf(sc_out," ");
+			if(pars[i][j]>-10)fprintf(sc_out," ");
+			sum2 += pars[i][j];
+                        fprintf(sc_out," %0.1f",pars[i][j]);
+		}
+		standings[i][1] = i;
+		standings[i][2] = sum2;
+	}
+	while(sorted != 0){
+		sorted = 0;
+		for(int i = 1; i < players; i++){
+			if(standings[i][2] > standings[i+1][2]){
+				t1 = standings[i+1][1];
+				t2 = standings[i+1][2];
+				standings[i+1][1] = standings[i][1];
+				standings[i+1][2] = standings[i][2];
+				standings[i][1] = t1;
+				standings[i][2] = t2;
+				sorted++;
+			}
+		}
+	} 		
+	fprintf(sc_out,"\n\nStandings:");
+	for(int i = 1; i <= players; i++){
+		fprintf(sc_out,"\n%0.0f: %0.1f",standings[i][1],standings[i][2]);
+	}
+	fclose(sc_out);	
+	
+}	
+	
+
+
+
+
+
