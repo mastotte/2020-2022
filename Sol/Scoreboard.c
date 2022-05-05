@@ -15,8 +15,13 @@
 //********************************************************************
 
 void scoreBoard(int rounds){
+	FILE* SCORES;
+	if(rounds%2 == 1){
+                SCORES = fopen("scoreboard","r");
+        }else if(rounds%2 == 0){
+                SCORES = fopen("scoreboard2","r");
+        }
 	FILE *infile = fopen("f2", "r");
-	FILE *SCORES = fopen("scoreboard","r");
 	char buf[100];
 	char buf_scores[100];
 	char p[50];
