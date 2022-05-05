@@ -43,9 +43,7 @@ void output_4(int best_round, int n, int best[n][n], int rounds){
   	while (fgets(buf, 50, infile) != NULL){
 		if(atoi(buf) == best_round){
 			while(atoi(fgets(buf, 50, infile)) != best_round){
-				for(int l=0;l<10;l++)fprintf(bestOutput,"	"); 
 				fprintf(bestOutput,"Round %d\n",c);
-				for(int l=0;l<10;l++)fprintf(bestOutput,"	");
 				fprintf(bestOutput,"%s",buf);
 				fprintf(test,"%s",buf);
     				printf("%s",buf);

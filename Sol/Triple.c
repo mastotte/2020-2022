@@ -43,9 +43,7 @@ void output_3(int best_round, int n, int best[n][n], int rounds){
         while (fgets(buf, 50, infile) != NULL){
                 if(atoi(buf) == best_round){
                         while(atoi(fgets(buf, 50, infile)) != best_round){
-                                for(int l=0;l<10;l++)fprintf(bestOutput,"       ");
                                 fprintf(bestOutput,"Round %d\n",c);
-                                for(int l=0;l<10;l++)fprintf(bestOutput,"       ");
                                 fprintf(bestOutput,"%s",buf);
                                 fprintf(test,"%s",buf);
                                 printf("%s",buf);
@@ -121,7 +119,7 @@ void trip(int players, int rounds){
 				}
 				C[i] = true;
 			}
-			fprintf(outFile,"\nRound %d\n",j+1);
+			fprintf(outFile, "\n");
 			w_count = players;
 			while(w_count >= 3){
 				sit_pass = true;
