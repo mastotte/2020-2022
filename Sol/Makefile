@@ -12,7 +12,7 @@ Client.o: Client.c $(HEADERS)
 	$(CC) $(CFLAGS) -c Client.c
 
 clean:
-	rm -f Client Client.o
+	rm -f Client Client.o Quad.o Triple.o Double.o:
 
 format:
 	clang-format -i -style=file *.{c,h}
