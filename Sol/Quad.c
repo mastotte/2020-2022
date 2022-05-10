@@ -32,11 +32,8 @@ float calculateSD_4(float data[], float p) {
     }
     return sqrt(SD / (p-z));
 }
-void output_4(int best_round, int n, int best[n][n], int rounds, bool isTest){
+void output_4(int best_round, int n, int best[n][n], int rounds, bool isTest, FILE* p){
   	char buf[50];
-	FILE *p;
-        if(isTest)p = fopen("trash","w");
-        if(!isTest)p = fopen(stdout,"w");
  	FILE *infile = fopen("out", "r");
 	FILE *bestOutput = fopen("best","w");
 	FILE *test = fopen("f2","w");
@@ -62,7 +59,7 @@ void output_4(int best_round, int n, int best[n][n], int rounds, bool isTest){
   	fclose(infile);
 }
 
-void quad(int players, int rounds, int TESTSIZE, bool isTest){
+void quad(int players, int rounds, int TESTSIZE, bool isTest, FILE* p){
 	srandom(SEED);
 	int seed_input = 0;
 	seed_input = random();
@@ -83,9 +80,6 @@ void quad(int players, int rounds, int TESTSIZE, bool isTest){
 			best[i][j] = 0;
 		}
 	}
-	FILE *p;
-	if(isTest)p = fopen("trash","w");
-	if(!isTest)p = fopen(stdout,"w");
 	FILE *outFile = fopen("out","w");
 	FILE *outBest = fopen("best","w");
 	bool* C = malloc(players*(sizeof(bool))+1);
@@ -239,6 +233,5 @@ void quad(int players, int rounds, int TESTSIZE, bool isTest){
 	cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
 	fprintf(p,"Time: %0.3f \n",cpu_time_used);
 	free(C);
-	fclose(p);
 }
 
