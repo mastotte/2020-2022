@@ -32,36 +32,32 @@ float calculateSD_3(float data[], float p) {
     }
     return sqrt(SD / (p-z));
 }
-void output_3(int best_round, int n, int best[n][n], int rounds, bool isTest){
+void output_3(int best_round, int n, int best[n][n], int rounds, bool isTest, FILE* p){
 	char buf[50];
-	FILE *p;
-        if(isTest)p = fopen("trash","w");
-        if(!isTest)p = fopen(stdout,"w");
 	fprintf(p,"\nBest round = %d\n",best_round);
-        FILE *infile = fopen("out", "r");
-        FILE *bestOutput = fopen("best","w");
-        FILE *test = fopen("f2","w");
-        fprintf(test,"%d\n%d\n3\n",n,rounds);
-        int c = 1;
-        while (fgets(buf, 50, infile) != NULL){
-                if(atoi(buf) == best_round){
-                        for(int i = 0; i < rounds; i++){
-				fgets(buf, 50, infile);
-                                fprintf(bestOutput,"Round %d\n",c);
-                                fprintf(bestOutput,"%s",buf);
-                                fprintf(test,"%s",buf);
-                                fprintf(p,"%s",buf);
-                                c++;
-                        }
-                }
-        }
-	fclose(p);
-        fclose(test);
-        fclose(bestOutput);
-        fclose(infile);
+	FILE *infile = fopen("out", "r");
+	FILE *bestOutput = fopen("best","w");
+	FILE *test = fopen("f2","w");
+	fprintf(test,"%d\n%d\n3\n",n,rounds);
+	int c = 1;
+	while (fgets(buf, 50, infile) != NULL){
+			if(atoi(buf) == best_round){
+					for(int i = 0; i < rounds; i++){
+			fgets(buf, 50, infile);
+							fprintf(bestOutput,"Round %d\n",c);
+							fprintf(bestOutput,"%s",buf);
+							fprintf(test,"%s",buf);
+							fprintf(p,"%s",buf);
+							c++;
+					}
+			}
+	}
+	fclose(test);
+	fclose(bestOutput);
+	fclose(infile);
 }
 
-void trip(int players, int rounds, int TESTSIZE, bool isTest){
+void trip(int players, int rounds, int TESTSIZE, bool isTest, FILE* p){
 	srandom(SEED);
 	int seed_input = 0;
 	seed_input = random();
@@ -82,9 +78,6 @@ void trip(int players, int rounds, int TESTSIZE, bool isTest){
 			best[i][j] = 0;
 		}
 	}
-	FILE *p;
-        if(isTest)p = fopen("trash","w");
-        if(!isTest)p = fopen(stdout,"w");
 	FILE *outFile = fopen("out","w");
 	FILE *outBest = fopen("best","w");
 	bool* C = malloc(players*(sizeof(bool))+1);
@@ -219,7 +212,6 @@ void trip(int players, int rounds, int TESTSIZE, bool isTest){
         
 	cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
 	fprintf(p,"Time: %0.3f \n",cpu_time_used);
-	fclose(p);
 	free(C);
 }
 
