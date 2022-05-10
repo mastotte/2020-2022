@@ -32,9 +32,9 @@ float calculateSD_2(float data[], float p) {
     }
     return sqrt(SD / (p-z));
 }
-void output_2(int best_round, int n, int best[n][n],int rounds){
+void output_2(int best_round, int n, int best[n][n],int rounds, bool isTest, FILE* p){
 	char buf[50];
-	printf("\nBest round = %d\n",best_round);
+	fprintf(p,"\nBest round = %d\n",best_round);
         FILE *infile = fopen("out", "r");
         FILE *bestOutput = fopen("best","w");
         FILE *test = fopen("f2","w");
@@ -42,21 +42,23 @@ void output_2(int best_round, int n, int best[n][n],int rounds){
         int c = 1;
         while (fgets(buf, 50, infile) != NULL){
                 if(atoi(buf) == best_round){
-                        while(atoi(fgets(buf, 50, infile)) != best_round){
+                        for(int i = 0; i < rounds; i++){
+				fgets(buf, 50, infile);
                                 fprintf(bestOutput,"Round %d\n",c);
                                 fprintf(bestOutput,"%s",buf);
                                 fprintf(test,"%s",buf);
-                                printf("%s",buf);
+                                fprintf(p,"%s",buf);
                                 c++;
                         }
                 }
         }
+	fclose(p);
         fclose(test);
         fclose(bestOutput);
         fclose(infile);
 }
 
-void doub(int players, int rounds){
+void doub(int players, int rounds, int TESTSIZE, bool isTest, FILE* p){
 	srandom(SEED);
 	int seed_input = 0;
 	seed_input = random();
@@ -85,18 +87,19 @@ void doub(int players, int rounds){
 	float stdev = -1.0;
 	float stdev_new = 0.0;
 	int index = 0;
-	int TESTSIZE = 20000;
 	bool no_equals;
 	int best_round = 0;
 	int sit_out[players];
 	int sit = 0;
 	bool sitting = (players%2 != 0);
 	if(sitting){
-		printf("People have to sit out.\n");
+		fprintf(p,"People have to sit out.\n");
 	}else{
-		printf("Nobody is sitting out.\n");
+		fprintf(p,"Nobody is sitting out.\n");
 	}
 	bool sit_pass;
+	if(players == 2)
+		TESTSIZE = 1;
 	for(int test_count = 1; test_count <= TESTSIZE; test_count++){
 		fprintf(outFile,"%d",test_count);
 		//printf("\n %f%%",((float)test_count/(float)TESTSIZE)*100.0);
@@ -187,21 +190,21 @@ void doub(int players, int rounds){
 		fprintf(outFile,"\n%d\n",test_count);
 	}
 	
-	printf("\n");
+	fprintf(p,"\n");
 	for(int x = 0; x < players; x++){
-                printf("\n%d:",x+1);
+                fprintf(p,"\n%d:",x+1);
                 for(int y = 0; y < players; y++){
-                        printf(" %d",best[x][y]);
+                        fprintf(p," %d",best[x][y]);
                 }
         }
 	fclose(outFile);
 	output_2(best_round,players,best,rounds);
-	printf("\n");
+	fprintf(p,"\n");
 	
 	end = clock();
         
 	cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
-	printf("Time: %0.3f \n",cpu_time_used);
+	fprintf(p,"Time: %0.3f \n",cpu_time_used);
 	free(C);
 }
 
