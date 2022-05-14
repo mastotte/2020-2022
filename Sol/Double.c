@@ -6,7 +6,7 @@
 #include <string.h>
 #include <limits.h>
 #include <stdbool.h>
-#include "Double.h"
+#include "Triple.h"
 //********************************************************************
 //*								     *
 //*	Figuring out the Solitaire matches, once and for all.        *
@@ -32,32 +32,31 @@ float calculateSD_2(float data[], float p) {
     }
     return sqrt(SD / (p-z));
 }
-void output_2(int best_round, int n, int best[n][n],int rounds, bool isTest, FILE* p){
-	char buf[50];
+void output_2(int best_round, int n, int best[n][n], int rounds, bool isTest, FILE* p){
+  	char buf[50];
+ 	FILE *infile = fopen("out", "r");
+	FILE *bestOutput = fopen("best","w");
+	FILE *test = fopen("f2","w");
 	fprintf(p,"\nBest round = %d\n",best_round);
-        FILE *infile = fopen("out", "r");
-        FILE *bestOutput = fopen("best","w");
-        FILE *test = fopen("f2","w");
-        fprintf(test,"%d\n%d\n2\n",n,rounds);
-        int c = 1;
-        while (fgets(buf, 50, infile) != NULL){
-                if(atoi(buf) == best_round){
-                        for(int i = 0; i < rounds; i++){
+	fprintf(test,"%d\n%d\n2\n",n,rounds);
+	int c = 1;
+  	while (fgets(buf, 50, infile) != NULL){
+		if(atoi(buf) == best_round){
+			for(int i = 0; i < rounds; i++){
 				fgets(buf, 50, infile);
-                                fprintf(bestOutput,"Round %d\n",c);
-                                fprintf(bestOutput,"%s",buf);
-                                fprintf(test,"%s",buf);
-                                fprintf(p,"%s",buf);
-                                c++;
-                        }
-                }
-        }
-	fclose(p);
-        fclose(test);
-        fclose(bestOutput);
-        fclose(infile);
+				fprintf(bestOutput,"Round %d\n",c);
+				fprintf(bestOutput,"%s",buf);
+				fprintf(test,"%s",buf);
+    				fprintf(p,"%s",buf);
+				c++;
+			}
+			break;
+		}
+  	}
+	fclose(test);
+	fclose(bestOutput);
+  	fclose(infile);
 }
-
 void doub(int players, int rounds, int TESTSIZE, bool isTest, FILE* p){
 	srandom(SEED);
 	int seed_input = 0;
@@ -99,8 +98,8 @@ void doub(int players, int rounds, int TESTSIZE, bool isTest, FILE* p){
 	}
 	bool sit_pass;
 	if(players == 2)
-		TESTSIZE = 1;
-	for(int test_count = 1; test_count <= TESTSIZE; test_count++){
+		TESTSIZE = players+1;
+	for(int test_count = players+1; test_count <= TESTSIZE; test_count++){
 		fprintf(outFile,"%d",test_count);
 		//printf("\n %f%%",((float)test_count/(float)TESTSIZE)*100.0);
 		// Clearing The Array
@@ -122,6 +121,7 @@ void doub(int players, int rounds, int TESTSIZE, bool isTest, FILE* p){
 				C[i] = true;
 			}
 			fprintf(outFile,"\n");
+			//fprintf(outFile,"\nRound %d\n",j+1);
 			w_count = players;
 			while(w_count >= 2){
 				sit_pass = true;
@@ -156,6 +156,7 @@ void doub(int players, int rounds, int TESTSIZE, bool isTest, FILE* p){
 			}
 		}
 		bool sits_fair = true;
+		//printf("\nSits:\n");
 		for(int k = 0; k < players; k++){
 			//printf(" %d", sit_out[k]);
 			if((sit_out[0] != sit_out[k])&&(sitting)){
@@ -167,6 +168,7 @@ void doub(int players, int rounds, int TESTSIZE, bool isTest, FILE* p){
 			}
 		}
 		index = 0;
+		//printf("\nData: ");
 		int zero_count = 0;
         	for(int i = 0; i < pow(players,2); i++){
                 	//printf(" %d",(int) data[i]);
@@ -189,7 +191,6 @@ void doub(int players, int rounds, int TESTSIZE, bool isTest, FILE* p){
 		}
 		fprintf(outFile,"\n%d\n",test_count);
 	}
-	
 	fprintf(p,"\n");
 	for(int x = 0; x < players; x++){
                 fprintf(p,"\n%d:",x+1);
@@ -198,7 +199,7 @@ void doub(int players, int rounds, int TESTSIZE, bool isTest, FILE* p){
                 }
         }
 	fclose(outFile);
-	output_2(best_round,players,best,rounds);
+	output_2(best_round,players,best,rounds,isTest,p);
 	fprintf(p,"\n");
 	
 	end = clock();

@@ -40,11 +40,13 @@ void scoreBoard(int rounds){
 	ppg = atoi(ppG);
 	//printf("players, rounds = ( %d , %d )\n",players,rounds);
 	float pars[players+1][rounds+1];
-	int scores[players][rounds];
+	int scores[players+1][rounds+1];
+	for(int i = 0; i < (players+1)*(rounds+1); i++){
+		pars[1][i] = 0;
+	}
 	for(int i = 1; i <= players; i++){
 		memset(buf_scores, '\0',100);
 		fgets(buf_scores, 100, SCORES);
-		//printf("(%s)\n",buf_scores);
 		del = strtok(buf_scores,"	");
 		for(int j = 1; j <= rounds; j++){
 			s = atoi(strtok(NULL, "	"));
@@ -53,7 +55,6 @@ void scoreBoard(int rounds){
 		}
 		//printf("\n");
 	}
-	
 	char* buf_copy;
 	float avg = 0;
 	float sum = 0;
@@ -116,7 +117,7 @@ void scoreBoard(int rounds){
 			fprintf(sc_out," %d",scores[i][j]);
 		}
 	}
-	fprintf(sc_out,"\n\nPars");
+	fprintf(sc_out,"\n      \nPars");
 	for(int i = 1; i <= players; i++){
 		sum2 = 0.0;
 		fprintf(sc_out,"\n%d:",i);
@@ -143,7 +144,7 @@ void scoreBoard(int rounds){
 			}
 		}
 	} 		
-	fprintf(sc_out,"\n\nStandings:");
+	fprintf(sc_out,"\n      \nStandings:");
 	for(int i = 1; i <= players; i++){
 		fprintf(sc_out,"\n%0.0f: %0.1f",standings[i][1],standings[i][2]);
 	}

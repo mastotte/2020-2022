@@ -53,7 +53,6 @@ void output_4(int best_round, int n, int best[n][n], int rounds, bool isTest, FI
 			break;
 		}
   	}
-	fclose(p);
 	fclose(test);
 	fclose(bestOutput);
   	fclose(infile);
@@ -102,8 +101,8 @@ void quad(int players, int rounds, int TESTSIZE, bool isTest, FILE* p){
 	}
 	bool sit_pass;
 	if(players == 4)
-		TESTSIZE = 1;
-	for(int test_count = 1; test_count <= TESTSIZE; test_count++){
+		TESTSIZE = players+1;
+	for(int test_count = players+1; test_count <= TESTSIZE; test_count++){
 		fprintf(outFile,"%d",test_count);
 		//printf("\n %f%%",((float)test_count/(float)TESTSIZE)*100.0);
 		// Clearing The Array
@@ -132,7 +131,7 @@ void quad(int players, int rounds, int TESTSIZE, bool isTest, FILE* p){
 				no_equals = true;
 				r1 = random();
 				r1 = r1%(players);
-				r2 = random();		
+				r2 = random();	
 				r2 = r2%(players);
 				// -- double --
 				r3 = random();
@@ -151,8 +150,7 @@ void quad(int players, int rounds, int TESTSIZE, bool isTest, FILE* p){
 							no_equals = false;
 						}
 					}
-				}
-					
+				}			
 				if(C[r1]&&C[r2]&&C[r3]&&C[r4]&&no_equals&&sit_pass){
 					//printf(" | %d vs %d vs %d vs %d |",r1,r2,r3,r4);
 					fprintf(outFile," %d vs %d vs %d vs %d -",r1+1,r2+1,r3+1,r4+1);
@@ -182,9 +180,7 @@ void quad(int players, int rounds, int TESTSIZE, bool isTest, FILE* p){
 			}
 		}
 		bool sits_fair = true;
-		//printf("\nSits:\n");
 		for(int k = 0; k < players; k++){
-			//printf(" %d", sit_out[k]);
 			if((sit_out[0] != sit_out[k])&&(sitting)){
 				sits_fair = false;
 			}
@@ -194,10 +190,8 @@ void quad(int players, int rounds, int TESTSIZE, bool isTest, FILE* p){
 			}
 		}
 		index = 0;
-		//printf("\nData: ");
 		int zero_count = 0;
         	for(int i = 0; i < pow(players,2); i++){
-                	//printf(" %d",(int) data[i]);
 			if(data[i] == 0.0){
 				zero_count++;
 			}
@@ -208,7 +202,6 @@ void quad(int players, int rounds, int TESTSIZE, bool isTest, FILE* p){
 		if((stdev_new < stdev)||(stdev == -1.0)){
 			stdev = stdev_new;
 			best_round = test_count;
-			//printf("\nnew best");
 			for(int x = 0; x < players; x++){
 				for(int y = 0; y < players; y++){
 					best[x][y] = matches[x][y];
@@ -225,7 +218,7 @@ void quad(int players, int rounds, int TESTSIZE, bool isTest, FILE* p){
                 }
         }
 	fclose(outFile);
-	output_4(best_round,players,best,rounds,isTest);
+	output_4(best_round,players,best,rounds,isTest,p);
 	fprintf(p,"\n");
 	
 	end = clock();

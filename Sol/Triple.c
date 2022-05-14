@@ -33,28 +33,29 @@ float calculateSD_3(float data[], float p) {
     return sqrt(SD / (p-z));
 }
 void output_3(int best_round, int n, int best[n][n], int rounds, bool isTest, FILE* p){
-	char buf[50];
-	fprintf(p,"\nBest round = %d\n",best_round);
-	FILE *infile = fopen("out", "r");
+  	char buf[50];
+ 	FILE *infile = fopen("out", "r");
 	FILE *bestOutput = fopen("best","w");
 	FILE *test = fopen("f2","w");
+	fprintf(p,"\nBest round = %d\n",best_round);
 	fprintf(test,"%d\n%d\n3\n",n,rounds);
 	int c = 1;
-	while (fgets(buf, 50, infile) != NULL){
-			if(atoi(buf) == best_round){
-					for(int i = 0; i < rounds; i++){
-			fgets(buf, 50, infile);
-							fprintf(bestOutput,"Round %d\n",c);
-							fprintf(bestOutput,"%s",buf);
-							fprintf(test,"%s",buf);
-							fprintf(p,"%s",buf);
-							c++;
-					}
+  	while (fgets(buf, 50, infile) != NULL){
+		if(atoi(buf) == best_round){
+			for(int i = 0; i < rounds; i++){
+				fgets(buf, 50, infile);
+				fprintf(bestOutput,"Round %d\n",c);
+				fprintf(bestOutput,"%s",buf);
+				fprintf(test,"%s",buf);
+    				fprintf(p,"%s",buf);
+				c++;
 			}
-	}
+			break;
+		}
+  	}
 	fclose(test);
 	fclose(bestOutput);
-	fclose(infile);
+  	fclose(infile);
 }
 
 void trip(int players, int rounds, int TESTSIZE, bool isTest, FILE* p){
@@ -99,8 +100,8 @@ void trip(int players, int rounds, int TESTSIZE, bool isTest, FILE* p){
 	}
 	bool sit_pass;
 	if(players == 3)
-		TESTSIZE = 1;
-	for(int test_count = 1; test_count <= TESTSIZE; test_count++){
+		TESTSIZE = players+1;
+	for(int test_count = players+1; test_count <= TESTSIZE; test_count++){
 		fprintf(outFile,"%d",test_count);
 		//printf("\n %f%%",((float)test_count/(float)TESTSIZE)*100.0);
 		// Clearing The Array
@@ -121,7 +122,8 @@ void trip(int players, int rounds, int TESTSIZE, bool isTest, FILE* p){
 				}
 				C[i] = true;
 			}
-			fprintf(outFile, "\n");
+			fprintf(outFile,"\n");
+			//fprintf(outFile,"\nRound %d\n",j+1);
 			w_count = players;
 			while(w_count >= 3){
 				sit_pass = true;
@@ -162,6 +164,7 @@ void trip(int players, int rounds, int TESTSIZE, bool isTest, FILE* p){
 					w_count--;
 					// -- triple --
 				}
+
 			}
 		}
 		bool sits_fair = true;
@@ -177,8 +180,10 @@ void trip(int players, int rounds, int TESTSIZE, bool isTest, FILE* p){
 			}
 		}
 		index = 0;
+		//printf("\nData: ");
 		int zero_count = 0;
         	for(int i = 0; i < pow(players,2); i++){
+                	//printf(" %d",(int) data[i]);
 			if(data[i] == 0.0){
 				zero_count++;
 			}
@@ -189,6 +194,7 @@ void trip(int players, int rounds, int TESTSIZE, bool isTest, FILE* p){
 		if((stdev_new < stdev)||(stdev == -1.0)){
 			stdev = stdev_new;
 			best_round = test_count;
+			//printf("\nnew best");
 			for(int x = 0; x < players; x++){
 				for(int y = 0; y < players; y++){
 					best[x][y] = matches[x][y];
@@ -205,7 +211,7 @@ void trip(int players, int rounds, int TESTSIZE, bool isTest, FILE* p){
                 }
         }
 	fclose(outFile);
-	output_3(best_round,players,best,rounds);
+	output_3(best_round,players,best,rounds,isTest,p);
 	fprintf(p,"\n");
 	
 	end = clock();
