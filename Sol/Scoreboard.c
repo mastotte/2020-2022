@@ -125,7 +125,7 @@ void scoreBoard(int rounds){
 			if((pars[i][j]>0)&&(pars[i][j]<10))fprintf(sc_out," ");
 			if(pars[i][j]>-10)fprintf(sc_out," ");
 			sum2 += pars[i][j];
-                        fprintf(sc_out," %0.1f",pars[i][j]);
+                        fprintf(sc_out," %0.0f",pars[i][j]);
 		}
 		standings[i][1] = i;
 		standings[i][2] = sum2;
