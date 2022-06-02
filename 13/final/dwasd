@@ -1,0 +1,242 @@
+[33mcommit 8ffc3e5eb9a26e6ad0dfa8ed89becf759570b8c5[m[33m ([m[1;36mHEAD -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: mastotte <mastotte@ucsc.edu>
+Date:   Sun Mar 13 02:29:44 2022 +0000
+
+    review updated
+
+[33mcommit 340c822c443c613effa900c81f9bc353e3951eda[m
+Author: mastotte <mastotte@ucsc.edu>
+Date:   Sun Mar 13 01:56:59 2022 +0000
+
+    review
+
+[33mcommit b840c2f5d38562819b508980589eb1b5b5a6d4f6[m
+Author: mastotte <mastotte@ucsc.edu>
+Date:   Fri Mar 11 22:56:35 2022 +0000
+
+    final updates
+
+[33mcommit 8246c7edfd0dcd482289f6bfb6ebf8cfee616a28[m
+Author: mastotte <mastotte@ucsc.edu>
+Date:   Wed Mar 9 01:28:43 2022 +0000
+
+    max=negative infinity
+
+[33mcommit 4c42e5606e7e9a65a5887da0edfc3fa1f5cfdeaf[m
+Author: mastotte <mastotte@ucsc.edu>
+Date:   Wed Mar 9 00:57:16 2022 +0000
+
+    hw7
+
+[33mcommit 228abc0f7dbe72233d3c1ef0e3a8bb258f0e2643[m
+Merge: 789a866 9c9e3b6
+Author: mastotte <mastotte@ucsc.edu>
+Date:   Tue Mar 8 08:25:15 2022 +0000
+
+    Merge branch 'main' of https://git.ucsc.edu/cse-13s-winter-2022/cse13s_mastotte into main
+
+[33mcommit 789a866af22e8e245f3365402ffbd8d182699726[m
+Author: mastotte <mastotte@ucsc.edu>
+Date:   Tue Mar 8 08:23:49 2022 +0000
+
+    hw7
+
+[33mcommit fc455e455d27bcbf229d3b49bb15802c51af3215[m
+Author: mastotte <mastotte@ucsc.edu>
+Date:   Tue Mar 8 08:22:58 2022 +0000
+
+    DESIGN 7
+
+[33mcommit 9c9e3b66018f52476280c99c26de6c5b28143fe4[m
+Author: Maxwell Totten <mastotte@ucsc.edu>
+Date:   Sun Mar 6 23:20:11 2022 +0000
+
+    Update stack_calculator.c
+
+[33mcommit 6eedca2cd5a5454e3a2fb4b02318931a07711890[m
+Author: mastotte <mastotte@ucsc.edu>
+Date:   Sun Mar 6 23:10:19 2022 +0000
+
+    hw7
+
+[33mcommit f21f22d3e0d6e3b29e09e9eb2e9d5c9bc199c877[m
+Merge: 272975c 62e600a
+Author: mastotte <mastotte@ucsc.edu>
+Date:   Tue Mar 1 22:07:20 2022 +0000
+
+    Merge branch 'main' of https://git.ucsc.edu/cse-13s-winter-2022/cse13s_mastotte into main
+
+[33mcommit 272975c23530da92df0223fd1ba7e8d4456e4ed9[m
+Author: mastotte <mastotte@ucsc.edu>
+Date:   Tue Mar 1 22:07:02 2022 +0000
+
+    quordle
+
+[33mcommit 62e600a938f985478309e39d96f36771a231670d[m
+Author: Maxwell Totten <mastotte@ucsc.edu>
+Date:   Tue Mar 1 22:05:31 2022 +0000
+
+    Update test2.txt
+
+[33mcommit 7cddc2926be92638204c65485249600ffb4356d8[m
+Author: Maxwell Totten <mastotte@ucsc.edu>
+Date:   Tue Mar 1 22:04:07 2022 +0000
+
+    Update test2.txt
+
+[33mcommit 1a7558276f5adeab37211848b9f90e3c48a07d59[m
+Merge: c60b7bb 826755e
+Author: mastotte <mastotte@ucsc.edu>
+Date:   Tue Mar 1 21:59:06 2022 +0000
+
+    Merge branch 'main' of https://git.ucsc.edu/cse-13s-winter-2022/cse13s_mastotte into main
+
+[33mcommit c60b7bb754138e95e295d022e8f7b19c7ca11839[m
+Author: mastotte <mastotte@ucsc.edu>
+Date:   Tue Mar 1 21:58:29 2022 +0000
+
+    quordle
+
+[33mcommit 826755e3a59dbc5b73af2b3cbb3b929d552f6240[m
+Author: Maxwell Totten <mastotte@ucsc.edu>
+Date:   Tue Mar 1 21:57:04 2022 +0000
+
+    Update test2.txt
+
+[33mcommit d0510d99574a264da989f9d5a5582b3a7aa04518[m
+Author: mastotte <mastotte@ucsc.edu>
+Date:   Tue Mar 1 04:50:38 2022 +0000
+
+    personal quordle solver
+
+[33mcommit 745bda70a5447e14b4eba27424c5c5d17d35ea77[m
+Author: Maxwell Totten <mastotte@ucsc.edu>
+Date:   Mon Feb 28 22:01:07 2022 +0000
+
+    Update test.txt
+
+[33mcommit 81740826d2aa242ebed7d17c12ae98e1a67acaa0[m
+Author: mastotte <mastotte@ucsc.edu>
+Date:   Sun Feb 27 23:06:16 2022 +0000
+
+    deleting classwork folder
+
+[33mcommit e74290d2ea94fafae625b401c4e661b632cbce9b[m
+Author: mastotte <mastotte@ucsc.edu>
+Date:   Sun Feb 27 23:03:10 2022 +0000
+
+    more cleaning
+
+[33mcommit f06177cdbfe1fff5e4f7e0f6298b3c29473554ee[m
+Author: mastotte <mastotte@ucsc.edu>
+Date:   Sun Feb 27 22:50:52 2022 +0000
+
+    testing
+
+[33mcommit c6cc8eae92540db421a002a90823309641ffc831[m
+Author: mastotte <mastotte@ucsc.edu>
+Date:   Sun Feb 27 22:49:44 2022 +0000
+
+    test
+
+[33mcommit be9f5ab287f5a8539ad89ab300609a0d5a5065fd[m
+Author: mastotte <mastotte@ucsc.edu>
+Date:   Sun Feb 27 03:05:35 2022 +0000
+
+    hw6
+
+[33mcommit df556d1741078149cde6216cba6d203b5489321f[m
+Author: mastotte <mastotte@ucsc.edu>
+Date:   Sun Feb 27 02:09:16 2022 +0000
+
+    Design.md
+
+[33mcommit 8046f48ef1b0d046d9c1cbc54201c40e1eab374d[m
+Author: mastotte <mastotte@ucsc.edu>
+Date:   Tue Feb 22 01:47:59 2022 +0000
+
+    hw5
+
+[33mcommit 913308ae0b64582c4c50e38dac7daad93c50cb30[m
+Author: mastotte <mastotte@ucsc.edu>
+Date:   Fri Feb 18 23:01:15 2022 +0000
+
+    design hw5
+
+[33mcommit 30def6181131929c4c58ae4fc3897c3a4597b694[m
+Author: mastotte <mastotte@ucsc.edu>
+Date:   Thu Feb 10 09:38:22 2022 +0000
+
+    midterm that took 7.5 hrs
+
+[33mcommit ba7a6f5fdc1272196f32854605ac1b8bfec361c2[m
+Author: mastotte <mastotte@ucsc.edu>
+Date:   Mon Feb 7 04:20:05 2022 +0000
+
+    adding makefile
+
+[33mcommit 98aea9dc123ca26f95ba6150a8cd48cbb2457838[m
+Author: mastotte <mastotte@ucsc.edu>
+Date:   Mon Feb 7 04:17:46 2022 +0000
+
+    adding lab 3
+
+[33mcommit 781469f0c6a0efde4ba5f1d37d6f8eef80351b3d[m
+Author: mastotte <mastotte@ucsc.edu>
+Date:   Tue Feb 1 21:28:23 2022 +0000
+
+    Design hw3
+
+[33mcommit 681596ca5397e63aa8a3c3b3baa6adefacb51249[m
+Author: mastotte <mastotte@ucsc.edu>
+Date:   Thu Jan 27 01:28:10 2022 +0000
+
+    hw2 commit
+
+[33mcommit 14f5dce697b8b57b49f2ec1415f57af3049b0439[m
+Author: mastotte <mastotte@ucsc.edu>
+Date:   Thu Jan 27 01:24:36 2022 +0000
+
+    adding DESIGN.md
+
+[33mcommit 4de05feb556500c8677e0b3c75a40dbc4534ac64[m
+Author: mastotte <mastotte@ucsc.edu>
+Date:   Mon Jan 24 06:23:13 2022 +0000
+
+    Makefile,README,names
+
+[33mcommit 00b473e73b4b70920716811452f9d57b887c4c30[m
+Author: mastotte <mastotte@ucsc.edu>
+Date:   Mon Jan 24 06:22:03 2022 +0000
+
+    adding pig.c
+
+[33mcommit 6bccd42f7706f491b60bb4825df5cb035833c625[m
+Author: Maxwell Totten <mastotte@ucsc.edu>
+Date:   Fri Jan 21 05:32:57 2022 +0000
+
+    Update DESIGN.md
+
+[33mcommit cfb156d8a6d23bc5c8cdbf54ee0514bfa2b2dc91[m
+Author: Maxwell Totten <mastotte@ucsc.edu>
+Date:   Fri Jan 21 05:29:48 2022 +0000
+
+    Update DESIGN.md
+
+[33mcommit f3c6b24ab7091c3a87e95574d5cc79d64df0009e[m
+Author: mastotte <mastotte@ucsc.edu>
+Date:   Fri Jan 21 05:27:21 2022 +0000
+
+    adding hw1
+
+[33mcommit d28363cdd9e2b132ad81411b7f5c2c08cbf2ced2[m
+Author: mastotte <mastotte@ucsc.edu>
+Date:   Sat Jan 15 03:42:34 2022 +0000
+
+    adding academic_honesty file
+
+[33mcommit 860bf886d170522a1146e5bf61ab5d9c65bae32f[m
+Author: CSE 13S Staff <secret@example.com>
+Date:   Sun Jan 9 07:01:30 2022 +0000
+
+    create first file
