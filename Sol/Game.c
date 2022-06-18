@@ -6,7 +6,7 @@
 #include <string.h>
 #include <limits.h>
 #include <stdbool.h>
-#include "Copy.h"
+#include "Game.h"
 //********************************************************************
 //*								     *
 //*	Figuring out the Solitaire matches, once and for all.        *
@@ -14,7 +14,7 @@
 //*     mastotte, ucsc 2024					     *
 //*								     *
 //********************************************************************
-float calculateSD_copy(float data[], float p) {
+float calculateSD_1(float data[], float p) {
     float sum = 0.0, mean, SD = 0.0;
     int i;
     int z = 0;
@@ -32,7 +32,7 @@ float calculateSD_copy(float data[], float p) {
     }
     return sqrt(SD / (p-z));
 }
-void output_copy(int best_round, int n, int best[n][n], int rounds, bool isTest, FILE* p, int ppg){
+void output_1(int best_round, int n, int best[n][n], int rounds, bool isTest, FILE* p, int ppg){
   	char buf[50];
  	FILE *infile = fopen("out", "r");
 	FILE *bestOutput = fopen("best","w");
@@ -57,29 +57,8 @@ void output_copy(int best_round, int n, int best[n][n], int rounds, bool isTest,
 	fclose(bestOutput);
   	fclose(infile);
 }
-int findMax(int players, float x[players]){
-	float highest = 0;
-	int index = 0;
-	for(int i = 0; i < players; i++){
-		if(x[i]>highest){
-			highest = x[i];
-			index = i;
-		}
-	}
-	return index;
-}
-int findMin(int players, int ppg, int x[players], bool* C){
-	int lowest = x[0];
-	int index = 0;
-	for(int i = 0; i < players; i++){
-		if((x[i]<lowest)&&(C[i] == false)){
-			lowest = x[i];
-			index = i;
-		}
-	}
-	return index;
-}
-void copy(int players, int rounds, int TESTSIZE, bool isTest, FILE* p, int ppg){
+
+void game(int players, int rounds, int TESTSIZE, bool isTest, FILE* p, int ppg){
 	srandom(SEED);
 	int seed_input = 0;
 	seed_input = random();
@@ -90,12 +69,11 @@ void copy(int players, int rounds, int TESTSIZE, bool isTest, FILE* p, int ppg){
 	clock_t start, end;
 	double cpu_time_used;
 	start = clock();
-	float stdevs[players];
+
 	int matches[players][players];
 	int best[players][players];
 	float data[players*players];
 	for(int i = 0; i < players; i++){
-		stdevs[i] = 0;
 		for(int j = 0; j < players; j++){
 			matches[i][j] = 0;
 			best[i][j] = 0;
@@ -155,60 +133,69 @@ void copy(int players, int rounds, int TESTSIZE, bool isTest, FILE* p, int ppg){
 			fprintf(outFile,"\n");
 			//fprintf(outFile,"\nRound %d\n",j+1);
 			w_count = players;
-			for(int j = 0; j < players; j++){
-        	        	stdevs[j] = calculateSD_copy((float*)matches[j],(float)pow(players,2));
-			}
-			if(players<3){
-				r3 = 3;
-				C[3] = true;
-			}
-			if(players<4){
-				r4 = 4;
-				C[4] = true;
-			}
-			if(players<5){
-				r5 = 5;
-				C[5] = true;
-			}
-			if(players<6){
-				r6 = 6;
-				C[6] = true;
-			}
-			if(players<7){
-				r7 = 7;
-				C[7] = true;
-			}             
-			int inf = 0;                                                              
-			while((w_count >= ppg)&&(inf<10)){
-				
-				// r1 = j, others are j's least played. make a max and min finder.
+			while(w_count >= ppg){
+				//inf_blocker++;
+				//printf("infinite check\n");
+				/*highest = 0;
+				priority_row = 0;
+				for(int j = 1; j <= players; j++){
+					stdev1 = calculateSD_1(matches[j],(float)pow(players,2));
+					if(stdev1>highest){
+						highest = stdev1;
+						priority_row = j;
+					}
+				}*/
+				// r1 = j, others are j's least played. make a max and min finder.	
 				sit_pass = true;
 				no_equals = true;
-				r1 = findMax(players,stdevs);
-				printf("Max: %d, inf: %d\n",r1,inf);
-				stdevs[r1] = 0;
-				C[r1] = true;
-				r2 = findMin(players,ppg,matches[r1],C);
-				C[r2] = true;
+				r1 = random();
+				r1 = r1%(players);
+				r2 = random();	
+				r2 = r2%(players);
+				// -- double --
 				if(ppg>2){
-					r3 = findMin(players,ppg,matches[r1],C);
-					C[r3] = true;
+					r3 = random();
+                                	r3 = r3%(players);
 				}
+				if(players<3){
+					r3 = 3;
+					C[3] = true;
+				}
+				// -- triple --
 				if(ppg>3){
-					r4 = findMin(players,ppg,matches[r1],C);
-					C[r4] = true;
+                                	r4 = random();
+                                	r4 = r4%(players);
 				}
+				if(players<4){
+					r4 = 4;
+					C[4] = true;
+				}
+				// -- quadruple --
 				if(ppg>4){
-					r5 = findMin(players,ppg,matches[r1],C);
-					C[r5] = true;
+					r5 = random();
+					r5 = r5%(players);
 				}
+				if(players<5){
+					r5 = 5;
+					C[5] = true;
+				}
+				// -- penta --
 				if(ppg>5){
-					r6 = findMin(players,ppg,matches[r1],C);
-					C[r6] = true;
+					r6 = random();
+					r6 = r6%(players);
 				}
+				if(players<6){
+					r6 = 6;
+					C[6] = true;
+				}
+				// -- hex --
 				if(ppg>6){
-					r7 = findMin(players,ppg,matches[r1],C);
-					C[r7] = true;
+					r7 = random();
+					r7 = r7%(players);
+				}
+				if(players<7){
+					r7 = 7;
+					C[7] = true;
 				}
 				int check[7] = {r1,r2,r3,r4,r5,r6,r7};
 				
@@ -238,7 +225,10 @@ void copy(int players, int rounds, int TESTSIZE, bool isTest, FILE* p, int ppg){
 				}else if(ppg==7){
 					con = (C[r1]&&C[r2]&&C[r3]&&C[r4]&&C[r5]&&C[r6]&&C[r7]);
 				}
-				printf("\nCon: %d, No_Equals: %d, Sit_Pass: %d\n",con,no_equals,sit_pass);
+
+
+
+
 				if(con&&no_equals&&sit_pass){
 					//printf(" | %d vs %d vs %d vs %d |",r1,r2,r3,r4);a
 					//printf("inner pass\n");
@@ -341,7 +331,7 @@ void copy(int players, int rounds, int TESTSIZE, bool isTest, FILE* p, int ppg){
 			}
         	}
 		if((zero_count <= players)||(players >= rounds)){
-			stdev_new = calculateSD_copy(data, (float) pow(players,2));
+			stdev_new = calculateSD_1(data, (float) pow(players,2));
 		}
 		if((stdev_new < stdev)||(stdev == -1.0)){
 			stdev = stdev_new;
@@ -362,7 +352,7 @@ void copy(int players, int rounds, int TESTSIZE, bool isTest, FILE* p, int ppg){
                 }
         }
 	fclose(outFile);
-	output_copy(best_round,players,best,rounds,isTest,p,ppg);
+	output_1(best_round,players,best,rounds,isTest,p,ppg);
 	fprintf(p,"\n");
 	
 	end = clock();
