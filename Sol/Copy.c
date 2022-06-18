@@ -57,7 +57,28 @@ void output_1(int best_round, int n, int best[n][n], int rounds, bool isTest, FI
 	fclose(bestOutput);
   	fclose(infile);
 }
-
+int findMax(int players, float x[players]){
+	float highest = 0;
+	int index = 0;
+	for(int i = 0; i < players; i++){
+		if(x[i]>highest){
+			highest = x[i];
+			index = i;
+		}
+	}
+	return index;
+}
+int findMin(int players, int ppg, int x[players], bool* C){
+	int lowest = x[0];
+	int index = 0;
+	for(int i = 0; i < players; i++){
+		if((x[i]<lowest)&&(C[i] == false)){
+			lowest = x[i];
+			index = i;
+		}
+	}
+	return index;
+}
 void game(int players, int rounds, int TESTSIZE, bool isTest, FILE* p, int ppg){
 	srandom(SEED);
 	int seed_input = 0;
@@ -69,7 +90,7 @@ void game(int players, int rounds, int TESTSIZE, bool isTest, FILE* p, int ppg){
 	clock_t start, end;
 	double cpu_time_used;
 	start = clock();
-	int stdevs[players];
+	float stdevs[players];
 	int matches[players][players];
 	int best[players][players];
 	float data[players*players];
@@ -135,88 +156,64 @@ void game(int players, int rounds, int TESTSIZE, bool isTest, FILE* p, int ppg){
 			//fprintf(outFile,"\nRound %d\n",j+1);
 			w_count = players;
 			for(int j = 0; j < players; j++){
-                        	stdevs[j] = calculate_SD_1(matches[j],(float)pow(players,2));
-                        }
+                stdevs[j] = calculate_SD_1(matches[j],(float)pow(players,2));
+            }
+            // -- double --
+			if(ppg>2){
+				r3 = random();
+                r3 = r3%(players);
+			}
+			if(players<3){
+				r3 = 3;
+				C[3] = true;
+			}
+			// -- triple --
+			if(ppg>3){
+                r4 = random();
+                r4 = r4%(players);
+			}
+			if(players<4){
+				r4 = 4;
+				C[4] = true;
+			}
 			// -- quadruple --
-			//                                 if(ppg>4){
-			//                                                                         r5 = random();
-			//                                                                                                                 r5 = r5%(players);
-			//                                                                                                                                                 }
-			//                                                                                                                                                                                 if(players<5){
-			//                                                                                                                                                                                                                         r5 = 5;
-			//                                                                                                                                                                                                                                                                 C[5] = true;
-			//                                                                                                                                                                                                                                                                                                 }
-			//                                                                                                                                                                                                                                                                                                                                 // -- penta --
-			//                                                                                                                                                                                                                                                                                                                                                                 if(ppg>5){
-			//                                                                                                                                                                                                                                                                                                                                                                                                         r6 = random();
-			//                                                                                                                                                                                                                                                                                                                                                                                                                                                 r6 = r6%(players);
-			//                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 }
-			//                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 if(players<6){
-			//                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         r6 = 6;
-			//                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 C[6] = true;
-			//                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 }
-			//                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 // -- hex --
-			//                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 if(ppg>6){
-			//                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         r7 = random();
-			//                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 r7 = r7%(players);
-			//                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 }
-			//                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 if(players<7){
-			//                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         r7 = 7;
-			//                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 C[7] = true;
-			//                                                                                                         
+			if(ppg>4){
+				r5 = random();
+				r5 = r5%(players);
+			}
+			if(players<5){
+				r5 = 5;
+				C[5] = true;
+			}
+			// -- penta --
+			if(ppg>5){
+				r6 = random();
+				r6 = r6%(players);
+			}
+			if(players<6){
+				r6 = 6;
+				C[6] = true;
+			}
+			// -- hex --
+			if(ppg>6){
+				r7 = random();
+				r7 = r7%(players);
+			}
+			if(players<7){
+				r7 = 7;
+				C[7] = true;
+			}                                                                           
 			while(w_count >= ppg){
-				
 				// r1 = j, others are j's least played. make a max and min finder.
 				sit_pass = true;
 				no_equals = true;
-				r1 = findMax(stdevs);
-				r2 = random();	
-				r2 = r2%(players);
-				// -- double --
-				if(ppg>2){
-					r3 = random();
-                                	r3 = r3%(players);
+				r1 = findMax(players,stdevs);
+				r2 = findMin(players,ppg,matches[r1],C);
+				C[r2] = true;
+				if(players>2){
+					
 				}
-				if(players<3){
-					r3 = 3;
-					C[3] = true;
-				}
-				// -- triple --
-				if(ppg>3){
-                                	r4 = random();
-                                	r4 = r4%(players);
-				}
-				if(players<4){
-					r4 = 4;
-					C[4] = true;
-				}
-				// -- quadruple --
-				if(ppg>4){
-					r5 = random();
-					r5 = r5%(players);
-				}
-				if(players<5){
-					r5 = 5;
-					C[5] = true;
-				}
-				// -- penta --
-				if(ppg>5){
-					r6 = random();
-					r6 = r6%(players);
-				}
-				if(players<6){
-					r6 = 6;
-					C[6] = true;
-				}
-				// -- hex --
-				if(ppg>6){
-					r7 = random();
-					r7 = r7%(players);
-				}
-				if(players<7){
-					r7 = 7;
-					C[7] = true;
-				}
+
 				int check[7] = {r1,r2,r3,r4,r5,r6,r7};
 				
 				for(int c = 0; c < ppg; c++){
