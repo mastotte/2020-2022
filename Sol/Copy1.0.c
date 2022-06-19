@@ -178,11 +178,7 @@ void copy(int players, int rounds, int TESTSIZE, bool isTest, FILE* p, int ppg){
 			printf("\n");
 			if(sitting){
 				printf("\n----------------------Sit Find Min----------------------------\n");
-				int y = random();
-				y = y%players;
-				sitters[0] = y;
-				C[y] = false;
-				for(int x=1;x<players%ppg;x++){
+				for(int x=0;x<players%ppg;x++){
                                 	sitters[x] =  findMin(players,ppg,dummy,sit_out,C);
 					C[(int)(sitters[x])] = false;
 				}
@@ -360,7 +356,9 @@ void copy(int players, int rounds, int TESTSIZE, bool isTest, FILE* p, int ppg){
 				
 
 			}
-			
+			/*for(int x=0;x<players;x++){
+				if(C[x]) sit_out[x]++;
+			}*/
 			
 		}
 		bool sits_fair = true;
