@@ -1,6 +1,6 @@
-BASE_SOURCES   = Quad.c Double.c Triple.c Scoreboard.c
-BASE_OBJECTS   = Quad.o Double.o Triple.o Scoreboard.o
-HEADERS        = Quad.h Double.h Triple.h Scoreboard.h
+BASE_SOURCES   = Game.c Scoreboard.c
+BASE_OBJECTS   = Game.o Scoreboard.o
+HEADERS        = Game.h Scoreboard.h
 
 CC = clang
 //CFLAGS = -Wall -Wpedantic -Werror -Wextra
@@ -12,7 +12,7 @@ Client.o: Client.c $(HEADERS)
 	$(CC) $(CFLAGS) -c Client.c
 
 clean:
-	rm -f Client Client.o Quad.o Triple.o Double.o:
+	rm -f Client Client.o Scoreboard.o Game.o trash:
 
 format:
 	clang-format -i -style=file *.{c,h}

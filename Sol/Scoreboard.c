@@ -6,6 +6,7 @@
 #include <string.h>
 #include <limits.h>
 #include <stdbool.h>
+#include "Scoreboard.h"
 //********************************************************************
 //*                                                                  *
 //*     Solitaire Scoreboard				             *
@@ -28,8 +29,8 @@ void scoreBoard(int rounds){
 	char r[50];
 	char ppG[50];
 	int players,ppg,delete;
-	int p1,p2,p3,p4;
-	float s1,s2,s3,s4;
+	int p1,p2,p3,p4,p5,p6,p7;
+	float s1,s2,s3,s4,s5,s6,s7;
 	char *del;
 	int s;
 	fgets(p, 50, infile);
@@ -49,7 +50,7 @@ void scoreBoard(int rounds){
 		fgets(buf_scores, 100, SCORES);
 		del = strtok(buf_scores,"	");
 		for(int j = 1; j <= rounds; j++){
-			s = atoi(strtok(NULL, "	"));
+			s = atoi(strtok(NULL,"	"));
 			scores[i][j] = s;
 			//printf("%d\n", scores[i][j]);
 		}
@@ -71,7 +72,7 @@ void scoreBoard(int rounds){
 			
 		
 	for(int i = 0; i < players/ppg; i++){	
-		p1 = p2 = p3 = p4 = 0;
+		p1 = p2 = p3 = p4 = p5 = p6 = 0;
 		p1 = atoi(strtok(m[i], "  vs  "));
                 //printf("\np1:%d",p1);
 		p2 = atoi(strtok(NULL, "  vs  "));
@@ -84,21 +85,40 @@ void scoreBoard(int rounds){
 			p4 = atoi(strtok(NULL, "  vs  "));
         		//printf("\np4:%d\n",p4);
 		}
+		if(ppg>4){
+			p5 = atoi(strtok(NULL, "  vs  "));
+		}
+		if(ppg>5){
+			p6 = atoi(strtok(NULL, "  vs  "));
+		}
+		if(ppg>6){
+			p7 = atoi(strtok(NULL, "  vs  "));
+		} 
 		//printf("(%s),(%s)\n",buf,buf_copy);
 		s1 = scores[p1][j];
 		s2 = scores[p2][j];
 		if(ppg>2)s3 = scores[p3][j];
 		if(ppg>3)s4 = scores[p4][j];
+		if(ppg>4)s4 = scores[p5][j];
+		if(ppg>5)s5 = scores[p6][j];
+		if(ppg>6)s6 = scores[p7][j];
 		//printf("%0.0f %0.0f %0.0f %0.0f\n",s1,s2,s3,s4);
 		sum = s1+s2;
 		if(ppg>2)sum+=s3;
 		if(ppg>3)sum+=s4;
+		if(ppg>4)sum+=s5;
+		if(ppg>5)sum+=s6;
+		if(ppg>6)sum+=s7;
+
 		avg = sum/ppg;
 		pars[p1][j] = s1-avg;
 		pars[p2][j] = s2-avg;
 		if(ppg>2)pars[p3][j] = s3-avg;
 		if(ppg>3)pars[p4][j] = s4-avg;
-		//printf("\n");
+		if(ppg>4)pars[p5][j] = s5-avg;
+		if(ppg>5)pars[p6][j] = s6-avg;
+		if(ppg>6)pars[p7][j] = s7-avg;
+		
 	}
 	}
 	//output
@@ -151,9 +171,3 @@ void scoreBoard(int rounds){
 	fclose(sc_out);	
 	
 }	
-	
-
-
-
-
-
