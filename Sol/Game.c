@@ -47,9 +47,9 @@ float calculateSD(float data[], float p, int matches_call) {
 }
 void output(int best_round, int n, int best[n][n], int rounds, bool isTest, FILE* p, int ppg){
   	char buf[50];
- 	FILE *infile = fopen("out", "r");
-	FILE *bestOutput = fopen("best","w");
-	FILE *test = fopen("f2","w");
+ 	FILE *infile = fopen("GameFiles/out", "r");
+	FILE *bestOutput = fopen("GameFiles/best","w");
+	FILE *test = fopen("GameFiles/f2","w");
 	fprintf(p,"\nBest round = %d\n",best_round);
 	fprintf(test,"%d\n%d\n%d\n",n,rounds,ppg);
 	int c = 1;
@@ -126,7 +126,7 @@ void game(int players, int rounds, int TESTSIZE, bool isTest, FILE* p, int ppg){
 		}
 	}
 	FILE *outFile = fopen("GameFiles/out","w");
-	FILE *outBest = fopen("best","w");
+	FILE *outBest = fopen("GameFiles/best","w");
 	bool* C = malloc(players*(sizeof(bool))+1);
 	int r1 = 0;
 	int r2 = 0;
