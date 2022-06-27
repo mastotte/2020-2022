@@ -1,9 +1,9 @@
-BASE_SOURCES   = Game.c Scoreboard.c
-BASE_OBJECTS   = Game.o Scoreboard.o
-HEADERS        = Game.h
+BASE_SOURCES   = Game.c Scoreboard.c 
+BASE_OBJECTS   = Game.o Scoreboard.o 
+HEADERS        = Game.h Scoreboard.h
 
 CC = clang
-//CFLAGS = -Wall -Wpedantic -Werror -Wextra
+CFLAGS = -Wall -Wpedantic -Werror -Wextra -Wunused
 
 Client: Client.o $(BASE_OBJECTS)
 	$(CC) -o Client Client.o -lm $(BASE_OBJECTS)

@@ -22,14 +22,13 @@ void scoreBoard(int rounds){
                 SCORES = fopen("GameFiles/scoreboard2","r");
         }
 	FILE *infile = fopen("GameFiles/f2", "r");
-	char buf[100];
-	char buf_scores[100];
 	char p[50];
 	char r[50];
 	char ppG[50];
-	int players,ppg,delete;
+	int players,ppg,delete,BUFSIZE,BUFSCORES;
 	int p1,p2,p3,p4,p5,p6,p7;
 	float s1,s2,s3,s4,s5,s6,s7;
+	s1=s2=s3=s4=s5=s6=s7=0.0;
 	char *del;
 	int s;
 	fgets(p, 50, infile);
@@ -38,6 +37,10 @@ void scoreBoard(int rounds){
 	delete = atoi(r);
 	fgets(ppG, 50, infile);
 	ppg = atoi(ppG);
+	BUFSIZE = 10*players;
+	BUFSCORES = (10*rounds)+5;
+	char buf[BUFSIZE];
+	char buf_scores[BUFSCORES];
 	//printf("players, rounds = ( %d , %d )\n",players,rounds);
 	float pars[players+1][rounds+1];
 	int scores[players+1][rounds+1];
@@ -45,8 +48,8 @@ void scoreBoard(int rounds){
 		pars[1][i] = 0;
 	}
 	for(int i = 1; i <= players; i++){
-		memset(buf_scores, '\0',100);
-		fgets(buf_scores, 100, SCORES);
+		memset(buf_scores, '\0',BUFSCORES);
+		fgets(buf_scores, BUFSCORES, SCORES);
 		del = strtok(buf_scores,"	");
 		for(int j = 1; j <= rounds; j++){
 			s = atoi(strtok(NULL,"	"));
@@ -62,7 +65,7 @@ void scoreBoard(int rounds){
 	//get input matches
 	
 	for(int j = 1; j <= rounds; j++){
-		fgets(buf, 100, infile);
+		fgets(buf, BUFSIZE, infile);
 		buf_copy = strtok(buf, "-");
 		for(int k = 0; k < players/ppg; k++){
 			m[k] = buf_copy;
@@ -71,7 +74,7 @@ void scoreBoard(int rounds){
 			
 		
 	for(int i = 0; i < players/ppg; i++){	
-		p1 = p2 = p3 = p4 = p5 = p6 = 0;
+		p1 = p2 = p3 = p4 = p5 = p6 = p7 = 0;
 		p1 = atoi(strtok(m[i], "  vs  "));
                 //printf("\np1:%d",p1);
 		p2 = atoi(strtok(NULL, "  vs  "));

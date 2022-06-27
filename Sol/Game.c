@@ -37,18 +37,19 @@ float calculateSD(float data[], float p, int matches_call) {
     	return sqrt(SD / (p-z));
     }
 }
-void output(int best_round, int n, int rounds, FILE* p, int ppg){
-  	char buf[50];
+void output(int best_round, int n, int rounds, FILE* p, int ppg, int players){
+	int BUFSIZE = 10*players;
+  	char buf[BUFSIZE];
  	FILE *infile = fopen("GameFiles/out", "r");
 	FILE *bestOutput = fopen("GameFiles/best","w");
 	FILE *f2Output = fopen("GameFiles/f2","w");
 	fprintf(p,"\nBest round = %d\n",best_round);
 	fprintf(f2Output,"%d\n%d\n%d\n",n,rounds,ppg);
 	int c = 1;
-  	while (fgets(buf, 50, infile) != NULL){
+  	while (fgets(buf, BUFSIZE, infile) != NULL){
 		if(atoi(buf) == best_round){
 			for(int i = 0; i < rounds; i++){
-				fgets(buf, 50, infile);
+				fgets(buf, BUFSIZE, infile);
 				fprintf(bestOutput,"Round %d\n",c);
 				fprintf(bestOutput,"%s",buf);
 				fprintf(f2Output,"%s",buf);
@@ -93,14 +94,13 @@ int findMin(int players, int ppg, float sitters[], float x[players], bool* C){
 	}
 	return index;
 }
-void game(int players, int rounds, int TESTSIZE, bool isTest, FILE* p, int ppg){
+void game(int players, int rounds, int TESTSIZE, FILE* p, int ppg){
 	srandom(SEED);
 	clock_t start, end;
 	double cpu_time_used;
 	start = clock();
 	
 	FILE *outFile = fopen("GameFiles/out","w");
-	FILE *outBest = fopen("GameFiles/best","w");
 	bool *C,sitting,HIT_MAX;
 	int r1,r2,r3,r4,r5,r6,r7,index,best_round,sit,w_count;
 	int best[players][players];
@@ -140,15 +140,15 @@ void game(int players, int rounds, int TESTSIZE, bool isTest, FILE* p, int ppg){
                         	matches[i][j] = 0;
                 	}
         	}
-		printf("\n");
+		//printf("\n");
 		// Running Simulation
 		for(int j = 0; j < rounds; j++){
-			printf("\n");
+			//printf("\n");
 			for(int i = 0; i < players; i++){
-				printf("%d: [%f]\n",i+1,sit_out_count[i]);
+				//printf("%d: [%f]\n",i+1,sit_out_count[i]);
 				C[i] = true;
 			}
-			printf("\n");
+			//printf("\n");
 			if(sitting){
 				int count = 0;
 				int sit_random = 0;
@@ -163,7 +163,7 @@ void game(int players, int rounds, int TESTSIZE, bool isTest, FILE* p, int ppg){
 						sit_random = random();
 						sit_random = sit_random%players;
 						if((sit_out_count[sit_random] < SIT_MAX)&&(C[sit_random]==true)){
-							printf("\n%d is sitting",sit_random);
+							//printf("\n%d is sitting",sit_random);
 							sitters[count] = sit_random;
 							C[sit_random] = false;
 							sit_out_count[sit_random]++;
@@ -367,7 +367,7 @@ void game(int players, int rounds, int TESTSIZE, bool isTest, FILE* p, int ppg){
                 }
         }
 	fclose(outFile);
-	output(best_round,players,best,rounds,isTest,p,ppg);
+	output(best_round,players,rounds,p,ppg,players);
 	fprintf(p,"\n");
 	
 	end = clock();

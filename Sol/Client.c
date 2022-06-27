@@ -25,11 +25,12 @@ int scores_input(int players, int round, bool isTest, FILE* p){
                 f2 = fopen("GameFiles/scoreboard2","w");
 	}
     if(in != 1){
-	char buf[60];
+	int BUFSIZE = (10*round)+5;
+	char buf[BUFSIZE];
 	int x;
 	int y;
 	for(int i = 1; i <= players; i++){
-		fgets(buf, 60, f);
+		fgets(buf, BUFSIZE, f);
 		strtok(buf, "\n");
 		if(!isTest){
 			printf("\n%d's score:",i);
@@ -52,20 +53,20 @@ int scores_input(int players, int round, bool isTest, FILE* p){
 	fclose(f2);
 	return (in == 1);
 }
-void print(void){
+void print(int BUFSIZE, int BUF2SIZE){
 	FILE *f = fopen("GameFiles/best", "r");
 	FILE *f2 = fopen("GameFiles/scOut","r");
-	char buf[200];
+	char buf[BUFSIZE];
 	char *temp = "";
-	char buf2[200];
+	char buf2[BUF2SIZE];
 	bool buf_end = false;
-	while(fgets(buf2,200,f2)!=NULL){
+	while(fgets(buf2,BUF2SIZE,f2)!=NULL){
 		if(!buf_end)
 			strtok(buf2,"\n");
 		if(buf2[0] != '\n'){
 			printf("%s",buf2);
 		}
-		fgets(buf,200,f);
+		fgets(buf,BUFSIZE,f);
 		if(!buf_end){
 			for(unsigned long i = 0; i < 50-strlen(buf2); i++)printf(" ");
 		}
@@ -77,7 +78,7 @@ void print(void){
 			buf_end = true;
 		}
 	}
-	while(fgets(buf,200,f)!=NULL){
+	while(fgets(buf,BUFSIZE,f)!=NULL){
 		for(int i = 0; i < 50; i++)printf(" ");
 		printf("%s",buf);
 	}
@@ -103,47 +104,28 @@ void reset(void){
         fclose(f);
         fclose(f2);
 	fclose(f3);
-}/*
+}
+/*
 int main(void){ // TESTING VERSION
-	int x = 10; // Amount of player counts to test
-	int y = 20; // Amount of round counts to test
+	int x = 30; // Amount of player counts to test
+	int y = 10; // Amount of round counts to test
 	FILE* p = fopen("GameFiles/trash","w");
-	for(int players = 4; players <= x; players++){
-		printf("\n%d Players: ", players);
+    for(int ppg = 2; ppg <= 7; ppg++){
+	for(int players = 25; players <= x; players++){
+		if(ppg<players){
+		printf("\n%d Players: \n", players);
 		makeTemplate(players);
 		reset();
 		for(int rounds = 1; rounds <= y; rounds++){
-			doub(players, rounds, 10000, true, p);
-			scores_input(players,rounds,true, p);
+			game(players, rounds, 2000, p, ppg);
+			scores_input(players,rounds,true,p);
                 	scoreBoard(rounds);
-			printf("Double: PASS\n");
+			printf("PPG:%d P:%d R:%d PASS\n",ppg,players,rounds);
 		}
-	}
-	for(int players = 4; players <= x; players++){
-		printf("\n%d Players: ", players);
-		makeTemplate(players);
-		reset();
-		for(int rounds = 1; rounds <= y; rounds++){
-			trip(players, rounds, 10000, true, p);
-                        scores_input(players,rounds,true, p);
-                        scoreBoard(rounds);
-			printf("Triple: PASS\n");
-			
-		}
-	}
-	for(int players = 4; players <= x; players++){
-		printf("\n%d Players: ", players);
-		makeTemplate(players);
-		reset();
-		for(int rounds = 1; rounds <= y; rounds++){
-			quad(players, rounds, 10000, true, p);
-                        scores_input(players,rounds,true, p);
-                        scoreBoard(rounds);		
-			printf("Quadruple: PASS\n");
-			
 		}
 	}
 	printf("-------------------\n");
+    }
 	fclose(p);
 }
 */
@@ -193,7 +175,7 @@ void loadGame(int* players, int* rounds, int* ppg, int* rounds_played){
 	f2 = fopen("GameFiles/f2","w");
 	s1 = fopen("GameFiles/scoreboard","w");
 	s2 = fopen("GameFiles/scoreboard2","w");
-	char buf[300];
+	char line[30];
 	char buf_small[3];
 	
 	displaySaveList();
@@ -206,39 +188,44 @@ void loadGame(int* players, int* rounds, int* ppg, int* rounds_played){
         else if(saveslot == 4) save = fopen("GameFiles/save4","r");
         else save = fopen("GameFiles/save5","r");
 
-	fgets(buf,300,save); // first line
+	fgets(line,30,save); // first line
 	fgets(buf_small, 3, save); // players
 	*players = atoi(buf_small);
 	fprintf(f2,"%d\n",*players);
 	printf("%d Players buf:(%s)\n",*players,buf_small);
-
-	fgets(buf,300,save); // next line
+	
+	fgets(line,30,save); // next line
 	fgets(buf_small, 3, save); // rounds
 	*rounds = atoi(buf_small);
 	fprintf(f2,"%d\n",*rounds);
 	printf("%d rounds buf:(%s)\n",*rounds,buf_small);
 	
-	fgets(buf,300,save); // next line
-        fgets(buf_small, 3, save); // rounds
+	fgets(line,30,save); // next line
+        fgets(buf_small, 3, save); // ppg
         *ppg = atoi(buf_small);
 	fprintf(f2,"%d\n",*ppg);
 	printf("%d ppg buf:(%s)\n",*ppg,buf_small);
 
-	fgets(buf,300,save); // next line
+	fgets(line,30,save); // next line
 	fgets(buf_small,3, save); // rounds played
 	*rounds_played = atoi(buf_small);
 	printf("%d rounds played buf:(%s)\n",*rounds_played,buf_small);
-	fgets(buf,300,save);
+	fgets(line,30,save);
+	
+	int BUFSIZE = (10*(*rounds))+3;
+        int BUF2 = (10*(*players));
+        if(BUF2>BUFSIZE) BUFSIZE = BUF2;
+	char buf[BUFSIZE];
 
 	printf("------------SCHEDULE----------\n");
 	for(int i = 0; i < *rounds; i++){
-		fgets(buf,300,save);
+		fgets(buf,BUFSIZE,save);
 		fprintf(f2,"%s",buf);
 		printf("%s",buf);
 	}
 	printf("\n------------SCOREBOARD----------\n");
 	for(int i = 0; i < *players; i++){
-		fgets(buf,300,save);
+		fgets(buf,BUFSIZE,save);
 		fprintf(s1,"%s",buf);
 		fprintf(s2,"%s",buf);
 		printf("%s",buf);
@@ -251,7 +238,8 @@ void loadGame(int* players, int* rounds, int* ppg, int* rounds_played){
 }
 void saveGame(int players, int rounds, int ppg, int rounds_played){
 	int saveslot;
-	char buf[300] = ""; // increase if scoreboard lines exceed 300. would require about 100 games.
+	int BUFSIZE = (10*rounds)+5;
+	char buf[BUFSIZE];
 	FILE *f,*f2,*f3,*saveList;
 	printf("Enter a save slot: ");
 	scanf("%d",&saveslot);
@@ -286,16 +274,16 @@ void saveGame(int players, int rounds, int ppg, int rounds_played){
 	fprintf(f,"%d Players\n%d Rounds\n%d Players Per Game\n%d Rounds Played\n",players,rounds,ppg,rounds_played);
 	// printing schedule
 	for(int i = 0; i < 3; i++){ // ignore first 3 lines of "f2"
-                fgets(buf,300,f2);
+                fgets(buf,BUFSIZE,f2);
         }
-        while(fgets(buf,300,f2)){
+        while(fgets(buf,BUFSIZE,f2)){
                 fprintf(f,"%s",buf);
         }
 
 	// printing scoreboard
 	for(int i = 0; i < players; i++){
 		printf("Saved player %d\n",i+1);
-		fgets(buf, 300, f3);
+		fgets(buf, BUFSIZE, f3);
 		fprintf(f,"%s",buf);
 	}
 	
@@ -314,20 +302,20 @@ int main(void){
 	
 	ppg = getInput(&players, &rounds);
 	if(ppg > 1){
-		game(players, rounds, 2000, false, p, ppg);
+		game(players, rounds, 2000, p, ppg);
 		makeTemplate(players);
 		reset();
 	}else{
 		loadGame(&players,&rounds,&ppg,&rounds_played);
 		scoreBoard(rounds_played);
-		print();
+		print(10*players,8*rounds);
 	}
 	
 	for(int i = rounds_played+1; i <= rounds; i++){
  	       	exit = scores_input(players,i, false, p);
 		if((exit == 0)||(i == 1)){
 			scoreBoard(i);
-			print();
+			print(10*players,8*rounds);
 		}else{
 			displaySaveList();
 			saveGame(players, rounds, ppg, i-1);
