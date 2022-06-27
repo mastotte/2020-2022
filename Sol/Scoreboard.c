@@ -17,11 +17,11 @@
 void scoreBoard(int rounds){
 	FILE* SCORES;
 	if(rounds%2 == 1){
-                SCORES = fopen("scoreboard","r");
+                SCORES = fopen("GameFiles/scoreboard","r");
         }else if(rounds%2 == 0){
-                SCORES = fopen("scoreboard2","r");
+                SCORES = fopen("GameFiles/scoreboard2","r");
         }
-	FILE *infile = fopen("f2", "r");
+	FILE *infile = fopen("GameFiles/f2", "r");
 	char buf[100];
 	char buf_scores[100];
 	char p[50];
@@ -122,7 +122,7 @@ void scoreBoard(int rounds){
 	}
 	//output
 	//fprintf(scOut,"\n	1	2	3	4	5\n");
-	FILE* sc_out = fopen("scOut","w");
+	FILE* sc_out = fopen("GameFiles/scOut","w");
 	float standings[players][3];// players, player number & total score
 	float sum2;
 	int sorted = 1;
