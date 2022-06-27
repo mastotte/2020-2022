@@ -11,4 +11,4 @@ float calculateSD(float data[], float p, int matches_call);
 
 // Outputs the most balanced schedule to "best" and other information to "f2" for 
 // Scoreboard.c to use.
-void output(int best_round, int n, int best[n][n], int rounds, bool isTest, FILE* p, int ppg);
+void output(int best_round, int n, int rounds, FILE* p, int ppg);
