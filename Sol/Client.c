@@ -5,6 +5,7 @@
 #include <stdbool.h>
 #include "Game.h"
 #include "Scoreboard.h"
+//#include "Sol.html"
 #define SEED 2022
 int scores_input(int players, int round, bool isTest, FILE* p){
 	int in = 0;
@@ -25,7 +26,6 @@ int scores_input(int players, int round, bool isTest, FILE* p){
 	}
     if(in != 1){
 	char buf[60];
-	char* m[players];
 	int x;
 	int y;
 	for(int i = 1; i <= players; i++){
@@ -67,7 +67,7 @@ void print(void){
 		}
 		fgets(buf,200,f);
 		if(!buf_end){
-			for(int i = 0; i < 50-strlen(buf2); i++)printf(" ");
+			for(unsigned long i = 0; i < 50-strlen(buf2); i++)printf(" ");
 		}
 		if(strcmp(temp,buf)!=0){
 			printf("%s",buf);
@@ -177,7 +177,7 @@ void displaySaveList(){
 	char buf[60];
 	while(fgets(buf, 60, saveList)){
 		if(buf[3] != '_'){
-			for(int i=0; i<strlen(buf); i++){
+			for(unsigned long i=0; i<strlen(buf); i++){
 				if(buf[i] == '_'){
 					buf[i] = ' ';
 				}
@@ -250,7 +250,6 @@ void loadGame(int* players, int* rounds, int* ppg, int* rounds_played){
 	fclose(s2);	
 }
 void saveGame(int players, int rounds, int ppg, int rounds_played){
-	fpos_t position;
 	int saveslot;
 	char buf[300] = ""; // increase if scoreboard lines exceed 300. would require about 100 games.
 	FILE *f,*f2,*f3,*saveList;
@@ -261,7 +260,7 @@ void saveGame(int players, int rounds, int ppg, int rounds_played){
 	fprintf(saveList,"______________________________");
 	fseek(saveList,-30,SEEK_CUR);
 	while((strlen(buf)<1)||(strlen(buf)>30)){
-		printf("\(No spaces)\nName of save: \n");
+		printf("\n(No spaces)\nName of save: \n");
 		scanf("%s", buf);
 		if(strlen(buf)>30){
 			printf("\nError: Save name too long. Must be under 30 characters.");
@@ -309,7 +308,7 @@ void saveGame(int players, int rounds, int ppg, int rounds_played){
 
 int main(void){
 	FILE* p = stdout;
-        int players, rounds, ppg, rounds_played, saveslot;
+        int players, rounds, ppg, rounds_played;
 	ppg = rounds_played = 0;
 	int exit;
 	
