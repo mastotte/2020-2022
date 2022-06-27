@@ -8,32 +8,24 @@
 #include <stdbool.h>
 #include "Game.h"
 //********************************************************************
-//*								     *
-//*	Figuring out the Solitaire matches, once and for all.        *
-//*     							     *
-//*     mastotte, ucsc 2024					     *
-//*								     *
+//*                                                                  *
+//*	Figuring out the Solitaire matches, once and for all.            *
+//*                                                                  *
+//* mastotte, ucsc 2024                                              *
+//*                                                                  *
 //********************************************************************
 float calculateSD(float data[], float p, int matches_call) {
-    /*printf("\nCalculateSD for: ");
-    for(int m=0;m<5;m++){
-	printf("[%0.1f]",data[m]);
-    }
-    printf("\n");*/
     float sum = 0.0, mean, SD = 0.0;
     int i;
     int z = 0;
     for (i = 0; i < p; ++i) {
-	//printf("[%f]",data[i]);
         sum += data[i];
 	if(data[i] == 0.0){
 		z++;
 	}	
     }
-    //printf("\n");
     if(matches_call == 0) z = 0;
     mean = sum / (p-z);
-    //printf("\nMean: %f, Sum: %f, (p,z): (%f,%d)\n",mean,sum,p,z);
     for (i = 0; i < p; ++i) {
 	if((data[i] != 0.0)||(matches_call==1)){
         	SD += pow(data[i] - mean, 2);
@@ -83,7 +75,6 @@ int findMax(int players, float x[players], bool* C,int ppg, float sitters[]){
 	float highest = 0;
 	int index = 0;
 	for(int i = 0; i < players; i++){
-		//printf("stdevs[%d] = %f\n",i,x[i]);
 		if((x[i]>highest)&&(C[i]==true)&&(!isSitting(i,players%ppg,sitters))){
 			highest = x[i];
 			index = i;
@@ -95,7 +86,6 @@ int findMin(int players, int ppg, float sitters[], float x[players], bool* C){
 	int lowest = 9999;
 	int index = 0;
 	for(int i = 0; i < players; i++){
-		//printf("[%f]",x[i]);
 		if((x[i]<lowest)&&(C[i] == true)&&(!isSitting(i,players%ppg,sitters))){
 			lowest = x[i];
 			index = i;	
@@ -105,19 +95,27 @@ int findMin(int players, int ppg, float sitters[], float x[players], bool* C){
 }
 void game(int players, int rounds, int TESTSIZE, bool isTest, FILE* p, int ppg){
 	srandom(SEED);
-	int seed_input = 0;
-	seed_input = random();
-	seed_input = seed_input%100;
-	srandom(seed_input);
-	int w_count = 0;
-	
 	clock_t start, end;
 	double cpu_time_used;
 	start = clock();
+	
+	FILE *outFile = fopen("GameFiles/out","w");
+	FILE *outBest = fopen("GameFiles/best","w");
+	bool *C,sitting,HIT_MAX;
+	bool* C = malloc(players*(sizeof(bool))+1);
+	int r1,r2,r3,r4,r5,r6,r7,index,sit,best_round,sit,w_count;
+	int best[players][players];
+	float highest,stdev1,stdev,stdev_new,SIT_MAX;
 	float stdevs[players];
 	float matches[players][players];
-	int best[players][players];
 	float data[players*players];
+	float dummy[7] = {999,999,999,999,999,999,999};
+	float sit_out_count[players];
+	float sitters[players%ppg];
+	r1=r2=r3=r4=r5=r6=r7=index=best_round=stdev_new=sit=w_count=0;
+	highest=stdev1=stdev=-1.0;
+	sitting = (players%ppg != 0);
+	SIT_MAX = ceil((float)((players%ppg)*rounds)/players);
 	for(int i = 0; i < players; i++){
 		stdevs[i] = 0;
 		for(int j = 0; j < players; j++){
@@ -125,46 +123,19 @@ void game(int players, int rounds, int TESTSIZE, bool isTest, FILE* p, int ppg){
 			best[i][j] = 0;
 		}
 	}
-	FILE *outFile = fopen("GameFiles/out","w");
-	FILE *outBest = fopen("GameFiles/best","w");
-	bool* C = malloc(players*(sizeof(bool))+1);
-	int r1 = 0;
-	int r2 = 0;
-	int r3 = 0;
-	int r4 = 0;
-	int r5 = 0;
-	int r6 = 0;
-	int r7 = 0;
-	int priority_row = 0;
-	float highest = -1.0;
-	float stdev1 = -1.0;
-	float stdev = -1.0;
-	float stdev_new = 0.0;
-	int index = 0;
-	bool no_equals;
-	int best_round = 0;
-	float dummy[7] = {999,999,999,999,999,999,999};
-	float sit_out[players];
-	float sitters[players%ppg];
-	int sit = 0;
-	bool sitting = (players%ppg != 0);
 	if(sitting){
 		fprintf(p,"People have to sit out.\n");
 	}else{
 		fprintf(p,"Nobody is sitting out.\n");
 	}
-	float SIT_MAX = ceil((float)((players%ppg)*rounds)/players);
-	bool HIT_MAX = false;
-	bool sit_pass;
 	if(players == ppg)
 		TESTSIZE = players+1;
 	for(int test_count = players+1; test_count <= TESTSIZE; test_count++){
 		fprintf(outFile,"%d",test_count);
-		bool con;
-		//printf("\n %f%%",((float)test_count/(float)TESTSIZE)*100.0);
+		HIT_MAX = false;
 		// Clearing The Array
 		for(int i = 0; i < players; i++){
-			sit_out[i] = 0;
+			sit_out_count[i] = 0;
                 	for(int j = 0; j < players; j++){
                         	matches[i][j] = 0;
                 	}
@@ -174,7 +145,7 @@ void game(int players, int rounds, int TESTSIZE, bool isTest, FILE* p, int ppg){
 		for(int j = 0; j < rounds; j++){
 			printf("\n");
 			for(int i = 0; i < players; i++){
-				printf("%d: [%f]\n",i+1,sit_out[i]);
+				printf("%d: [%f]\n",i+1,sit_out_count[i]);
 				C[i] = true;
 			}
 			printf("\n");
@@ -183,20 +154,20 @@ void game(int players, int rounds, int TESTSIZE, bool isTest, FILE* p, int ppg){
 				int sit_random = 0;
 				while(count<players%ppg){
 					if(HIT_MAX){
-						sit_random = findMin(players,ppg,dummy,sit_out,C);
+						sit_random = findMin(players,ppg,dummy,sit_out_count,C);
 						sitters[count] = sit_random;
 						C[sit_random] = false;
-						sit_out[sit_random]++;
+						sit_out_count[sit_random]++;
 						count++;
 					}else{
 						sit_random = random();
 						sit_random = sit_random%players;
-						if((sit_out[sit_random] < SIT_MAX)&&(C[sit_random]==true)){
+						if((sit_out_count[sit_random] < SIT_MAX)&&(C[sit_random]==true)){
 							printf("\n%d is sitting",sit_random);
 							sitters[count] = sit_random;
 							C[sit_random] = false;
-							sit_out[sit_random]++;
-							if(sit_out[sit_random] == SIT_MAX) 
+							sit_out_count[sit_random]++;
+							if(sit_out_count[sit_random] == SIT_MAX) 
 								HIT_MAX = true;
 							count++;
 						}
@@ -208,28 +179,17 @@ void game(int players, int rounds, int TESTSIZE, bool isTest, FILE* p, int ppg){
 			fprintf(outFile,"\n");
 			//fprintf(outFile,"\nRound %d\n",j+1);
 			w_count = players;
-			//printf("\n");
 			for(int z = 0; z < players; z++){
-        	        	stdevs[z] = calculateSD(matches[z],(float)players,1);
-				//printf("[ %f ] ",stdevs[z]);
-			}
-			      
-			int in=0;                                                              
-			while((w_count >= ppg)&&(in<100)){
-				//in++;
+				stdevs[z] = calculateSD(matches[z],(float)players,1);
+			}                                                             
+			while(w_count >= ppg){
 				// r1 = j, others are j's least played. make a max and min finder.
-				sit_pass = true;
-				no_equals = true;
 				if(j>0){
-					/*printf("\n");
-					for(int k = 0; k<players;k++)printf("{%d}",C[k]);
-					printf("\nJ: %d\n",j);*/
 					if((sitting)&&(w_count==players)){
 						r1 = (j+1)%(players);
 					}else{
 						r1 = findMax(players,stdevs,C,ppg,sitters);
 					}
-					//printf("Max: %d\n",r1);
 					C[r1] = false;
 					r2 = findMin(players,ppg,sitters,matches[r1],C);
 					C[r2] = false;
@@ -271,26 +231,21 @@ void game(int players, int rounds, int TESTSIZE, bool isTest, FILE* p, int ppg){
 						C[r4] = false;
 					}
 					if(ppg>4){
-                                                r5 = 4+(players-w_count);
+						r5 = 4+(players-w_count);
 						if(sitting)r5++;
 						C[r5] = false;
-                                        }
+					}
 					if(ppg>5){
-                                                r6 = 5+(players-w_count);
+						r6 = 5+(players-w_count);
 						if(sitting)r6++;
-						C[r6] = false;
-                                        }
+							C[r6] = false;
+						}
 					if(ppg>6){
-                                                r7 = 6+(players-w_count);
+						r7 = 6+(players-w_count);
 						if(sitting)r7++;
-						C[r7] = false;
-                                        }
-					//printf("\nELSE--------------\n");
-				}
-					//printf(" | %d vs %d vs %d vs %d |",r1,r2,r3,r4);a
-					//printf("inner pass\n");
-
-					
+							C[r7] = false;
+						}
+				}					
 					fprintf(outFile," %d vs %d",r1+1,r2+1);
 					if(ppg>2) fprintf(outFile," vs %d",r3+1);
 					if(ppg>3) fprintf(outFile," vs %d",r4+1);
@@ -307,19 +262,18 @@ void game(int players, int rounds, int TESTSIZE, bool isTest, FILE* p, int ppg){
 					if(ppg>2){
 						matches[r3][r1] += 1;
 						matches[r3][r2] += 1;
-						matches[r2][r3] += 1;
-                                        	matches[r1][r3] += 1;
+						matches[r1][r3] += 1;
 						//C[r3]= false;
 						w_count--;
 					}
 					// -- triple --
 					if(ppg>3){
 						matches[r4][r1] += 1;
-                                        	matches[r4][r2] += 1;
-                                        	matches[r4][r3] += 1;
-                                        	matches[r1][r4] += 1;
+						matches[r4][r2] += 1;
+						matches[r4][r3] += 1;
+						matches[r1][r4] += 1;
 						matches[r2][r4] += 1;
-                                        	matches[r3][r4] += 1;
+						matches[r3][r4] += 1;
 						//C[r4]= false;	
 						w_count--;
 					}
@@ -328,45 +282,45 @@ void game(int players, int rounds, int TESTSIZE, bool isTest, FILE* p, int ppg){
 						matches[r5][r1] += 1;
 						matches[r5][r2] += 1;
 						matches[r5][r3] += 1;
-                                        	matches[r5][r4] += 1;
+						matches[r5][r4] += 1;
 						matches[r1][r5] += 1;
-                                        	matches[r2][r5] += 1;
+						matches[r2][r5] += 1;
 						matches[r3][r5] += 1;
-                                        	matches[r4][r5] += 1;
+						matches[r4][r5] += 1;
 						//C[r5]= false;
 						w_count--;
 					}
 					// -- penta --
 					if(ppg>5){
 						matches[r6][r1] += 1;
-                                        	matches[r6][r2] += 1;
-                                        	matches[r6][r3] += 1;
-                                        	matches[r6][r4] += 1;
-                                        	matches[r6][r5] += 1;
-                                        	matches[r1][r6] += 1;
-                                        	matches[r2][r6] += 1;
-                                        	matches[r3][r6] += 1;
+						matches[r6][r2] += 1;
+						matches[r6][r3] += 1;
+						matches[r6][r4] += 1;
+						matches[r6][r5] += 1;
+						matches[r1][r6] += 1;
+						matches[r2][r6] += 1;
+						matches[r3][r6] += 1;
 						matches[r4][r6] += 1;
-                                        	matches[r5][r6] += 1;
-                                        	//C[r6]= false;
-                                        	w_count--;
+						matches[r5][r6] += 1;
+						//C[r6]= false;
+						w_count--;
 					}
 					// -- sept --
 					if(ppg>6){
 						matches[r7][r1] += 1;
-                                        	matches[r7][r2] += 1;
-                                        	matches[r7][r3] += 1;
-                                        	matches[r7][r4] += 1;
-                                        	matches[r7][r5] += 1;
+						matches[r7][r2] += 1;
+						matches[r7][r3] += 1;
+						matches[r7][r4] += 1;
+						matches[r7][r5] += 1;
 						matches[r7][r6] += 1;
-                                        	matches[r1][r7] += 1;
-                                        	matches[r2][r7] += 1;
-                                        	matches[r3][r7] += 1;
-                                        	matches[r4][r7] += 1;
-                                        	matches[r5][r7] += 1;
+						matches[r1][r7] += 1;
+						matches[r2][r7] += 1;
+						matches[r3][r7] += 1;
+						matches[r4][r7] += 1;
+						matches[r5][r7] += 1;
 						matches[r6][r7] += 1;
-                                        	//C[r7]= false;
-                                        	w_count--;
+						//C[r7]= false;
+						w_count--;
 					}
 				
 
@@ -376,7 +330,7 @@ void game(int players, int rounds, int TESTSIZE, bool isTest, FILE* p, int ppg){
 		}
 		bool sits_fair = true;
 		for(int k = 0; k < players; k++){
-			if((sit_out[0] != sit_out[k])&&(sitting)){
+			if((sit_out_count[0] != sit_out_count[k])&&(sitting)){
 				sits_fair = false;
 			}
 			for(int k2 = 0; k2 < players; k2++){
