@@ -37,13 +37,13 @@ float calculateSD(float data[], float p, int matches_call) {
     	return sqrt(SD / (p-z));
     }
 }
-void output(int best_round, int n, int best[n][n], int rounds, bool isTest, FILE* p, int ppg){
+void output(int best_round, int n, int rounds, FILE* p, int ppg){
   	char buf[50];
  	FILE *infile = fopen("GameFiles/out", "r");
 	FILE *bestOutput = fopen("GameFiles/best","w");
-	FILE *test = fopen("GameFiles/f2","w");
+	FILE *f2Output = fopen("GameFiles/f2","w");
 	fprintf(p,"\nBest round = %d\n",best_round);
-	fprintf(test,"%d\n%d\n%d\n",n,rounds,ppg);
+	fprintf(f2Output,"%d\n%d\n%d\n",n,rounds,ppg);
 	int c = 1;
   	while (fgets(buf, 50, infile) != NULL){
 		if(atoi(buf) == best_round){
@@ -51,14 +51,14 @@ void output(int best_round, int n, int best[n][n], int rounds, bool isTest, FILE
 				fgets(buf, 50, infile);
 				fprintf(bestOutput,"Round %d\n",c);
 				fprintf(bestOutput,"%s",buf);
-				fprintf(test,"%s",buf);
-    				fprintf(p,"%s",buf);
+				fprintf(f2Output,"%s",buf);
+    			fprintf(p,"%s",buf);
 				c++;
 			}
 			break;
 		}
   	}
-	fclose(test);
+	fclose(f2Output);
 	fclose(bestOutput);
   	fclose(infile);
 }
@@ -102,8 +102,7 @@ void game(int players, int rounds, int TESTSIZE, bool isTest, FILE* p, int ppg){
 	FILE *outFile = fopen("GameFiles/out","w");
 	FILE *outBest = fopen("GameFiles/best","w");
 	bool *C,sitting,HIT_MAX;
-	bool* C = malloc(players*(sizeof(bool))+1);
-	int r1,r2,r3,r4,r5,r6,r7,index,sit,best_round,sit,w_count;
+	int r1,r2,r3,r4,r5,r6,r7,index,best_round,sit,w_count;
 	int best[players][players];
 	float highest,stdev1,stdev,stdev_new,SIT_MAX;
 	float stdevs[players];
@@ -115,6 +114,7 @@ void game(int players, int rounds, int TESTSIZE, bool isTest, FILE* p, int ppg){
 	r1=r2=r3=r4=r5=r6=r7=index=best_round=stdev_new=sit=w_count=0;
 	highest=stdev1=stdev=-1.0;
 	sitting = (players%ppg != 0);
+	C = malloc(players*(sizeof(bool))+1);
 	SIT_MAX = ceil((float)((players%ppg)*rounds)/players);
 	for(int i = 0; i < players; i++){
 		stdevs[i] = 0;
