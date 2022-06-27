@@ -17,8 +17,8 @@ int scores_input(int players, int round, bool isTest, FILE* p){
 	FILE* f;
 	FILE* f2;
 	if(round%2 == 1){
-		f = fopen("scoreboard2","r");
-		f2 = fopen("scoreboard","w");
+		f = fopen("GameFiles/scoreboard2","r");
+		f2 = fopen("GameFiles/scoreboard","w");
 	}else if(round%2 == 0){
 		f = fopen("scoreboard","r");
                 f2 = fopen("scoreboard2","w");

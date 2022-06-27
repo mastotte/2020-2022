@@ -1,6 +1,6 @@
 BASE_SOURCES   = Game.c Scoreboard.c
 BASE_OBJECTS   = Game.o Scoreboard.o
-HEADERS        = Game.h Scoreboard.h
+HEADERS        = Game.h
 
 CC = clang
 //CFLAGS = -Wall -Wpedantic -Werror -Wextra

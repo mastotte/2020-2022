@@ -125,7 +125,7 @@ void game(int players, int rounds, int TESTSIZE, bool isTest, FILE* p, int ppg){
 			best[i][j] = 0;
 		}
 	}
-	FILE *outFile = fopen("out","w");
+	FILE *outFile = fopen("GameFiles/out","w");
 	FILE *outBest = fopen("best","w");
 	bool* C = malloc(players*(sizeof(bool))+1);
 	int r1 = 0;

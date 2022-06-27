@@ -6,7 +6,6 @@
 #include <string.h>
 #include <limits.h>
 #include <stdbool.h>
-#include "Scoreboard.h"
 //********************************************************************
 //*                                                                  *
 //*     Solitaire Scoreboard				             *
