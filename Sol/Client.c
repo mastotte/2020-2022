@@ -20,8 +20,8 @@ int scores_input(int players, int round, bool isTest, FILE* p){
 		f = fopen("GameFiles/scoreboard2","r");
 		f2 = fopen("GameFiles/scoreboard","w");
 	}else if(round%2 == 0){
-		f = fopen("scoreboard","r");
-                f2 = fopen("scoreboard2","w");
+		f = fopen("GameFiles/scoreboard","r");
+                f2 = fopen("GameFiles/scoreboard2","w");
 	}
     if(in != 1){
 	char buf[60];
@@ -53,8 +53,8 @@ int scores_input(int players, int round, bool isTest, FILE* p){
 	return (in == 1);
 }
 void print(void){
-	FILE *f = fopen("best", "r");
-	FILE *f2 = fopen("scOut","r");
+	FILE *f = fopen("GameFiles/best", "r");
+	FILE *f2 = fopen("GameFiles/scOut","r");
 	char buf[200];
 	char *temp = "";
 	char buf2[200];
@@ -86,16 +86,16 @@ void print(void){
 	fclose(f2);
 }
 void makeTemplate(int players){
-	FILE* f = fopen("scoreboardTemplate","w");
+	FILE* f = fopen("GameFiles/scoreboardTemplate","w");
 	for(int i = 1; i <= players; i++){
 		fprintf(f,"%d:\n",i);
 	}
 	fclose(f);
 }
 void reset(void){
-	FILE* f = fopen("scoreboardTemplate","r");
-        FILE* f2 = fopen("scoreboard2","w");
-	FILE* f3 = fopen("scoreboard","w");
+	FILE* f = fopen("GameFiles/scoreboardTemplate","r");
+        FILE* f2 = fopen("GameFiles/scoreboard2","w");
+	FILE* f3 = fopen("GameFiles/scoreboard","w");
         char buf[60];
         while(fgets(buf,60,f) != NULL){
                 fprintf(f2,"%s",buf);
@@ -107,7 +107,7 @@ void reset(void){
 int main(void){ // TESTING VERSION
 	int x = 10; // Amount of player counts to test
 	int y = 20; // Amount of round counts to test
-	FILE* p = fopen("trash","w");
+	FILE* p = fopen("GameFiles/trash","w");
 	for(int players = 4; players <= x; players++){
 		printf("\n%d Players: ", players);
 		makeTemplate(players);
@@ -173,7 +173,7 @@ int getInput(int *players, int *rounds){
 	return out;	
 }
 void displaySaveList(){
-	FILE* saveList = fopen("saveList","r");
+	FILE* saveList = fopen("GameFiles/saveList","r");
 	char buf[60];
 	while(fgets(buf, 60, saveList)){
 		if(buf[3] != '_'){
@@ -190,9 +190,9 @@ void displaySaveList(){
 void loadGame(int* players, int* rounds, int* ppg, int* rounds_played){
 	int saveslot = 0;
 	FILE *save,*f2,*s1,*s2;
-	f2 = fopen("f2","w");
-	s1 = fopen("scoreboard","w");
-	s2 = fopen("scoreboard2","w");
+	f2 = fopen("GameFiles/f2","w");
+	s1 = fopen("GameFiles/scoreboard","w");
+	s2 = fopen("GameFiles/scoreboard2","w");
 	char buf[300];
 	char buf_small[3];
 	
@@ -200,11 +200,11 @@ void loadGame(int* players, int* rounds, int* ppg, int* rounds_played){
 	printf("\nEnter a save slot: ");
 	scanf("%d",&saveslot);
 	
-	if(saveslot == 1) save = fopen("save1", "r");
-        else if(saveslot == 2) save = fopen("save2","r");
-        else if(saveslot == 3) save = fopen("save3","r");
-        else if(saveslot == 4) save = fopen("save4","r");
-        else save = fopen("save5","r");
+	if(saveslot == 1) save = fopen("GameFiles/save1", "r");
+        else if(saveslot == 2) save = fopen("GameFiles/save2","r");
+        else if(saveslot == 3) save = fopen("GameFiles/save3","r");
+        else if(saveslot == 4) save = fopen("GameFiles/save4","r");
+        else save = fopen("GameFiles/save5","r");
 
 	fgets(buf,300,save); // first line
 	fgets(buf_small, 3, save); // players
@@ -256,7 +256,7 @@ void saveGame(int players, int rounds, int ppg, int rounds_played){
 	FILE *f,*f2,*f3,*saveList;
 	printf("Enter a save slot: ");
 	scanf("%d",&saveslot);
-	saveList = fopen("saveList","r+");
+	saveList = fopen("GameFiles/saveList","r+");
 	fseek(saveList, 3+(34*(saveslot-1)), SEEK_SET );
 	fprintf(saveList,"______________________________");
 	fseek(saveList,-30,SEEK_CUR);
@@ -271,17 +271,17 @@ void saveGame(int players, int rounds, int ppg, int rounds_played){
 		}
 	}
 
-	if(saveslot == 1) f = fopen("save1", "w");
-	else if(saveslot == 2) f = fopen("save2","w");
-	else if(saveslot == 3) f = fopen("save3","w");
-	else if(saveslot == 4) f = fopen("save4","w");
-	else f = fopen("save5","w");
+	if(saveslot == 1) f = fopen("GameFiles/save1", "w");
+	else if(saveslot == 2) f = fopen("GameFiles/save2","w");
+	else if(saveslot == 3) f = fopen("GameFiles/save3","w");
+	else if(saveslot == 4) f = fopen("GameFiles/save4","w");
+	else f = fopen("GameFiles/save5","w");
 
-	f2 = fopen("f2","r");
+	f2 = fopen("GameFiles/f2","r");
 	if(rounds_played%2 == 1){
-                f3 = fopen("scoreboard","r");
+                f3 = fopen("GameFiles/scoreboard","r");
         }else if(rounds_played%2 == 2){
-                f3 = fopen("scoreboard2","r");
+                f3 = fopen("GameFiles/scoreboard2","r");
         }
 	fprintf(f,"----- Save Slot %d -----\n", saveslot);
 	fprintf(f,"%d Players\n%d Rounds\n%d Players Per Game\n%d Rounds Played\n",players,rounds,ppg,rounds_played);
