@@ -3,11 +3,12 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <ctype.h>
 #include "Game.h"
 #include "Scoreboard.h"
 //#include "Sol.html"
 #define SEED 2022
-int scores_input(int players, int round, bool isTest, FILE* p){
+int scores_input(int players, int round, bool isTest, FILE* p, char names[players][2]){// char* names[]
 	int in = 0;
 	if((!isTest)&&(round>1)){
 		printf("1: Save and Exit\n2: Continue\n");
@@ -33,7 +34,11 @@ int scores_input(int players, int round, bool isTest, FILE* p){
 		fgets(buf, BUFSIZE, f);
 		strtok(buf, "\n");
 		if(!isTest){
-			printf("\n%d's score:",i);
+			printf("\n");
+			for(int j=0;j<2;j++){
+				printf("%c",names[i-1][j]);
+			}
+			printf("'s score: ");
 			scanf("%d",&y);
 		}
 		if(isTest)y = 5;
@@ -46,7 +51,7 @@ int scores_input(int players, int round, bool isTest, FILE* p){
 	}
 	if(isTest)x = 0;
 	if(x == 1){
-		scores_input(players,round,isTest,p);
+		scores_input(players,round,isTest,p,names);
 	}
     }
 	fclose(f);
@@ -60,6 +65,7 @@ void print(int BUFSIZE, int BUF2SIZE){
 	char *temp = "";
 	char buf2[BUF2SIZE];
 	bool buf_end = false;
+	for(int i=0;i<10;i++) printf("\n\n\n\n");
 	while(fgets(buf2,BUF2SIZE,f2)!=NULL){
 		if(!buf_end)
 			strtok(buf2,"\n");
@@ -97,6 +103,7 @@ void reset(void){
 	FILE* f = fopen("GameFiles/scoreboardTemplate","r");
         FILE* f2 = fopen("GameFiles/scoreboard2","w");
 	FILE* f3 = fopen("GameFiles/scoreboard","w");
+	FILE* f4 = fopen("GameFiles/scOut","w");
         char buf[60];
         while(fgets(buf,60,f) != NULL){
                 fprintf(f2,"%s",buf);
@@ -104,6 +111,7 @@ void reset(void){
         fclose(f);
         fclose(f2);
 	fclose(f3);
+	fclose(f4);
 }
 /*
 int main(void){ // TESTING VERSION
@@ -152,6 +160,7 @@ int getInput(int *players, int *rounds){
                 scanf("%d",&out);
                 if(out == 0) break;
         }
+	// FOR LOOP ASKING FOR PLAYERS
 	return out;	
 }
 void displaySaveList(){
@@ -169,7 +178,7 @@ void displaySaveList(){
         }
 	fclose(saveList);
 }
-void loadGame(int* players, int* rounds, int* ppg, int* rounds_played){
+void loadGame(int* players, int* rounds, int* ppg, int* rounds_played, char names[*players][2]){
 	int saveslot = 0;
 	FILE *save,*f2,*s1,*s2;
 	f2 = fopen("GameFiles/f2","w");
@@ -213,7 +222,7 @@ void loadGame(int* players, int* rounds, int* ppg, int* rounds_played){
 	fgets(line,30,save);
 	
 	int BUFSIZE = (10*(*rounds))+3;
-        int BUF2 = (10*(*players));
+        int BUF2 = (35*(*players));
         if(BUF2>BUFSIZE) BUFSIZE = BUF2;
 	char buf[BUFSIZE];
 
@@ -230,14 +239,23 @@ void loadGame(int* players, int* rounds, int* ppg, int* rounds_played){
 		fprintf(s2,"%s",buf);
 		printf("%s",buf);
 	}
-	
+	printf("\n------------PLAYERS------------\n");
+	fgets(buf,BUFSIZE,save);
+	for(int i = 0; i < *players; i++){
+		for(int j = 0; j < 2; j++){
+			names[i][j] = buf[j+(i*2)];
+			printf("%c",buf[j+(i*2)]);
+		}
+		printf("\n");
+	}	
 	fclose(save);
 	fclose(f2);
 	fclose(s1);
 	fclose(s2);	
 }
-void saveGame(int players, int rounds, int ppg, int rounds_played){
+void saveGame(int players, int rounds, int ppg, int rounds_played, char names[players][2]){
 	int saveslot;
+	bool first_input = true;
 	int BUFSIZE = (10*rounds)+5;
 	char buf[BUFSIZE];
 	FILE *f,*f2,*f3,*saveList;
@@ -247,7 +265,8 @@ void saveGame(int players, int rounds, int ppg, int rounds_played){
 	fseek(saveList, 3+(34*(saveslot-1)), SEEK_SET );
 	fprintf(saveList,"______________________________");
 	fseek(saveList,-30,SEEK_CUR);
-	while((strlen(buf)<1)||(strlen(buf)>30)){
+	while((first_input)||(strlen(buf)<1)||(strlen(buf)>30)){
+		first_input = false;
 		printf("\n(No spaces)\nName of save: \n");
 		scanf("%s", buf);
 		if(strlen(buf)>30){
@@ -267,7 +286,7 @@ void saveGame(int players, int rounds, int ppg, int rounds_played){
 	f2 = fopen("GameFiles/f2","r");
 	if(rounds_played%2 == 1){
                 f3 = fopen("GameFiles/scoreboard","r");
-        }else if(rounds_played%2 == 2){
+        }else if(rounds_played%2 == 0){
                 f3 = fopen("GameFiles/scoreboard2","r");
         }
 	fprintf(f,"----- Save Slot %d -----\n", saveslot);
@@ -279,14 +298,19 @@ void saveGame(int players, int rounds, int ppg, int rounds_played){
         while(fgets(buf,BUFSIZE,f2)){
                 fprintf(f,"%s",buf);
         }
-
 	// printing scoreboard
 	for(int i = 0; i < players; i++){
 		printf("Saved player %d\n",i+1);
 		fgets(buf, BUFSIZE, f3);
 		fprintf(f,"%s",buf);
 	}
-	
+	// printing names
+	for(int i = 0; i < players; i++){
+                //fprintf(f,"\n");
+                for(int j=0;j<2;j++){
+                       fprintf(f,"%c",names[i][j]);
+                }
+        }
 	
 	fclose(f3);
 	fclose(f2);
@@ -301,24 +325,44 @@ int main(void){
 	int exit;
 	
 	ppg = getInput(&players, &rounds);
+	char names[players][2];
+	/*for(int i=0;i<=players;i++){
+		for(int j=0;j<1;j++){
+			names[i][j]=' ';
+		}
+	}*/
+	char name[50];
 	if(ppg > 1){
-		game(players, rounds, 2000, p, ppg);
+		printf("\nEnter Each Player's First and Last Initials");
+		for(int i = 0; i < players; i++){
+                	printf("\nPlayer %d: ",i+1);
+			scanf("%s",name);
+			for(unsigned long j=0;j<strlen(name);j++){
+				names[i][j] = name[j];
+			}
+		}
+		printf("\nNames: \n");
+		for(int i = 0; i < players; i++){
+			printf("%s\n",names[i]);
+		}
+		game(players, rounds, 2000, p, ppg, names);
 		makeTemplate(players);
 		reset();
 	}else{
-		loadGame(&players,&rounds,&ppg,&rounds_played);
-		scoreBoard(rounds_played);
+		loadGame(&players,&rounds,&ppg,&rounds_played,names);
+		scoreBoard(rounds_played,players,ppg,names);
 		print(10*players,8*rounds);
 	}
 	
 	for(int i = rounds_played+1; i <= rounds; i++){
- 	       	exit = scores_input(players,i, false, p);
+		print(10*players,8*rounds);
+ 	       	exit = scores_input(players,i, false, p,names);
 		if((exit == 0)||(i == 1)){
-			scoreBoard(i);
+			scoreBoard(i,players,ppg,names);
 			print(10*players,8*rounds);
 		}else{
 			displaySaveList();
-			saveGame(players, rounds, ppg, i-1);
+			saveGame(players, rounds, ppg, i-1,names);
 			printf("Game Saved.\n");
 			break;
 		}

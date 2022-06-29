@@ -14,7 +14,7 @@
 //*                                                                  *
 //********************************************************************
 
-void scoreBoard(int rounds){
+void scoreBoard(int rounds,int players,int ppg,char names[players][2]){
 	FILE* SCORES;
 	if(rounds%2 == 1){
                 SCORES = fopen("GameFiles/scoreboard","r");
@@ -25,19 +25,21 @@ void scoreBoard(int rounds){
 	char p[50];
 	char r[50];
 	char ppG[50];
-	int players,ppg,delete,BUFSIZE,BUFSCORES;
+	//int players,ppg,delete,BUFSIZE,BUFSCORES;
+	int BUFSIZE,BUFSCORES;
 	int p1,p2,p3,p4,p5,p6,p7;
 	float s1,s2,s3,s4,s5,s6,s7;
 	s1=s2=s3=s4=s5=s6=s7=0.0;
 	char *del;
 	int s;
+	
 	fgets(p, 50, infile);
-	players = atoi(p);
+	//players = atoi(p);
 	fgets(r, 50, infile);
-	delete = atoi(r);
+	//delete = atoi(r);
 	fgets(ppG, 50, infile);
-	ppg = atoi(ppG);
-	BUFSIZE = 10*players;
+	//ppg = atoi(ppG);
+	BUFSIZE = 35*players;
 	BUFSCORES = (10*rounds)+5;
 	char buf[BUFSIZE];
 	char buf_scores[BUFSCORES];
@@ -133,7 +135,11 @@ void scoreBoard(int rounds){
 
 	fprintf(sc_out,"Scores");
 	for(int i = 1; i <= players; i++){
-		fprintf(sc_out,"\n%d:",i);
+		fprintf(sc_out,"\n");
+                for(int j=0;j<2;j++){
+                       fprintf(sc_out,"%c",names[i-1][j]);
+                }
+                fprintf(sc_out,":");
 		for(int j = 1; j <= rounds; j++){
 			if(scores[i][j]>0&&scores[i][j]<10)fprintf(sc_out," ");
 			fprintf(sc_out," %d",scores[i][j]);
@@ -142,7 +148,11 @@ void scoreBoard(int rounds){
 	fprintf(sc_out,"\n      \nPars");
 	for(int i = 1; i <= players; i++){
 		sum2 = 0.0;
-		fprintf(sc_out,"\n%d:",i);
+		fprintf(sc_out,"\n");
+		for(int j=0;j<2;j++){
+                       fprintf(sc_out,"%c",names[i-1][j]);
+                }
+		fprintf(sc_out,":");
                 for(int j = 1; j <= rounds; j++){
 			if((pars[i][j]>0)&&(pars[i][j]<10))fprintf(sc_out," ");
 			if(pars[i][j]>-10)fprintf(sc_out," ");
@@ -168,7 +178,11 @@ void scoreBoard(int rounds){
 	} 		
 	fprintf(sc_out,"\n      \nStandings:");
 	for(int i = 1; i <= players; i++){
-		fprintf(sc_out,"\n%0.0f: %0.1f",standings[i][1],standings[i][2]);
+		fprintf(sc_out,"\n");
+		for(int j=0;j<2;j++){
+                	fprintf(sc_out,"%c",names[(int)(standings[i][1])-1][j]);
+                }
+		fprintf(sc_out,": %0.1f",standings[i][2]);
 	}
 	fclose(sc_out);	
 	

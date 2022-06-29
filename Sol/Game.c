@@ -6,10 +6,11 @@
 #include <string.h>
 #include <limits.h>
 #include <stdbool.h>
+#include <ctype.h>
 #include "Game.h"
 //********************************************************************
 //*                                                                  *
-//*	Figuring out the Solitaire matches, once and for all.            *
+//*	Figuring out the Solitaire matches, once and for all.        *
 //*                                                                  *
 //* mastotte, ucsc 2024                                              *
 //*                                                                  *
@@ -37,7 +38,7 @@ float calculateSD(float data[], float p, int matches_call) {
     	return sqrt(SD / (p-z));
     }
 }
-void output(int best_round, int n, int rounds, FILE* p, int ppg, int players){
+void output(int best_round, int n, int rounds, FILE* p, int ppg, int players, char names[players][2]){
 	int BUFSIZE = 10*players;
   	char buf[BUFSIZE];
  	FILE *infile = fopen("GameFiles/out", "r");
@@ -51,7 +52,16 @@ void output(int best_round, int n, int rounds, FILE* p, int ppg, int players){
 			for(int i = 0; i < rounds; i++){
 				fgets(buf, BUFSIZE, infile);
 				fprintf(bestOutput,"Round %d\n",c);
-				fprintf(bestOutput,"%s",buf);
+				for(unsigned long i=0;i<strlen(buf);i++){
+                                	if(isdigit(buf[i])){
+                                       		for(unsigned long i2=0;i2<2;i2++){
+                                                	fprintf(bestOutput,"%c",names[atoi(&buf[i])-1][i2]);
+                                        	}
+                                	}else{
+                                        	fprintf(bestOutput,"%c",buf[i]);
+                                	}
+                        	}
+				//fprintf(bestOutput,"\nbuf:%s(len:%ld)",buf,strlen(buf));
 				fprintf(f2Output,"%s",buf);
     			fprintf(p,"%s",buf);
 				c++;
@@ -94,7 +104,7 @@ int findMin(int players, int ppg, float sitters[], float x[players], bool* C){
 	}
 	return index;
 }
-void game(int players, int rounds, int TESTSIZE, FILE* p, int ppg){
+void game(int players, int rounds, int TESTSIZE, FILE* p, int ppg, char names[players][2]){
 	srandom(SEED);
 	clock_t start, end;
 	double cpu_time_used;
@@ -367,7 +377,7 @@ void game(int players, int rounds, int TESTSIZE, FILE* p, int ppg){
                 }
         }
 	fclose(outFile);
-	output(best_round,players,rounds,p,ppg,players);
+	output(best_round,players,rounds,p,ppg,players,names);
 	fprintf(p,"\n");
 	
 	end = clock();
