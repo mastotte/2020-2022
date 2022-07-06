@@ -11,7 +11,7 @@
 int scores_input(int players, int round, bool isTest, FILE* p, char names[players][2]){// char* names[]
 	int in = 0;
 	if((!isTest)&&(round>1)){
-		printf("1: Save and Exit\n2: Continue\n");
+		printf("\n1: Exit\n2: Continue\n");
 		scanf("%d",&in);
 		printf("\n");
 	}
@@ -113,6 +113,12 @@ void reset(void){
 	fclose(f3);
 	fclose(f4);
 }
+void resetSaves(){
+	FILE* f = fopen("GameFiles/saveList","w");
+	fprintf(f,"1: ______________________________\n2: ______________________________\n3: ______________________________\n");
+	fprintf(f,"4: ______________________________\n5: ______________________________\n");
+	fclose(f);
+}
 /*
 int main(void){ // TESTING VERSION
 	int x = 30; // Amount of player counts to test
@@ -178,7 +184,7 @@ void displaySaveList(){
         }
 	fclose(saveList);
 }
-void loadGame(int* players, int* rounds, int* ppg, int* rounds_played, char names[*players][2]){
+int loadGame(int* players, int* rounds, int* ppg, int* rounds_played, char names[*players][2]){
 	int saveslot = 0;
 	FILE *save,*f2,*s1,*s2;
 	f2 = fopen("GameFiles/f2","w");
@@ -252,30 +258,39 @@ void loadGame(int* players, int* rounds, int* ppg, int* rounds_played, char name
 	fclose(f2);
 	fclose(s1);
 	fclose(s2);	
+	return saveslot;
 }
-void saveGame(int players, int rounds, int ppg, int rounds_played, char names[players][2]){
-	int saveslot;
+int createGame(){
+	int saveslot = 0;
 	bool first_input = true;
+        int BUFSIZE = 20;
+        char buf[BUFSIZE];
+        FILE *saveList;
+	displaySaveList();
+        printf("Enter a save slot: ");
+        scanf("%d",&saveslot);
+        saveList = fopen("GameFiles/saveList","r+");
+        fseek(saveList, 3+(34*(saveslot-1)), SEEK_SET );
+        fprintf(saveList,"______________________________");
+        fseek(saveList,-30,SEEK_CUR);
+        while((first_input)||(strlen(buf)<1)||(strlen(buf)>30)){
+                first_input = false;
+                printf("\n(No spaces)\nName of save: \n");
+                scanf("%s", buf);
+                if(strlen(buf)>30){
+                        printf("\nError: Save name too long. Must be under 30 characters.");
+                }else{
+                        printf("Length: %ld   ",strlen(buf));
+                        fprintf(saveList,"%s",buf);
+                 }
+	}
+	return saveslot;
+ }
+
+void saveGame(int players, int rounds, int ppg, int rounds_played, char names[players][2], int saveslot){
 	int BUFSIZE = (10*rounds)+5;
 	char buf[BUFSIZE];
-	FILE *f,*f2,*f3,*saveList;
-	printf("Enter a save slot: ");
-	scanf("%d",&saveslot);
-	saveList = fopen("GameFiles/saveList","r+");
-	fseek(saveList, 3+(34*(saveslot-1)), SEEK_SET );
-	fprintf(saveList,"______________________________");
-	fseek(saveList,-30,SEEK_CUR);
-	while((first_input)||(strlen(buf)<1)||(strlen(buf)>30)){
-		first_input = false;
-		printf("\n(No spaces)\nName of save: \n");
-		scanf("%s", buf);
-		if(strlen(buf)>30){
-			printf("\nError: Save name too long. Must be under 30 characters.");
-		}else{
-			//printf("Length: %ld   ",strlen(buf));
-			fprintf(saveList,"%s",buf);
-		}
-	}
+	FILE *f,*f2,*f3;
 
 	if(saveslot == 1) f = fopen("GameFiles/save1", "w");
 	else if(saveslot == 2) f = fopen("GameFiles/save2","w");
@@ -314,23 +329,17 @@ void saveGame(int players, int rounds, int ppg, int rounds_played, char names[pl
 	
 	fclose(f3);
 	fclose(f2);
-	fclose(saveList);
 	fclose(f);
 }
 
 int main(void){
 	FILE* p = stdout;
-        int players, rounds, ppg, rounds_played;
+        int players, rounds, ppg, rounds_played, saveslot, exit;
 	ppg = rounds_played = 0;
-	int exit;
 	
 	ppg = getInput(&players, &rounds);
 	char names[players][2];
-	/*for(int i=0;i<=players;i++){
-		for(int j=0;j<1;j++){
-			names[i][j]=' ';
-		}
-	}*/
+	//resetSaves();           // un-comment this to reset the save files
 	char name[50];
 	if(ppg > 1){
 		printf("\nEnter Each Player's First and Last Initials");
@@ -341,15 +350,12 @@ int main(void){
 				names[i][j] = name[j];
 			}
 		}
-		printf("\nNames: \n");
-		for(int i = 0; i < players; i++){
-			printf("%s\n",names[i]);
-		}
 		game(players, rounds, 2000, p, ppg, names);
+		saveslot = createGame();
 		makeTemplate(players);
 		reset();
 	}else{
-		loadGame(&players,&rounds,&ppg,&rounds_played,names);
+		saveslot = loadGame(&players,&rounds,&ppg,&rounds_played,names);
 		scoreBoard(rounds_played,players,ppg,names);
 		print(10*players,8*rounds);
 	}
@@ -359,13 +365,12 @@ int main(void){
  	       	exit = scores_input(players,i, false, p,names);
 		if((exit == 0)||(i == 1)){
 			scoreBoard(i,players,ppg,names);
-			print(10*players,8*rounds);
+			print(10*players,8*rounds);			
 		}else{
-			displaySaveList();
-			saveGame(players, rounds, ppg, i-1,names);
-			printf("Game Saved.\n");
 			break;
 		}
+		saveGame(players, rounds, ppg, i-1,names,saveslot);
+		printf("Game Saved.\n");
 	}
 }
 
