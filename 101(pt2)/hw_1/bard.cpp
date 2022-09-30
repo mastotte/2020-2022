@@ -61,7 +61,7 @@ int main(int argc, char** argv)
             if(cursor!=NULL){
                 cursor = cursor->next;
             }else{
-                output<<endl;
+                output<<"-"<<endl;
                 break;
             }
         }
