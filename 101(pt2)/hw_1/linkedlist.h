@@ -6,6 +6,7 @@
 //    See pa5 List
 #include <string>
 using namespace std;
+
 struct Node{
     int rank;
     int freq;
@@ -15,34 +16,25 @@ struct Node{
 class List
 {
 private:
-        // List Fields
-        Node* head;
+	// List Fields
+	Node* head;
+	int length;
 public:
-        // Class Constructors and Destructors 
-        List();
-        void deleteList();
-
-        // Access Functions
-        int length();
-        Node* getHead();
-
-        // Manipulation Procedures
-        void prepend(int rank, int freq, string word); // insert int into list 
-        void append(int rank, int freq, string word);
-        void sort();
-        Node* find(string word);
-        Node* deleteNode(string);
+	// Class Constructors and Destructors 
+	List();
+	void deleteList();
+	Node* deleteNode(string);
         void deleteAndFreeNode(string);
-        string print();
+	// Access Functions
+	int getLength();
+	Node* getHead();
+	Node* find(string word);
 
-        // My New Access Functions
+	// Manipulation Procedures
+        void prepend(int rank, int freq, string word); // insert int into list 
+	void append(int rank, int freq, string word);
+	void sort();
 
-        // Swaps values of A and B.     
-        List swapNodes(Node A, Node B);
-
-        // Appends 
-        List append(Node A);
-
-        // Finds a word in the list, and eithe
-        //List updateList(string word);
+	string print();
+	
 };
