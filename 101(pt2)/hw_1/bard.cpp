@@ -24,24 +24,31 @@ int main(int argc, char** argv)
     string word;
     Node* cursor;
     int len = 0;
-    List Table[25]; // (len of word -5)
+    List Table[35]; // (len of word -5) 
+    
     input.open("shakespeare-cleaned5.txt"); // open input file
     output.open(argv[2]); // open output file
 
+    //int line_counter = 1;
     while(std::getline (input,word)){
-        len = word.length()-5;
-        if(Table[len].length() == 0){
-            Table[len].prepend(1,1,word);
-        }else{
-            cursor = Table[len].find(word);
-            if(cursor!=NULL){
-                cursor->freq += 1;
-                Table[len].sort();
-            }else{
-                Table[len].append(Table[len].length(),1,word);
-            }
-        }
-        //cout<<word<<" "<<len<<endl;
+	//cout<<line_counter<<endl;
+        //line_counter++;
+    	len = word.length()-5;  
+	if(Table[len].getLength() == 0){
+	    Table[len].prepend(1,1,word);
+	}else{
+	    cursor = Table[len].find(word);
+	    if(cursor!=NULL){
+		cursor->freq += 1;
+	    }else{
+		Table[len].append(Table[len].getLength(),1,word);
+	    }
+	}
+	//cout<<word<<" "<<len<<endl;
+    }
+    for(int i = 0; i < 35; i++){
+	Table[i].sort();
+	//cout<<"table "<<i<<" sorted"<<endl;
     }
 
     input.close(); //close input stream
@@ -50,26 +57,37 @@ int main(int argc, char** argv)
     string num1, num2;
     int w_length,w_rank;
     while(std::getline (input, word)){
-        space_index = word.find_first_of(" ");
-        num1 = word.substr(0,space_index);
-        num2 = word.substr(space_index+1,word.length());
-        w_length = stoi(num1);
-        w_rank = stoi(num2);
+	space_index = word.find_first_of(" ");
+	num1 = word.substr(0,space_index);
+	num2 = word.substr(space_index+1,word.length());
+	w_length = stoi(num1);
+	w_rank = stoi(num2);
         cursor = Table[w_length-5].getHead();
-
-        for(int i = 0; i < w_rank; i++){
-            if(cursor!=NULL){
-                cursor = cursor->next;
-            }else{
-                output<<"-"<<endl;
-                break;
-            }
+	
+	for(int i = 0; i < w_rank; i++){
+	    if(cursor!=NULL){
+		cursor = cursor->next;
+	    }	
         }
-        if(cursor!=NULL){
-            output<<cursor->word<<endl;
-        }
+	if(cursor!=NULL){
+	    output<<cursor->word<<endl;
+	}else{
+	    output<<"-"<<endl;
+	}
+    }
+    
+    for(int i = 8; i < 9; i++){
+	    cursor = Table[i].getHead();
+	    cout<<"---------------------------- List "<<i<<" ------------------------------"<<endl;
+	    for(int j = 0; j < 20; j++){
+	    	cout<<cursor->word<<"	Rank: "<<cursor->rank<<"	Freq: "<<cursor->freq<<endl;
+	        cursor = cursor->next;
+	    }
+    }
+    for(int i = 0; i < 35; i++){
+	Table[i].deleteList();
     }
     input.close();
     output.close(); // close output stream
 }
-                                             
+
