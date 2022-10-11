@@ -3,13 +3,13 @@
 //  linkedlist.h
 //
 //
-//    See pa5 List
+//
 #include <string>
 using namespace std;
-
+typedef int DataType;
 struct Node{
-    int rank;
-    int freq;
+    DataType rank;
+    DataType freq;
     string word;
     Node *next;
 };
@@ -24,17 +24,19 @@ public:
 	List();
 	void deleteList();
 	Node* deleteNode(string);
-        void deleteAndFreeNode(string);
+  void deleteAndFreeNode(string);
 	// Access Functions
 	int getLength();
 	Node* getHead();
 	Node* find(string word);
 
 	// Manipulation Procedures
-        void prepend(int rank, int freq, string word); // insert int into list 
-	void append(int rank, int freq, string word);
+	Node* pop();
+	void push(Node* N);
+  void prepend(DataType rank, DataType freq, string word); // insert int into list 
+	void append(DataType rank, DataType freq, string word);
 	void sort();
 
+  // Printing
 	string print();
-	
 };
