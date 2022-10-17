@@ -284,11 +284,7 @@ int main(int argc, char** argv)
     cur = NULL;
     del = NULL;
     newNode = NULL;
-
+    
     input.close(); //close input stream
     output.close(); // close output stream
 }
-// save the new coord that was added
-// dont add boards that are dead ends
-// if all a board's empty squares are dead ends, make it null or something, and make it's open square on
-// the previous board (new head) a 1.
