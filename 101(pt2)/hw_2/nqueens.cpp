@@ -11,44 +11,20 @@
 using namespace std;
 // using namespace utils; // for the function defined in utils
 
-// getInput function
-// Parameters: 
-// Output: input_array[] 
-int get_input(List Stack, string in, int *input_array){
-    int len,board_size,col,row = 0;
-    int count = 1;
-    len = in.length();
-    char c_array[len+1];
-    char *tmp;
-    strcpy(c_array,in.c_str());
-    tmp = strtok(c_array," ");
-    if(tmp) board_size = atoi(tmp);
-    
-    // Making input array
-    // input_array = {size, col_1, row_1, col_2...}
-    while(tmp!=NULL){
-      tmp = strtok(NULL," ");
-      if(tmp){ 
-        col = atoi(tmp);
-        tmp = strtok(NULL," ");
-        row = atoi(tmp);
-        //input_array
-        input_array[count] = col;
-        input_array[count+1] = row;
-        input_array[0]+=2;
-        count+=2;
-      }
-    }
-    return board_size;
+// Returns next number in input line
+int get_next_number(string in){
+  string out = "";
+  in = in.substr(in.find_first_not_of(" "),in.length());
+  out = in.substr(0,in.find_first_of(" "));
+  return stoi(out);
 }
+
 // makeBoard function
 // Parameters: col,row,board(int,int,int**)
 // Output: updated board[][] (int[][])
 int **make_board(int col, int row, int **board){
   // Vertical
-  cout<<"1"<<endl;
   int board_size = board[0][0];
-  cout<<"2"<<endl;
   int x0,x1,x2,x3,x4,y0,y1,y2,y3,y4;
   if(board[0][col] == 0){
     y0 = 1;
@@ -195,54 +171,50 @@ void deleteNode(Node *N)
     }
     delete(N); 
 }
-int main(int argc, char** argv)
-{
-    if (argc < 3) // must provide two arguments as input
-    {
-        throw std::invalid_argument("Usage: ./hello <INPUT FILE> <OUTPUT FILE>"); // throw error
-    }
-    List Stack;
-    int *coordinates = new int[1];
-    int *input_array = new int[1];
-    int **board = NULL;
+// Solves queens problem, returns output string
+string solve(string in, int board_size){
+  // Variable declaration
+  List Stack;
+  int col,row = 0;
+  int *coordinates = new int[2];
+  int **board = NULL;
+  // ---------- Allocating Memory For Starting Board ----------
+  board = new int*[board_size+1];
+  for(int i = 0; i <= board_size; i++){
+    board[i] = new int[board_size];
+  }
+  board[0][0] = board_size;
+  // ------------Setting Up Starting Board----------------------
+  while(in.length()>1){
+    col = get_next_number(in);
+    in = in.substr(in.find_first_of(" ")+1,in.length());
+    row = get_next_number(in);
+    in = in.substr(in.find_first_of(" ")+1,in.length());
 
-    ifstream input; // stream for input file
-    ofstream output; // stream for output file
+    make_board(col,row,board);
+  }
 
-    input.open(argv[1]); // open input file
-    output.open(argv[2]); // open output file
+  // -------------Stack Operations------------------------------
+  Node* first_board = Stack.makeNode(board_size);
+  // Copy Board
+  for(int i = 0; i <= board_size; i++){
+    for(int j = 0; j <= board_size; j++){
+      first_board->board[i][j] = board[i][j];
+    }
+  }
 
-    string in;
-    getline(input,in);
-
-    int board_size = get_input(Stack,in,input_array);
-    // ---------- Allocating Memory For Starting Board ----------
-    board = new int*[board_size];
-    for(int i = 0; i <= board_size; i++){
-      board[i] = new int[board_size];
-    }
-    board[0][0] = board_size;
-    // ------------Setting Up Starting Board----------------------
-    for(int i = 1; i <= input_array[0]; i+=2){
-        make_board(input_array[i],input_array[i+1],board);
-        print_board(board);
-    }
-    // -------------Stack Operations------------------------------
-    Node* first_board = Stack.makeNode(board_size);
-    // Copy Board
-    for(int i = 0; i <= board_size; i++){
-      for(int j = 0; j <= board_size; j++){
-        first_board->board[i][j] = board[i][j];
-      }
-    }
+  
     bool solved = false;
+    bool no_solution = false;
+    int b_col,b_row = 0;
     Stack.push(first_board);
     Node* cur = Stack.getHead();
-    Node* printing_node;
+    //Node* printing_node;
     Node* del;
     Node* newNode;
     int inf_blocker=0;
-    while((!solved)&&(Stack.getLength() > 0)){
+    while((!solved)&&(!no_solution)){
+      /*cout<<"Length: "<<Stack.getLength()<<endl;
       printing_node = Stack.getHead();
       cout<<"--------------------------"<<inf_blocker<<endl;
       for(int i = 1; i <= Stack.getLength(); i++){
@@ -251,40 +223,99 @@ int main(int argc, char** argv)
         cout<<endl;
       }
       cout<<"endendednednendnednendendnendne"<<endl;
-      
+      */
       find_empty_square(coordinates,cur->board);
-      newNode = Stack.makeNode(board_size);
       // Copy Board
       for(int i = 0; i <= board_size; i++){
         for(int j = 0; j <= board_size; j++){
-          newNode->board[i][j] = cur->board[i][j];
+          board[i][j] = cur->board[i][j];
         }
       }
-      newNode->col = coordinates[0];
-      newNode->row = coordinates[1];
-      make_board(newNode->col,newNode->row,newNode->board);
-      cur->board[newNode->row][newNode->col] = 3;
-      if(isFull(newNode->board) > 1){   // Board is full and solved
+      b_col = coordinates[0];
+      b_row = coordinates[1];
+      make_board(b_col,b_row,board);
+      cur->board[b_row][b_col] = 3;
+      if(isFull(board) > 1){   // Board is full and solved
         solved = true;
-        cout<<"Solved!"<<endl;
-        print_board(newNode->board);
-      }else if(isFull(newNode->board) == 0){ // Board is not full
-        Stack.push(newNode);
-      }else if(isFull(newNode->board) == 1){ // Board is full and not solved
-        if(isFull(cur->board) == 1){
-          del = Stack.pop();
-          //deleteNode(del);
+        //cout<<"Solved!"<<endl;
+        //print_board(board);
+      }else if(isFull(board) == 0){ // Board is not full
+        newNode = Stack.makeNode(board_size);
+        newNode->row = b_row;
+        newNode->col = b_col;
+        // Copy board
+        for(int i = 0; i <= board_size; i++){
+          for(int j = 0; j <= board_size; j++){
+            newNode->board[i][j] = board[i][j];
+          }
         }
-        //del = newNode;
-        //deleteNode(del);
+        Stack.push(newNode);
+      }else if(isFull(board) == 1){ // Board is full and not solved
+        if(Stack.getLength()==1){ // Only board available is full, it's unsolvable
+          no_solution = true;
+
+          //deleteNode(cur);
+        }
+        else if(isFull(cur->board) == 1){
+          del = Stack.pop();
+          deleteNode(del);
+        }
       }
       cur = Stack.getHead();
       inf_blocker++;
     }
+    string out = "";
+    // Finding Queen Locations
+    if(no_solution){
+      out = "No solution";
+    }else{
+      for(int i = 1; i <= board_size; i++){
+        for(int j = 1; j <= board_size; j++){
+          if(board[j][i] == 2){
+            out = out + to_string(i) + " " + to_string(j) + " ";
+          }
+        }
+      }
+    }
     cur = NULL;
     del = NULL;
     newNode = NULL;
+  return out;
+}
+int main(int argc, char** argv)
+{
+    if (argc < 3) // must provide two arguments as input
+    {
+        throw std::invalid_argument("Usage: ./hello <INPUT FILE> <OUTPUT FILE>"); // throw error
+    }
     
+    int board_size = 0;
+    
+    //int *input_array = new int[2];
+
+
+    ifstream input; // stream for input file
+    ofstream output; // stream for output file
+
+    input.open(argv[1]); // open input file
+    output.open(argv[2]); // open output file
+    
+    string in;
+    string out;
+    while(getline(input,in)){
+      //cout<<in<<endl;
+      board_size = get_next_number(in);
+      in = in.substr(in.find_first_of(" ")+1,in.length());
+
+      out = solve(in, board_size);
+      output<<out<<endl;
+      
+    }
+
     input.close(); //close input stream
     output.close(); // close output stream
 }
+// save the new coord that was added
+// dont add boards that are dead ends
+// if all a board's empty squares are dead ends, make it null or something, and make it's open square on
+// the previous board (new head) a 1.
