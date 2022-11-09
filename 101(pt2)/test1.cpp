@@ -1,7 +1,17 @@
 #include <iostream>
-#include <math.h>
+
 using namespace std;
 
+#include <iostream>
+#include <math.h>
+using namespace std;
+int factorial(int num){
+    int f = 1;
+    for(int i = 1; i <= num; i++){
+        f = f*i;
+    }
+    return f;
+}
 void permute(string &a, int l, int r, int* count,int f, int size)
 {
     // Base case
@@ -44,13 +54,14 @@ int main()
     string str = "ABCD";
     int count = 0;
     int n = str.size();
-    int size = 2;
+    int size = 3;
     int f = 1;
     cout<<"start"<<endl;
-    for(int i = 1; i <= size; i++){
-        f = f*i;
+    for(int i = 0; i < size; i++){
+        f = factorial(size-i);
+        cout<<f<<endl;
+        permute(str, 0, n-1,&count,f,i+1);
     }
-    cout<<f<<endl;
-    permute(str, 0, n-1,&count,f,size);
+    
     return 0;
 }
