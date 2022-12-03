@@ -12,6 +12,262 @@
 
 using namespace std;
 // -------------------------------------------------------------------------------------------------
+// SOURCE FOR THE FOLLOWING SECTION - https://www.geeksforgeeks.org/dijkstras-algorithm-for-adjacency-list-representation-greedy-algo-8/
+// -------------------------------------------------------------------------------------------------
+// Structure to represent a min heap node
+struct MinHeapNode
+{
+    int  v;
+    int dist;
+};
+// Structure to represent a min heap
+struct MinHeap
+{  
+    // Number of heap nodes present currently
+    int size;      
+    // Capacity of min heap
+    int capacity; 
+    // This is needed for decreaseKey()
+    int *pos;   
+    struct MinHeapNode **array;
+};
+ 
+// A utility function to create a
+// new Min Heap Node
+struct MinHeapNode* newMinHeapNode(int v, int dist)
+{
+    struct MinHeapNode* minHeapNode =
+           (struct MinHeapNode*)
+      malloc(sizeof(struct MinHeapNode));
+    minHeapNode->v = v;
+    minHeapNode->dist = dist;
+    return minHeapNode;
+}
+ 
+// A utility function to create a Min Heap
+struct MinHeap* createMinHeap(int capacity)
+{
+    struct MinHeap* minHeap =
+         (struct MinHeap*)
+      malloc(sizeof(struct MinHeap));
+    minHeap->pos = (int *)malloc(
+            capacity * sizeof(int));
+    minHeap->size = 0;
+    minHeap->capacity = capacity;
+    minHeap->array =
+         (struct MinHeapNode**)
+                 malloc(capacity *
+       sizeof(struct MinHeapNode*));
+    return minHeap;
+}
+ 
+// A utility function to swap two
+// nodes of min heap.
+// Needed for min heapify
+void swapMinHeapNode(struct MinHeapNode** a, struct MinHeapNode** b)
+{
+    struct MinHeapNode* t = *a;
+    *a = *b;
+    *b = t;
+}
+// A standard function to
+// heapify at given idx
+// This function also updates
+// position of nodes when they are swapped.
+// Position is needed for decreaseKey()
+void minHeapify(struct MinHeap* minHeap, int idx)
+{
+    int smallest, left, right;
+    smallest = idx;
+    left = 2 * idx + 1;
+    right = 2 * idx + 2;
+ 
+    if (left < minHeap->size &&
+        minHeap->array[left]->dist <
+         minHeap->array[smallest]->dist )
+      smallest = left;
+ 
+    if (right < minHeap->size &&
+        minHeap->array[right]->dist <
+         minHeap->array[smallest]->dist )
+      smallest = right;
+ 
+    if (smallest != idx)
+    {
+        // The nodes to be swapped in min heap
+        MinHeapNode *smallestNode =
+             minHeap->array[smallest];
+        MinHeapNode *idxNode =
+                 minHeap->array[idx];
+ 
+        // Swap positions
+        minHeap->pos[smallestNode->v] = idx;
+        minHeap->pos[idxNode->v] = smallest;
+ 
+        // Swap nodes
+        swapMinHeapNode(&minHeap->array[smallest],
+                         &minHeap->array[idx]);
+ 
+        minHeapify(minHeap, smallest);
+    }
+}
+ 
+// A utility function to check if
+// the given minHeap is empty or not
+int isEmpty(struct MinHeap* minHeap)
+{
+    return minHeap->size == 0;
+}
+ 
+// Standard function to extract
+// minimum node from heap
+struct MinHeapNode* extractMin(struct MinHeap* minHeap)
+{
+    if (isEmpty(minHeap))
+        return NULL;
+ 
+    // Store the root node
+    struct MinHeapNode* root = minHeap->array[0];
+ 
+    // Replace root node with last node
+    struct MinHeapNode* lastNode =
+         minHeap->array[minHeap->size - 1];
+    minHeap->array[0] = lastNode;
+ 
+    // Update position of last node
+    minHeap->pos[root->v] = minHeap->size-1;
+    minHeap->pos[lastNode->v] = 0;
+ 
+    // Reduce heap size and heapify root
+    --minHeap->size;
+    minHeapify(minHeap, 0);
+ 
+    return root;
+}
+ 
+// Function to decreasekey dist value
+// of a given vertex v. This function
+// uses pos[] of min heap to get the
+// current index of node in min heap
+void decreaseKey(struct MinHeap* minHeap, int v, int dist)
+{
+    // Get the index of v in  heap array
+    int i = minHeap->pos[v];
+ 
+    // Get the node and update its dist value
+    minHeap->array[i]->dist = dist;
+ 
+    // Travel up while the complete
+    // tree is not heapified.
+    // This is a O(Logn) loop
+    while (i && minHeap->array[i]->dist <
+           minHeap->array[(i - 1) / 2]->dist)
+    {
+        // Swap this node with its parent
+        minHeap->pos[minHeap->array[i]->v] =
+                                      (i-1)/2;
+        minHeap->pos[minHeap->array[
+                             (i-1)/2]->v] = i;
+        swapMinHeapNode(&minHeap->array[i], 
+                 &minHeap->array[(i - 1) / 2]);
+ 
+        // move to parent index
+        i = (i - 1) / 2;
+    }
+}
+ 
+// A utility function to check if a given vertex
+// 'v' is in min heap or not
+bool isInMinHeap(struct MinHeap *minHeap, int v)
+{
+   if (minHeap->pos[v] < minHeap->size)
+     return true;
+   return false;
+}
+/*void dijkstra(vector<vector<string>> v1, int src, string s)
+{
+     
+    // Get the number of vertices in graph
+    int V = v1.size();
+   
+    // dist values used to pick
+    // minimum weight edge in cut
+    int dist[V];    
+ 
+    // minHeap represents set E
+    struct MinHeap* minHeap = createMinHeap(V);
+ 
+    // Initialize min heap with all
+    // vertices. dist value of all vertices
+    for (int v = 0; v < V; ++v)
+    {
+        dist[v] = INT_MAX;
+        minHeap->array[v] = newMinHeapNode(v,
+                                      dist[v]);
+        minHeap->pos[v] = v;
+    }
+ 
+    // Make dist value of src vertex
+    // as 0 so that it is extracted first
+    minHeap->array[src] =
+          newMinHeapNode(src, dist[src]);
+    minHeap->pos[src]   = src;
+    dist[src] = 0;
+    decreaseKey(minHeap, src, dist[src]);
+ 
+    // Initially size of min heap is equal to V
+    minHeap->size = V;
+ 
+    // In the following loop,
+    // min heap contains all nodes
+    // whose shortest distance
+    // is not yet finalized.
+    while (!isEmpty(minHeap))
+    {
+        // Extract the vertex with
+        // minimum distance value
+        struct MinHeapNode* minHeapNode =
+                     extractMin(minHeap);
+       
+        // Store the extracted vertex number
+        int u = minHeapNode->v;
+ 
+        // Traverse through all adjacent
+        // vertices of u (the extracted
+        // vertex) and update
+        // their distance values
+        struct AdjListNode* pCrawl =
+                     graph->array[u].head;
+        while (pCrawl != NULL)
+        {
+            int v = pCrawl->dest;
+ 
+            // If shortest distance to v is
+            // not finalized yet, and distance to v
+            // through u is less than its
+            // previously calculated distance
+            if (isInMinHeap(minHeap, v) &&
+                      dist[u] != INT_MAX &&
+              pCrawl->weight + dist[u] < dist[v])
+            {
+                dist[v] = dist[u] + pCrawl->weight;
+ 
+                // update distance
+                // value in min heap also
+                decreaseKey(minHeap, v, dist[v]);
+            }
+            pCrawl = pCrawl->next;
+        }
+    }
+ 
+    // print the calculated shortest distances
+    printArr(dist, V);
+}*/
+// -------------------------------------------------------------------------------------------------
+// END OF CITED SECTION - https://slaystudy.com/c-vector-quicksort/
+// -------------------------------------------------------------------------------------------------
+
+// -------------------------------------------------------------------------------------------------
 // SOURCE FOR THE FOLLOWING SECTION - https://slaystudy.com/c-vector-quicksort/
 // -------------------------------------------------------------------------------------------------
 // last element is taken as pivot
@@ -121,7 +377,7 @@ void load_actor_adjacency(vector<vector<string>> v1, vector<string> v, List movi
     while(cur_x != NULL && cur_x->name != "DUMMY_NODE"){
         cur_y = cur_x->down;
         i++;
-        if(i%1000 == 0)
+        if(i%10000 == 0)
           cout<<"i: "<<i<<endl;
         while(cur_y != NULL && cur_y->name != "DUMMY_NODE"){ // the name
             temp = cur_x->down;
@@ -137,7 +393,8 @@ void load_actor_adjacency(vector<vector<string>> v1, vector<string> v, List movi
             while(temp != NULL && temp->name != "DUMMY_NODE"){ // adding other names to name's adj list
                 if(temp != cur_y){
                   // if name is not already present, add it
-  
+                  //cout<<"V1: "<<v1[v2 - v.begin()][0]<<" ; "<<(v2-v.begin())<<" ; "<<t[v2 - v.begin()]<<endl;
+                  
                   v3 = find (v1[v2 - v.begin()].begin(),v1[v2 - v.begin()].end(), temp->name); // index of name's vector
                   if(v3 == v1[v2 - v.begin()].end()){
                     v1[v2 - v.begin()].push_back(temp->name);
@@ -161,10 +418,9 @@ void load_actor_adjacency(vector<vector<string>> v1, vector<string> v, List movi
     cout<<"77200: "<<v1[77200][0]<<endl;
     cout<<"105476: "<<v1[105476][0]<<endl;
     //for(int i = 0; i < 50; i++){
-    PrintVector(v1[105476]);
-    cout<<endl;
+    //PrintVector(v1[105476]);
+    cout<<"V1 size: "<<v1.size()<<endl;
     //}
-
 }
 int main(int argc, char** argv)
 {
@@ -183,6 +439,7 @@ int main(int argc, char** argv)
     string out;
     string token = "";
     vector<string> v;
+    //vector<vector<int>> t;
     vector<vector<string>> v1;
 
     
@@ -196,7 +453,7 @@ int main(int argc, char** argv)
       //cout<<in<<endl;
       // set up lists
       lines++;
-      cout<<lines<<endl;
+      //cout<<lines<<endl;
       token = in.substr(0,in.find_first_of(" "));
       in = in.substr(in.find_first_of(" ")+1,in.length());
       //cout<<"Token: "<<token<<endl;
@@ -206,13 +463,18 @@ int main(int argc, char** argv)
           token = in.substr(0,in.find_first_of(" "));
           //cout<<"Token: "<<token<<endl;
           in = in.substr(in.find_first_of(" ")+1,in.length());
+          //if(token.length() < 2){
+            //cout<<"T: "<<token<<endl;
+          //}
           movies.push_down(cur,token);
           v.push_back(token);
       }
     }
     cout<<"sorting"<<endl;
     cout<<"Size: "<<v.size()<<endl;
-    Quicksort(v,0,v.size()-1);
+    //Quicksort(v,0,v.size()-1);
+    sort(v.begin(),v.end());
+    sort(v.begin(),v.end());
     cout<<"sorted"<<endl;
     //PrintVector(v);
     vector<string>::iterator v2;
@@ -223,7 +485,13 @@ int main(int argc, char** argv)
     for(unsigned int i = 0; i < v.size(); i++){
       v1.push_back(vector<string>());
       v1[i].push_back(v[i]);
+      //t[i].push_back(i);
     }
+    //for(int i = 0; i < 300; i++){
+     // cout<<i<<": "<<t[i]<<endl;
+      
+    //}
+    
     cout<<"Test 1: "<<v1[105476][0]<<endl;
     cout<<"Test 2: "<<v1[115350][0]<<endl;
     int c;
@@ -254,4 +522,10 @@ int main(int argc, char** argv)
     input.close(); //close input stream
     output.close(); // close output stream
     
+
+
+    /*!! NOTE
+    v1, vector of numbers,
+    v, vector of strings as a translator for v1.*/
 }
+
