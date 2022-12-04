@@ -1,0 +1,34 @@
+**************************************************
+*    Maxwell Totten    (mastotte@ucsc.edu)
+*    
+*    HW 4, Sixdegrees
+*
+**************************************************
+FILES:
+
+sixdegrees.cpp
+linkedlist.cpp
+linkedlist.h
+cleaned_movielist.txt
+Makefile
+------------------------------
+
+INSTRUCTIONS:
+
+1.) make
+2.) ./sixdegrees <input file> <output file>
+------------------------------
+BORROWED CODE:
+
+Outlined by the marker below:
+// -------------------------------------------------------------------------------------------------
+// SOURCE FOR THE FOLLOWING SECTION - https://www.geeksforgeeks.org/shortest-path-unweighted-graph/?ref=lbp
+// -------------------------------------------------------------------------------------------------
+
+And concluded by the marker below:
+// -------------------------------------------------------------------------------------------------
+// END OF CITED SECTION - https://www.geeksforgeeks.org/shortest-path-unweighted-graph/?ref=lbp
+// -------------------------------------------------------------------------------------------------
+
+Borrowed code was used in sixdegrees.cpp
+------------------------------
