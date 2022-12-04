@@ -17,6 +17,7 @@ using namespace std;
 List :: List()
 {
     head = NULL;
+    tail = NULL;
     dummy = new Node();
     dummy->down = dummy;
     dummy->next = dummy;
@@ -35,6 +36,9 @@ Node* List :: makeNode(string n)
 // ACCESS FUNCTIONS------------------------------------------------------
 Node* List :: getHead(){
     return head;
+}
+Node* List :: getTail(){
+    return tail;
 }
 // returns null if not found, and the node if found
 Node* List :: find(string s){
@@ -82,22 +86,20 @@ void List :: push_down(Node* N, string s){
     D->down = dummy;*/
 }
 // Append for future, less specific use 
-void List :: append(Node* N){
+void List :: append(string s){
+  Node* N = makeNode(s);
   if(head == NULL){
     head = N;
-  }else{
-    Node* cursor = head;
-    while(cursor->next!=NULL){
-      cursor = cursor->next;
-    }
-    cursor->next = N;
-    length++;
   }
-
+  if(tail == NULL){
+    tail = N;
+  }else{
+    N->next = NULL;
+    tail->next = N;
+    tail = N;
+  }
+  length++;
 }
-
-
-
 // Deletes every Node to prevent memory leaks.
 // Input: None
 // Output: Void, just deletes every Node of the list
