@@ -17,6 +17,7 @@ class List
 private:
 	// List Fields
 	Node* head;
+  Node* tail;
 	int length;
   Node* dummy;
 public:
@@ -30,13 +31,14 @@ public:
 	// Access Functions
 	int getLength();
 	Node* getHead();
+  Node* getTail();
 	Node* find(string s);
 
 	// Manipulation Procedures
 	Node* pop();
 	void push(string s);
   void push_down(Node* N, string s);
-	void append(Node* N);
+	void append(string s);
 	void sort();
 
   // Printing
