@@ -7,6 +7,7 @@
 #include <string>
 #include <vector>
 #include <algorithm>
+#include <limits.h>
 
 #include <time.h>
 
@@ -15,6 +16,7 @@ using namespace std;
 // SOURCE FOR THE FOLLOWING SECTION - https://www.geeksforgeeks.org/dijkstras-algorithm-for-adjacency-list-representation-greedy-algo-8/
 // -------------------------------------------------------------------------------------------------
 // Structure to represent a min heap node
+int NO_PARENT = 0;
 struct MinHeapNode
 {
     int  v;
@@ -184,29 +186,43 @@ bool isInMinHeap(struct MinHeap *minHeap, int v)
      return true;
    return false;
 }
-/*void dijkstra(vector<vector<string>> v1, int src, string s)
+void printPath(int currentVertex, int parents[])
+{
+    // Base case : Source node has
+    // been processed
+    if (currentVertex == 0) {
+        return;
+    }
+    printPath(parents[currentVertex], parents);
+    cout << currentVertex << " ";  
+}
+vector<int> dijkstra(vector<vector<int>> t, int src, int target)
 {
      
     // Get the number of vertices in graph
-    int V = v1.size();
-   
+    int V = t.size();
+    cout<<"V = "<<V<<endl;
     // dist values used to pick
     // minimum weight edge in cut
-    int dist[V];    
+    int dist[V];
+    int parent[V];
+    vector<int> path;
+       
  
     // minHeap represents set E
     struct MinHeap* minHeap = createMinHeap(V);
  
     // Initialize min heap with all
     // vertices. dist value of all vertices
+    cout<<"2"<<endl;
     for (int v = 0; v < V; ++v)
     {
         dist[v] = INT_MAX;
-        minHeap->array[v] = newMinHeapNode(v,
-                                      dist[v]);
+        parent[v] = -1;
+        minHeap->array[v] = newMinHeapNode(v, dist[v]);
         minHeap->pos[v] = v;
     }
- 
+    
     // Make dist value of src vertex
     // as 0 so that it is extracted first
     minHeap->array[src] =
@@ -222,6 +238,11 @@ bool isInMinHeap(struct MinHeap *minHeap, int v)
     // min heap contains all nodes
     // whose shortest distance
     // is not yet finalized.
+    cout<<"3"<<endl;
+    //for(int i = 1; i <= 300001; i+=10000){
+     // cout<<i<<": dist: "<<dist[i]<<" parent: "<<parent[i]<<endl;
+    //}
+    int visited = 0;
     while (!isEmpty(minHeap))
     {
         // Extract the vertex with
@@ -231,38 +252,65 @@ bool isInMinHeap(struct MinHeap *minHeap, int v)
        
         // Store the extracted vertex number
         int u = minHeapNode->v;
+        /*cout<<"Vertex: "<<t[u][0]<<endl;
+        for(int i = 1; i < t[u].size()-1; i++){
+          cout<<i<<": "<<t[u][i]<<endl;
+        }*/
  
         // Traverse through all adjacent
         // vertices of u (the extracted
         // vertex) and update
         // their distance values
-        struct AdjListNode* pCrawl =
-                     graph->array[u].head;
-        while (pCrawl != NULL)
+        //int pCrawl = t[u][1];
+                                     //graph->array[u].head;
+        //while (pCrawl != NULL)
+        for(int pCrawl = 1; pCrawl < t[u].size()-1; pCrawl++)
         {
-            int v = pCrawl->dest;
- 
+            int v = t[u][pCrawl];
+            visited++;
             // If shortest distance to v is
             // not finalized yet, and distance to v
             // through u is less than its
             // previously calculated distance
-            if (isInMinHeap(minHeap, v) &&
-                      dist[u] != INT_MAX &&
-              pCrawl->weight + dist[u] < dist[v])
+            //if(dist[u] == V) cout<<"possible"<<endl;
+            if (isInMinHeap(minHeap, v) && dist[u] != INT_MAX && 1 + dist[u] < dist[v])
             {
-                dist[v] = dist[u] + pCrawl->weight;
+                dist[v] = dist[u] + 1;
+                parent[v] = u;
  
                 // update distance
                 // value in min heap also
                 decreaseKey(minHeap, v, dist[v]);
             }
-            pCrawl = pCrawl->next;
         }
     }
- 
+    //cout<<"DISTANCE TO TARGET: "<<dist[target]<<endl;
+    cout<<"VISITED: "<<visited<<endl;
+    //printPath(target, parent);
+    if(dist[target] == V){
+      path[0] == -1;
+      return path;
+    }
+    int current = target;
+    int inf_blocker = 0;
+    while(current != parent[src] && inf_blocker < V){
+      path.insert(path.begin(),current);
+      current = parent[current];
+      inf_blocker++;
+    }
+    if(inf_blocker == V){
+      path[0] = -1;
+    }
+    cout<<"5"<<endl;
+    cout<<endl;
+    for(int i = 0; i < 15; i++){
+      cout<<path[i]<<" , ";
+    }
+    cout<<endl;
+    return path;
     // print the calculated shortest distances
-    printArr(dist, V);
-}*/
+    //printArr(dist, V);
+}
 // -------------------------------------------------------------------------------------------------
 // END OF CITED SECTION - https://slaystudy.com/c-vector-quicksort/
 // -------------------------------------------------------------------------------------------------
@@ -290,6 +338,11 @@ void PrintVector(vector<string> v){
 	for(unsigned int i=0;i<v.size();++i)
 		cout<<i<<": "<<v[i]<<endl;
 }
+void PrintVector_int(vector<int> v){
+  cout<<" ";
+	for(unsigned int i=0;i<v.size();++i)
+		cout<<i<<": "<<v[i]<<endl;
+}
 void Quicksort(vector<string> &v, int start, int end ){
 
 	if(start<end){
@@ -302,19 +355,6 @@ void Quicksort(vector<string> &v, int start, int end ){
 // END OF CITED SECTION - https://slaystudy.com/c-vector-quicksort/
 // -------------------------------------------------------------------------------------------------
 
-string find_path(List actors, string a1, string a2, string seen){
-  cout<<"0"<<endl;
-  Node* cur = actors.find(a1);
-  cout<<"1"<<endl;
-  Node* temp = cur->down;
-  cout<<"2"<<endl;
-  while(temp != NULL && temp->name != "DUMMY_NODE"){
-    seen += temp->name;
-    cout<<seen<<endl;
-    temp = temp->down;
-  }
-  return "";
-}
 //void vector_find(vector<vector<string>> v, string s, int low, int high, int *r){
 void vector_find(vector<string> v, string s, int low, int high, int *r){
     int mid = (high+low) / 2;
@@ -359,13 +399,13 @@ void vector_find(vector<string> v, string s, int low, int high, int *r){
       }   
     }
 }
-void load_actor_adjacency(vector<vector<string>> v1, vector<string> v, List movies){
+vector<vector<int>> load_actor_adjacency(vector<vector<string>> v1, vector<string> v, vector<vector<int>> t, List movies){
     clock_t start,s2,e2,end;
     double t_find_total;
     Node* cur_x = movies.getHead();
     Node* cur_y;
     Node* temp;
-    vector<string>::iterator v2,v3,low,up,low2,up2;
+    vector<string>::iterator v2,v3,v4,low,up,low2,up2;
 
     double cpu_time_used;
     int i = 0;
@@ -393,11 +433,15 @@ void load_actor_adjacency(vector<vector<string>> v1, vector<string> v, List movi
             while(temp != NULL && temp->name != "DUMMY_NODE"){ // adding other names to name's adj list
                 if(temp != cur_y){
                   // if name is not already present, add it
-                  //cout<<"V1: "<<v1[v2 - v.begin()][0]<<" ; "<<(v2-v.begin())<<" ; "<<t[v2 - v.begin()]<<endl;
                   
                   v3 = find (v1[v2 - v.begin()].begin(),v1[v2 - v.begin()].end(), temp->name); // index of name's vector
                   if(v3 == v1[v2 - v.begin()].end()){
+
                     v1[v2 - v.begin()].push_back(temp->name);
+                    low2= lower_bound (v.begin(), v.end(), temp->name); // find int value for conversion
+                    up2= upper_bound (v.begin(), v.end(), temp->name);
+                    v4 = find(low2, up2, temp->name);
+                    t[v2 - v.begin()].push_back(v4 - v.begin());
                   }
                 }
                 temp = temp->down;
@@ -418,9 +462,42 @@ void load_actor_adjacency(vector<vector<string>> v1, vector<string> v, List movi
     cout<<"77200: "<<v1[77200][0]<<endl;
     cout<<"105476: "<<v1[105476][0]<<endl;
     //for(int i = 0; i < 50; i++){
-    //PrintVector(v1[105476]);
+    
     cout<<"V1 size: "<<v1.size()<<endl;
+    return t;
     //}
+}
+string find_movies(vector<int> path, List movies, vector<string> v){
+    string out;
+    vector<string>::iterator v2,low,up;
+    Node* cur;
+    Node* dwn;
+    bool n1 = false;
+    bool n2 = false;
+    string name1 = "";
+    string name2 = "";
+    cout<<"finding movies"<<endl;
+    for(int i = 0; i < path.size()-1; i++){
+      cur = movies.getHead();
+
+      n1 = false;
+      n2 = false;
+      name1 = v[path[i]];
+      name2 = v[path[i+1]];
+      while((cur != NULL && cur->name != "DUMMY_NODE")&&(!(n1&&n2))){
+        dwn = cur->down;
+        while((dwn != NULL && dwn->name != "DUMMY_NODE")&&(!(n1&&n2))){
+          if(dwn->name == name1) n1 = true;
+          if(dwn->name == name2) n2 = true;
+          dwn = dwn->down;
+        }
+        if(!n1 || !n2)
+          cur = cur->next;
+      }
+      out += name1 + " -(" + cur->name + ")- ";
+    }
+    out += name2;
+    return out;
 }
 int main(int argc, char** argv)
 {
@@ -432,14 +509,15 @@ int main(int argc, char** argv)
     ifstream input; // stream for input file
     ofstream output; // stream for output file
 
-    input.open(argv[1]); // open input file
+    input.open("cleaned_movielist.txt");// open input file
     output.open(argv[2]); // open output file
     
     string in;
     string out;
     string token = "";
     vector<string> v;
-    //vector<vector<int>> t;
+    vector<int> path;
+    vector<vector<int>> t;
     vector<vector<string>> v1;
 
     
@@ -477,7 +555,7 @@ int main(int argc, char** argv)
     sort(v.begin(),v.end());
     cout<<"sorted"<<endl;
     //PrintVector(v);
-    vector<string>::iterator v2;
+    vector<string>::iterator v2, low, up;
     v2 = std::unique(v.begin(), v.end());
     //PrintVector(v);
     v.resize(std::distance(v.begin(),v2));
@@ -485,12 +563,15 @@ int main(int argc, char** argv)
     for(unsigned int i = 0; i < v.size(); i++){
       v1.push_back(vector<string>());
       v1[i].push_back(v[i]);
-      //t[i].push_back(i);
+      t.push_back(vector<int>());
+      t[i].push_back((int)i);
     }
+    
     //for(int i = 0; i < 300; i++){
-     // cout<<i<<": "<<t[i]<<endl;
+     // cout<<i<<": "<<t[i][0]<<endl;
       
     //}
+    
     
     cout<<"Test 1: "<<v1[105476][0]<<endl;
     cout<<"Test 2: "<<v1[115350][0]<<endl;
@@ -511,13 +592,54 @@ int main(int argc, char** argv)
     c = v2 - v.begin();
     cout<<"V2 : "<< c<<endl;
 
-    load_actor_adjacency(v1, v, movies);
-    string s1 = "Seshadhri";
-    string s2 = "John_Wayne";
-    string s3 = "";
-
+    t = load_actor_adjacency(v1, v, t, movies);
     
-    cout<<"check"<<endl;
+    PrintVector(v1[11129]);
+    PrintVector_int(t[11129]);
+    PrintVector(v1[202494]);
+    PrintVector_int(t[202494]);
+
+    input.close();
+    input.open(argv[1]);
+    int index1 = 0;
+    int index2 = 0;
+    bool abort = false;
+    int block = 0;
+    while(getline(input,in)&&block<2){
+      abort = false;
+      block++;
+      token = in.substr(0,in.find_first_of(" "));
+      in = in.substr(in.find_first_of(" ")+1,in.length());
+
+      low= lower_bound (v.begin(), v.end(), token); //
+      up= upper_bound (v.begin(), v.end(), token);
+      v2 = find (low, up, token); // 
+      index1 = (v2 - v.begin());
+      if(v2 == v.end()) abort = true; // if name 1 isn't found
+      
+      low= lower_bound (v.begin(), v.end(), in); //
+      up= upper_bound (v.begin(), v.end(), in);
+      v2 = find (low, up, in); //
+      index2 = (v2 - v.begin());
+      if(v2 == v.end()) abort = true; // if name 2 isn't found
+
+      if(index1 == index2) abort = true; // if name 1 and name 2 are the same
+
+      if(!abort){
+        cout<<"dijkstra-ing: "<<v[index2]<<"("<<index2<<") to ";
+        cout<<v[index1]<<"("<<index1<<")"<<endl;
+        path = dijkstra(t, index2, index1);
+        if(path[0] == -1){
+          out = "Not present\n";
+        }else{
+          out = find_movies(path, movies, v);
+        }
+      }else{
+        out = "Not present\n";
+      }
+      cout<<out<<endl;
+      output<<out<<endl;
+    }
     //out = find_path(actors, s1, s2, s3);
     input.close(); //close input stream
     output.close(); // close output stream
@@ -528,4 +650,3 @@ int main(int argc, char** argv)
     v1, vector of numbers,
     v, vector of strings as a translator for v1.*/
 }
-
