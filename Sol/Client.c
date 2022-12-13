@@ -7,6 +7,8 @@
 #include "Game.h"
 #include "Scoreboard.h"
 //#include "Sol.html"
+// Testing Git upload
+
 #define SEED 2022
 int scores_input(int players, int round, bool isTest, FILE* p, char names[players][2]){// char* names[]
 	int in = 0;
