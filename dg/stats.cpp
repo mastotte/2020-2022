@@ -102,37 +102,41 @@ int determine_event(string text){
         return 23;
     }else if(text == "MVP Open"){
         return 24;
+    }else{
+        return 24;
     }
 }
 int calc_average(smatch matches, int rounds){
+    int avg = 0;
     switch(rounds){
         case 1:
-        int avg = stoi(matches[8]);
+        avg = stoi(matches[8]);
         avg = avg/1;
         break;
         case 2:
-        int avg = stoi(matches[8]) + stoi(matches[10]);
+        avg = stoi(matches[8]) + stoi(matches[10]);
         avg = avg/2;
         break;
         case 3:
-        int avg = stoi(matches[8]) + stoi(matches[10]) + stoi(matches[12]);
+        avg = stoi(matches[8]) + stoi(matches[10]) + stoi(matches[12]);
         avg = avg/3;
         break;
         case 4:
-        int avg = stoi(matches[8]) + stoi(matches[10]) + stoi(matches[12]) + stoi(matches[14]);
+        avg = stoi(matches[8]) + stoi(matches[10]) + stoi(matches[12]) + stoi(matches[14]);
         avg = avg/4;
         break;
         case 5:
-        int avg = stoi(matches[8]) + stoi(matches[10]) + stoi(matches[12]) + stoi(matches[14]) + stoi(matches[16]);
+        avg = stoi(matches[8]) + stoi(matches[10]) + stoi(matches[12]) + stoi(matches[14]) + stoi(matches[16]);
         avg = avg/5;
         break;
         case 6:
-        int avg = stoi(matches[8]) + stoi(matches[10]) + stoi(matches[12]) + stoi(matches[14]) + stoi(matches[16]) + stoi(matches[18]);
+        avg = stoi(matches[8]) + stoi(matches[10]) + stoi(matches[12]) + stoi(matches[14]) + stoi(matches[16]) + stoi(matches[18]);
         avg = avg/6;
         break;
     }
+    return avg;
 }
-int player_index(string Players[1000], string name){
+int player_index(string Players[100], string name){
     for(int i = 0; i < 1000; i++){
         if(Players[i].length() == 0){
             return i;
@@ -145,7 +149,7 @@ int player_index(string Players[1000], string name){
     return -1;
 }
 // Outputs the 5 best Overperformers at given event
-void print_event_best(string Players[1000], int Stats[1000][26], int event){
+void print_event_best(string Players[100], int Stats[100][26], int event){
     int names[5] = {0};
     int scores[5] = {0};
     int max_index = -1;
@@ -171,23 +175,23 @@ void print_event_best(string Players[1000], int Stats[1000][26], int event){
 // 
 
 int main() {
-    string Players[1000] = {""};
-    int Stats2023[1000][26] = {0};
+    string Players[100] = {""};
+    int Stats2023[100][26] = {0};
     //int Stats2022[1000][26] = {0};
     smatch matches;
     regex DNF(R"((\d+)\t0.00\t([^\t]+))");
-    regex pattern_1round$(R"((\d+)\t([\d.]+)\t([^\t]+)\t(\d+)\t(\d+)\t(-?\d+)\t(\d+)\t(\d+)\t(\d+)\t(\$[\d,]+))");
+    /*regex pattern_1round$(R"((\d+)\t([\d.]+)\t([^\t]+)\t(\d+)\t(\d+)\t(-?\d+)\t(\d+)\t(\d+)\t(\d+)\t(\$[\d,]+))");
     regex pattern_2round$(R"((\d+)\t([\d.]+)\t([^\t]+)\t(\d+)\t(\d+)\t(-?\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\$[\d,]+))");
     regex pattern_3round$(R"((\d+)\t([\d.]+)\t([^\t]+)\t(\d+)\t(\d+)\t(-?\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\$[\d,]+))");
     regex pattern_4round$(R"((\d+)\t([\d.]+)\t([^\t]+)\t(\d+)\t(\d+)\t(-?\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\$[\d,]+))");
     regex pattern_5round$(R"((\d+)\t([\d.]+)\t([^\t]+)\t(\d+)\t(\d+)\t(-?\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\$[\d,]+))");
-    regex pattern_6round$(R"((\d+)\t([\d.]+)\t([^\t]+)\t(\d+)\t(\d+)\t(-?\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\$[\d,]+))");
-    regex pattern_1round(R"((\d+)\t([\d.]+)\t([^\t]+)\t(\d+)\t(\d+)\t(-?\d+)\t(\d+)\t(\d+)\t(\d+)\t)");
-    regex pattern_2round(R"((\d+)\t([\d.]+)\t([^\t]+)\t(\d+)\t(\d+)\t(-?\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t)");
-    regex pattern_3round(R"((\d+)\t([\d.]+)\t([^\t]+)\t(\d+)\t(\d+)\t(-?\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t)");
-    regex pattern_4round(R"((\d+)\t([\d.]+)\t([^\t]+)\t(\d+)\t(\d+)\t(-?\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t)");
-    regex pattern_5round(R"((\d+)\t([\d.]+)\t([^\t]+)\t(\d+)\t(\d+)\t(-?\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t)");
-    regex pattern_6round(R"((\d+)\t([\d.]+)\t([^\t]+)\t(\d+)\t(\d+)\t(-?\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t)");
+    regex pattern_6round$(R"((\d+)\t([\d.]+)\t([^\t]+)\t(\d+)\t(\d+)\t(-?\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\$[\d,]+))");*/
+    regex pattern_1round(R"((\d+)\t([\d.]+)\t([^\t]+)\t(\d+)\t(\d+)\t(-?\d+)\t(\d+)\t(\d+))");
+    regex pattern_2round(R"((\d+)\t([\d.]+)\t([^\t]+)\t(\d+)\t(\d+)\t(-?\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+))");
+    regex pattern_3round(R"((\d+)\t([\d.]+)\t([^\t]+)\t(\d+)\t(\d+)\t(-?\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+))");
+    regex pattern_4round(R"((\d+)\t([\d.]+)\t([^\t]+)\t(\d+)\t(\d+)\t(-?\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+))");
+    regex pattern_5round(R"((\d+)\t([\d.]+)\t([^\t]+)\t(\d+)\t(\d+)\t(-?\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+))");
+    regex pattern_6round(R"((\d+)\t([\d.]+)\t([^\t]+)\t(\d+)\t(\d+)\t(-?\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+))");
     // Import Data
     ifstream in ("2023.txt");
     cout<<"check"<<endl;
@@ -201,24 +205,12 @@ int main() {
             getline(in,text);
             event = determine_event(text);
         }
-        getline(in,text); // set text to first line of new tournament
-        if(regex_match(text, matches, DNF)){ 
+        //getline(in,text); // set text to first line of new tournament
+        else if(regex_match(text, matches, DNF)){ 
             // getting rid of DNF finishes
             // -ignore
         }else{
-            if(regex_match(text, matches, pattern_6round$)){
-                rounds = 6;
-            }else if(regex_match(text, matches, pattern_5round$)){
-                rounds = 5;
-            }else if(regex_match(text, matches, pattern_4round$)){
-                rounds = 4;
-            }else if(regex_match(text, matches, pattern_3round$)){
-                rounds = 3;
-            }else if(regex_match(text, matches, pattern_2round$)){
-                rounds = 2;
-            }else if(regex_match(text, matches, pattern_1round$)){
-                rounds = 1;
-            }else if(regex_match(text, matches, pattern_6round)){
+            if(regex_match(text, matches, pattern_6round)){
                 rounds = 6;
             }else if(regex_match(text, matches, pattern_5round)){
                 rounds = 5;
@@ -230,11 +222,16 @@ int main() {
                 rounds = 2;
             }else if(regex_match(text, matches, pattern_1round)){
                 rounds = 1;
+            }else{
+                cout<<"NO REGEX FOUND"<<endl;
             }
             int index = player_index(Players, matches[3]);
             Players[index] = matches[3]; // write name to index, even if it already exists
+            cout<<"check 2"<<endl;
             int avg = calc_average(matches, rounds);
+            cout<<"check 3"<<endl;
             Stats2023[index][event] = stoi(matches[5]) - avg;
+            cout<<matches[3]<<" "<<avg<<endl;
         }
     }
     return 0;
