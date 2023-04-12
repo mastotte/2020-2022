@@ -186,44 +186,83 @@ int main() {
     regex pattern_4round$(R"((\d+)\t([\d.]+)\t([^\t]+)\t(\d+)\t(\d+)\t(-?\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\$[\d,]+))");
     regex pattern_5round$(R"((\d+)\t([\d.]+)\t([^\t]+)\t(\d+)\t(\d+)\t(-?\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\$[\d,]+))");
     regex pattern_6round$(R"((\d+)\t([\d.]+)\t([^\t]+)\t(\d+)\t(\d+)\t(-?\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\$[\d,]+))");*/
-    regex pattern_1round(R"((\d+)\t([\d.]+)\t([^\t]+)\t(\d+)\t(\d+)\t(-?\d+)\t(\d+)\t(\d+))");
-    regex pattern_2round(R"((\d+)\t([\d.]+)\t([^\t]+)\t(\d+)\t(\d+)\t(-?\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+))");
-    regex pattern_3round(R"((\d+)\t([\d.]+)\t([^\t]+)\t(\d+)\t(\d+)\t(-?\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+))");
-    regex pattern_4round(R"((\d+)\t([\d.]+)\t([^\t]+)\t(\d+)\t(\d+)\t(-?\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+))");
-    regex pattern_5round(R"((\d+)\t([\d.]+)\t([^\t]+)\t(\d+)\t(\d+)\t(-?\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+))");
-    regex pattern_6round(R"((\d+)\t([\d.]+)\t([^\t]+)\t(\d+)\t(\d+)\t(-?\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+))");
+    regex pattern_1round(R"(^(\d+)\t([\d\.]+)\t([^\t]+)\t(\d+)\t(\d+)\t(-?\d+)\t(\d+)\t(\d+)\t(\d+))");
+    regex pattern_2round(R"(^(\d+)\t([\d\.]+)\t([^\t]+)\t(\d+)\t(\d+)\t(-?\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+))");
+    regex pattern_3round(R"(^(\d+)\t([\d\.]+)\t([^\t]+)\t(\d+)\t(\d+)\t(-?\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+))");
+    regex pattern_4round(R"(^(\d+)\t([\d\.]+)\t([^\t]+)\t(\d+)\t(\d+)\t(-?\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+))");
+    regex pattern_5round(R"(^(\d+)\t([\d\.]+)\t([^\t]+)\t(\d+)\t(\d+)\t(-?\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+))");
+    regex pattern_6round(R"(^(\d+)\t([\d\.]+)\t([^\t]+)\t(\d+)\t(\d+)\t(-?\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+))");
     // Import Data
     ifstream in ("2023.txt");
-    cout<<"check"<<endl;
+    cout<<"check 2"<<endl;
     int event = 1;
     int rounds = 0;
     while(!in.eof()){
         string text;
         getline(in,text);
-        if(text.length() < 3){ // blank newline?
+        cout<<"Text 1: "<<text<<endl;
+        if(text.length() == 0){ // blank newline?
             // it's a new event
             getline(in,text);
             event = determine_event(text);
+            cout<<"Event: "<<text<<endl;
         }
-        //getline(in,text); // set text to first line of new tournament
+        else if(text.length() == 1){
+            rounds = stoi(text);
+            cout<<"Rounds: "<<rounds<<endl;
+        }
         else if(regex_match(text, matches, DNF)){ 
             // getting rid of DNF finishes
             // -ignore
         }else{
-            if(regex_match(text, matches, pattern_6round)){
-                rounds = 6;
-            }else if(regex_match(text, matches, pattern_5round)){
-                rounds = 5;
-            }else if(regex_match(text, matches, pattern_4round)){
-                rounds = 4;
-            }else if(regex_match(text, matches, pattern_3round)){
-                rounds = 3;
-            }else if(regex_match(text, matches, pattern_2round)){
-                rounds = 2;
-            }else if(regex_match(text, matches, pattern_1round)){
-                rounds = 1;
+            bool x = false;
+            cout<<"Text 2: "<<text<<endl;
+            if(rounds == 6){
+                x = regex_search(text, matches, pattern_6round);
+                if(!x){
+                    rounds = 5;
+                    x =regex_search(text, matches, pattern_5round);
+                }
+                cout<<"6 round called"<<endl;
+            }else if(rounds == 5){
+                x =regex_search(text, matches, pattern_5round);
+                if(!x){
+                    rounds = 4;
+                    x =regex_search(text, matches, pattern_4round);
+                }
+                cout<<"5 round called"<<endl;
+            }else if(rounds == 4){
+                x =regex_search(text, matches, pattern_4round);
+                if(!x){
+                    rounds = 3;
+                    x =regex_search(text, matches, pattern_3round);
+                }
+                cout<<"4 round called"<<endl;
+            }else if(rounds == 3){
+                x =regex_search(text, matches, pattern_3round);
+                if(!x){
+                    rounds = 2;
+                    x =regex_search(text, matches, pattern_2round);
+                }
+                cout<<"3 round called"<<endl;
+            }else if(rounds == 2){
+                x =regex_search(text, matches, pattern_2round);
+                if(!x){
+                    rounds = 1;
+                    x =regex_search(text, matches, pattern_1round);
+                }
+                cout<<"2 round called"<<endl;
+            }else if(rounds == 1){
+                x =regex_search(text, matches, pattern_1round);
+                cout<<"1 round called"<<endl;
             }else{
+                
                 cout<<"NO REGEX FOUND"<<endl;
+            }
+            if(x == true){
+                cout<<"x is true"<<endl;
+            }else{
+                cout<<"x is false"<<endl;
             }
             int index = player_index(Players, matches[3]);
             Players[index] = matches[3]; // write name to index, even if it already exists
@@ -234,5 +273,6 @@ int main() {
             cout<<matches[3]<<" "<<avg<<endl;
         }
     }
+    cout<<Stats2023[0][0];
     return 0;
 }
