@@ -191,8 +191,51 @@ void print_event_best(string Players[10000], int Stats[10000]){
     }
     cout<<endl;
 }
-// calculates the hottest players of the last 3 events
-void calc_hottest(string Players[10000],int Stats[26][10000], int event_count){
+//
+void print_event_worst(string Players[10000], int Stats[10000]){
+    int names[20] = {0};
+    int scores[20] = {999};
+    int max_index = -1;
+    int max = 999;
+    int i = 0;
+    while(Players[i] != ""){
+        if(Stats[i] < max){
+            // find lowest
+            max = -999;
+            for(int j = 0; j < 20; j++){
+                if(max < scores[j]){
+                    max = scores[j];
+                    max_index = j;
+                }
+            }
+            scores[max_index] = Stats[i];
+            names[max_index] = i;
+        }
+        i++;
+    }
+    // bubble sort on list
+    int swaps = 1;
+    while(swaps != 0){
+        swaps = 0;
+        for(int k = 0; k < 20-1; k++){
+            if(scores[k]<scores[k+1]){
+                swap(scores[k],scores[k+1]);
+                swap(names[k],names[k+1]);
+                swaps++;
+            }
+        }
+    } 
+    if(scores[0] == 0 || scores[0] == -999){
+        cout<<"Event Not Played"<<endl;
+    }else{
+        for(int n = 0; n < 20; n++){
+            cout<<Players[names[n]]<<": "<<scores[n]<<endl;
+        }
+    }
+    cout<<endl;
+}
+// calculates the hottest and coldest players of the last 3 events
+void calc_temp(string Players[10000],int Stats[26][10000], int event_count){
     int Heat[10000] = {0};
     int j = 0;
     int i = 0;
@@ -203,7 +246,7 @@ void calc_hottest(string Players[10000],int Stats[26][10000], int event_count){
         j = 0;
         sum = 0;
         played = 0;
-        while(event_count - j > 0 && j < 3){
+        while(event_count - j > 0 && j < 4){
             if(Stats[event_count-j][i] != -999){
                 sum += (Stats[event_count-j][i]);
                 played++;
@@ -221,6 +264,8 @@ void calc_hottest(string Players[10000],int Stats[26][10000], int event_count){
     }
     cout<<"Hottest:"<<endl;
     print_event_best(Players, Heat);
+    cout<<"Coldest:"<<endl;
+    print_event_worst(Players,Heat);
 }
 // calculates the best players at every event in the last 2 years
 void event_best(string Players[10000],int Stats2021[26][10000],int Stats2022[26][10000],int Stats2023[26][10000], string events[26]){
@@ -296,10 +341,10 @@ int compile_year(string Players[10000], int Stats[26][10000], string filename){
             rounds = stoi(text);
             if(rounds == 9){ // event not played yet
                 event_count--;
-                break;
+                
             } 
             if(rounds == 8){ // event didn't exist in this year
-
+                event_count--;
             }
             //cout<<"Rounds: "<<rounds<<endl;
         }
@@ -360,27 +405,40 @@ int compile_year(string Players[10000], int Stats[26][10000], string filename){
 }
 int main() {
     string Players[10000] = {""};
+    string Players_FPO[10000] = {""};
     string events[26] = {"-","Las Vegas Challenge","WACO","The Open at Austin","Texas State Disc Golf Championships","Music City Open","Blue Ridge Championship","Champions Cup","Jonesboro Open","OTB Open","Beaver State Fling","Cascade Challenge","Zoo Town Open","Dynamic Discs Open","Des Moines Challenge","Kansas City Wide Open","PCS Open","European Open","Mid America Open","Ledgestone Open","Idlewild","Great Lakes Open","Jim Palmeri's AFDO","PDGA Worlds","MVP Open"};
     int Stats2023[26][10000] = {0};
     int Stats2022[26][10000] = {0};
     int Stats2021[26][10000] = {0};
+    int Stats2023_FPO[26][10000] = {0};
+    int Stats2022_FPO[26][10000] = {0};
+    int Stats2021_FPO[26][10000] = {0};
     for(int i = 0; i < 26; i++){
         for(int j = 0; j < 10000; j++){
             Stats2023[i][j] = -999;
             Stats2022[i][j] = -999;
-            Stats2022[i][j] = -999;
+            Stats2021[i][j] = -999;
+            Stats2023_FPO[i][j] = -999;
+            Stats2022_FPO[i][j] = -999;
+            Stats2021_FPO[i][j] = -999;
         }
     }
     int event_count = compile_year(Players, Stats2023,"2023.txt");
     compile_year(Players, Stats2022,"2022.txt");
     compile_year(Players, Stats2021,"2021.txt");
+    compile_year(Players_FPO, Stats2023_FPO, "2023_FPO.txt");
+    compile_year(Players_FPO, Stats2022_FPO, "2022_FPO.txt");
+    compile_year(Players_FPO, Stats2021_FPO, "2021_FPO.txt");
     for(int i = 1; i <= event_count; i++){
         cout<<events[i]<<endl;
         print_event_best(Players, Stats2023[i]);
+        print_event_best(Players_FPO,Stats2023_FPO[i]);
         cout<<endl<<endl;
     }
-    cout<<"----------HOTTEST----------"<<endl;
-    calc_hottest(Players,Stats2023,event_count);
+    cout<<"----------TEMP MPO----------"<<endl;
+    calc_temp(Players,Stats2023,event_count);
+    cout<<"----------TEMP FPO----------"<<endl;
+    calc_temp(Players_FPO,Stats2023_FPO,event_count);
     cout<<endl<<endl<<"----------Event History----------"<<endl;
     event_best(Players,Stats2021,Stats2022,Stats2023,events);
 }
