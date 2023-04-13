@@ -96,7 +96,7 @@ int determine_event(string text){
         return 20;
     }else if(text == "Great Lakes Open"){
         return 21;
-    }else if(text == "Jim Palmeri's AFDO "){
+    }else if(text == "Jim Palmeri's AFDO"){
         return 22;
     }else if(text == "PDGA Worlds"){
         return 23;
@@ -136,8 +136,8 @@ int calc_average(smatch matches, int rounds){
     }
     return avg;
 }
-int player_index(string Players[100], string name){
-    for(int i = 0; i < 1000; i++){
+int player_index(string Players[10000], string name){
+    for(int i = 0; i < 10000; i++){
         if(Players[i].length() == 0){
             return i;
         }
@@ -148,131 +148,239 @@ int player_index(string Players[100], string name){
     }
     return -1;
 }
-// Outputs the 5 best Overperformers at given event
-void print_event_best(string Players[100], int Stats[100][26], int event){
-    int names[5] = {0};
-    int scores[5] = {0};
-    int max_index = -1;
-    int max = 0;
-    for(int i = 0; i < 1000; i++){
-        if(Stats[i][event] < max){
-            // find highest
-            max = -999;
-            for(int j = 0; j < 5; j++){
-                if(max < scores[j]){
-                    max = scores[j];
-                    max_index = j;
+// Outputs the 20 best Overperformers at given event
+void print_event_best(string Players[10000], int Stats[10000]){
+    int names[20] = {0};
+    int scores[20] = {-999};
+    int min_index = -1;
+    int min = -999;
+    int i = 0;
+    while(Players[i] != ""){
+        if(Stats[i] > min){
+            // find lowest
+            min = 999;
+            for(int j = 0; j < 20; j++){
+                if(min > scores[j]){
+                    min = scores[j];
+                    min_index = j;
                 }
             }
-            scores[max_index] = Stats[i][event];
-            names[max_index] = i;
+            scores[min_index] = Stats[i];
+            names[min_index] = i;
+        }
+        i++;
+    }
+    // bubble sort on list
+    int swaps = 1;
+    while(swaps != 0){
+        swaps = 0;
+        for(int k = 0; k < 20-1; k++){
+            if(scores[k]<scores[k+1]){
+                swap(scores[k],scores[k+1]);
+                swap(names[k],names[k+1]);
+                swaps++;
+            }
+        }
+    } 
+    if(scores[0] == 0 || scores[0] == -999){
+        cout<<"Event Not Played"<<endl;
+    }else{
+        for(int n = 0; n < 20; n++){
+            cout<<Players[names[n]]<<": "<<scores[n]<<endl;
         }
     }
-    for(int i = 0; i < 5; i++){
-        cout<<Players[names[i]]<<": "<<scores[i]<<endl;
+    cout<<endl;
+}
+// calculates the hottest players of the last 3 events
+void calc_hottest(string Players[10000],int Stats[26][10000], int event_count){
+    int Heat[10000] = {0};
+    int j = 0;
+    int i = 0;
+    int played = 0;
+    int avg = 0;
+    int sum = 0;
+    while(Players[i] != ""){
+        j = 0;
+        sum = 0;
+        played = 0;
+        while(event_count - j > 0 && j < 3){
+            if(Stats[event_count-j][i] != -999){
+                sum += (Stats[event_count-j][i]);
+                played++;
+            }
+            j++;
+        }
+        
+        if(played < 2){ // not big enough sample size
+            Heat[i] = 0;
+        }else{
+            avg = sum / played;
+            Heat[i] = avg;
+        }
+        i++;
+    }
+    cout<<"Hottest:"<<endl;
+    print_event_best(Players, Heat);
+}
+// calculates the best players at every event in the last 2 years
+void event_best(string Players[10000],int Stats2021[26][10000],int Stats2022[26][10000],int Stats2023[26][10000], string events[26]){
+    int event = 1;
+    for(int k = 0; k < 26; k++){
+        if(events[k] == "") break;
+        int EventScore[10000] = {0};
+        int i = 0;
+        int played = 0;
+        int avg = 0;
+        int sum = 0;
+        while(Players[i] != ""){
+            sum = 0;
+            played = 0;
+            
+            if(Stats2021[event][i] != -999){
+                sum += (Stats2021[event][i]);
+                played++;
+            }
+            if(Stats2022[event][i] != -999){
+                sum += (Stats2022[event][i]);
+                played++;
+            }
+            
+            if(played < 2){ // must have played event both years
+                EventScore[i] = 0;
+            }else{
+                avg = sum / played;
+                EventScore[i] = avg;
+            }
+            i++;
+        }
+        cout<<"Best of '"<<events[event]<<"'"<<endl;
+        print_event_best(Players, EventScore);
+        event++;
+
     }
 }
-// 
 
-int main() {
-    string Players[100] = {""};
-    int Stats2023[100][26] = {0};
-    //int Stats2022[1000][26] = {0};
+int compile_year(string Players[10000], int Stats[26][10000], string filename){
     smatch matches;
-    regex DNF(R"((\d+)\t0.00\t([^\t]+))");
-    /*regex pattern_1round$(R"((\d+)\t([\d.]+)\t([^\t]+)\t(\d+)\t(\d+)\t(-?\d+)\t(\d+)\t(\d+)\t(\d+)\t(\$[\d,]+))");
-    regex pattern_2round$(R"((\d+)\t([\d.]+)\t([^\t]+)\t(\d+)\t(\d+)\t(-?\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\$[\d,]+))");
-    regex pattern_3round$(R"((\d+)\t([\d.]+)\t([^\t]+)\t(\d+)\t(\d+)\t(-?\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\$[\d,]+))");
-    regex pattern_4round$(R"((\d+)\t([\d.]+)\t([^\t]+)\t(\d+)\t(\d+)\t(-?\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\$[\d,]+))");
-    regex pattern_5round$(R"((\d+)\t([\d.]+)\t([^\t]+)\t(\d+)\t(\d+)\t(-?\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\$[\d,]+))");
-    regex pattern_6round$(R"((\d+)\t([\d.]+)\t([^\t]+)\t(\d+)\t(\d+)\t(-?\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\$[\d,]+))");*/
-    regex pattern_1round(R"(^(\d+)\t([\d\.]+)\t([^\t]+)\t(\d+)\t(\d+)\t(-?\d+)\t(\d+)\t(\d+)\t(\d+))");
-    regex pattern_2round(R"(^(\d+)\t([\d\.]+)\t([^\t]+)\t(\d+)\t(\d+)\t(-?\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+))");
-    regex pattern_3round(R"(^(\d+)\t([\d\.]+)\t([^\t]+)\t(\d+)\t(\d+)\t(-?\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+))");
-    regex pattern_4round(R"(^(\d+)\t([\d\.]+)\t([^\t]+)\t(\d+)\t(\d+)\t(-?\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+))");
-    regex pattern_5round(R"(^(\d+)\t([\d\.]+)\t([^\t]+)\t(\d+)\t(\d+)\t(-?\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+))");
-    regex pattern_6round(R"(^(\d+)\t([\d\.]+)\t([^\t]+)\t(\d+)\t(\d+)\t(-?\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+))");
+    regex DNF("DNF");
+    /*regex pattern_1round$(R"((\d+)\t([\d.]+)\t([^\t]+)\t(\d+)\t(\d+)\t([+-]?[\d.E]+)\t(\d+)\t(\d+)\t(\d+)\t(\$[\d,]+))");
+    regex pattern_2round$(R"((\d+)\t([\d.]+)\t([^\t]+)\t(\d+)\t(\d+)\t([+-]?[\d.E]+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\$[\d,]+))");
+    regex pattern_3round$(R"((\d+)\t([\d.]+)\t([^\t]+)\t(\d+)\t(\d+)\t([+-]?[\d.E]+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\$[\d,]+))");
+    regex pattern_4round$(R"((\d+)\t([\d.]+)\t([^\t]+)\t(\d+)\t(\d+)\t([+-]?[\d.E]+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\$[\d,]+))");
+    regex pattern_5round$(R"((\d+)\t([\d.]+)\t([^\t]+)\t(\d+)\t(\d+)\t([+-]?[\d.E]+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\$[\d,]+))");
+    regex pattern_6round$(R"((\d+)\t([\d.]+)\t([^\t]+)\t(\d+)\t(\d+)\t([+-]?[\d.E]+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\$[\d,]+))");*/
+    regex pattern_1round(R"(^(\d+)\t([\d\.]+)\t([^\t]+)\t(\d*)\t(\d*)\t([+-]?[\d.E]+)\t(\d+)\t(\d+))");
+    regex pattern_2round(R"(^(\d+)\t([\d\.]+)\t([^\t]+)\t(\d*)\t(\d*)\t([+-]?[\d.E]+)\t(\d+)\t(\d+)\t(\d+)\t(\d+))");
+    regex pattern_3round(R"(^(\d+)\t([\d\.]+)\t([^\t]+)\t(\d*)\t(\d*)\t([+-]?[\d.E]+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+))");
+    regex pattern_4round(R"(^(\d+)\t([\d\.]+)\t([^\t]+)\t(\d*)\t(\d*)\t([+-]?[\d.E]+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+))");
+    regex pattern_5round(R"(^(\d+)\t([\d\.]+)\t([^\t]+)\t(\d*)\t(\d*)\t([+-]?[\d.E]+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+))");
+    regex pattern_6round(R"(^(\d+)\t([\d\.]+)\t([^\t]+)\t(\d*)\t(\d*)\t([+-]?[\d.E]+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+))");
     // Import Data
-    ifstream in ("2023.txt");
-    cout<<"check 2"<<endl;
+    ifstream in (filename);
     int event = 1;
     int rounds = 0;
+    int event_count = 0;
     while(!in.eof()){
         string text;
         getline(in,text);
-        cout<<"Text 1: "<<text<<endl;
+        //cout<<"Text: "<<text<<endl;
         if(text.length() == 0){ // blank newline?
+            
             // it's a new event
             getline(in,text);
             event = determine_event(text);
-            cout<<"Event: "<<text<<endl;
+            //cout<<"Event: "<<text<<endl;
+            event_count++;
         }
         else if(text.length() == 1){
             rounds = stoi(text);
-            cout<<"Rounds: "<<rounds<<endl;
+            if(rounds == 9){ // event not played yet
+                event_count--;
+                break;
+            } 
+            if(rounds == 8){ // event didn't exist in this year
+
+            }
+            //cout<<"Rounds: "<<rounds<<endl;
         }
-        else if(regex_match(text, matches, DNF)){ 
+        else if(regex_search(text, DNF)){ 
             // getting rid of DNF finishes
             // -ignore
+            //cout<<"DNF REACHED"<<endl;
         }else{
             bool x = false;
-            cout<<"Text 2: "<<text<<endl;
             if(rounds == 6){
                 x = regex_search(text, matches, pattern_6round);
-                if(!x){
+                if(x == false){
                     rounds = 5;
                     x =regex_search(text, matches, pattern_5round);
                 }
-                cout<<"6 round called"<<endl;
             }else if(rounds == 5){
                 x =regex_search(text, matches, pattern_5round);
-                if(!x){
+                if(x == false){
                     rounds = 4;
                     x =regex_search(text, matches, pattern_4round);
                 }
-                cout<<"5 round called"<<endl;
             }else if(rounds == 4){
                 x =regex_search(text, matches, pattern_4round);
-                if(!x){
+                if(x == false){
                     rounds = 3;
                     x =regex_search(text, matches, pattern_3round);
                 }
-                cout<<"4 round called"<<endl;
             }else if(rounds == 3){
                 x =regex_search(text, matches, pattern_3round);
-                if(!x){
+                if(x == false){
                     rounds = 2;
                     x =regex_search(text, matches, pattern_2round);
                 }
-                cout<<"3 round called"<<endl;
             }else if(rounds == 2){
                 x =regex_search(text, matches, pattern_2round);
-                if(!x){
+                if(x == false){
                     rounds = 1;
                     x =regex_search(text, matches, pattern_1round);
                 }
-                cout<<"2 round called"<<endl;
             }else if(rounds == 1){
                 x =regex_search(text, matches, pattern_1round);
-                cout<<"1 round called"<<endl;
             }else{
                 
-                cout<<"NO REGEX FOUND"<<endl;
+                //cout<<"NO REGEX FOUND"<<endl;
             }
-            if(x == true){
-                cout<<"x is true"<<endl;
-            }else{
-                cout<<"x is false"<<endl;
+            if(x == false){
+                //cout<<"x is false"<<endl;
             }
             int index = player_index(Players, matches[3]);
             Players[index] = matches[3]; // write name to index, even if it already exists
-            cout<<"check 2"<<endl;
             int avg = calc_average(matches, rounds);
-            cout<<"check 3"<<endl;
-            Stats2023[index][event] = stoi(matches[5]) - avg;
-            cout<<matches[3]<<" "<<avg<<endl;
+            if(matches[5] != ""){
+                Stats[event][index] =  avg - stoi(matches[5]);
+            } 
         }
     }
-    cout<<Stats2023[0][0];
-    return 0;
+    return event_count;
+}
+int main() {
+    string Players[10000] = {""};
+    string events[26] = {"-","Las Vegas Challenge","WACO","The Open at Austin","Texas State Disc Golf Championships","Music City Open","Blue Ridge Championship","Champions Cup","Jonesboro Open","OTB Open","Beaver State Fling","Cascade Challenge","Zoo Town Open","Dynamic Discs Open","Des Moines Challenge","Kansas City Wide Open","PCS Open","European Open","Mid America Open","Ledgestone Open","Idlewild","Great Lakes Open","Jim Palmeri's AFDO","PDGA Worlds","MVP Open"};
+    int Stats2023[26][10000] = {0};
+    int Stats2022[26][10000] = {0};
+    int Stats2021[26][10000] = {0};
+    for(int i = 0; i < 26; i++){
+        for(int j = 0; j < 10000; j++){
+            Stats2023[i][j] = -999;
+            Stats2022[i][j] = -999;
+            Stats2022[i][j] = -999;
+        }
+    }
+    int event_count = compile_year(Players, Stats2023,"2023.txt");
+    compile_year(Players, Stats2022,"2022.txt");
+    compile_year(Players, Stats2021,"2021.txt");
+    for(int i = 1; i <= event_count; i++){
+        cout<<events[i]<<endl;
+        print_event_best(Players, Stats2023[i]);
+        cout<<endl<<endl;
+    }
+    cout<<"----------HOTTEST----------"<<endl;
+    calc_hottest(Players,Stats2023,event_count);
+    cout<<endl<<endl<<"----------Event History----------"<<endl;
+    event_best(Players,Stats2021,Stats2022,Stats2023,events);
 }
