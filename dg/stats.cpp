@@ -151,6 +151,9 @@ int player_index(string Players[10000], string name){
 // Outputs the 20 best Overperformers at given event
 void print_event_best(string Players[10000], int Stats[10000]){
     int names[20] = {0};
+    for(int x = 0; x < 20; x++){
+        names[x] = -1;
+    }
     int scores[20] = {-999};
     int min_index = -1;
     int min = -999;
@@ -186,7 +189,8 @@ void print_event_best(string Players[10000], int Stats[10000]){
         cout<<"Event Not Played"<<endl;
     }else{
         for(int n = 0; n < 20; n++){
-            cout<<Players[names[n]]<<": "<<scores[n]<<endl;
+            if(names[n]!=-1)
+                cout<<Players[names[n]]<<": "<<scores[n]<<endl;
         }
     }
     cout<<endl;
@@ -194,6 +198,9 @@ void print_event_best(string Players[10000], int Stats[10000]){
 //
 void print_event_worst(string Players[10000], int Stats[10000]){
     int names[20] = {0};
+    for(int x = 0; x < 20; x++){
+        names[x] = -1;
+    }
     int scores[20] = {999};
     int max_index = -1;
     int max = 999;
@@ -229,7 +236,8 @@ void print_event_worst(string Players[10000], int Stats[10000]){
         cout<<"Event Not Played"<<endl;
     }else{
         for(int n = 0; n < 20; n++){
-            cout<<Players[names[n]]<<": "<<scores[n]<<endl;
+            if(names[n]!=-1)
+                cout<<Players[names[n]]<<": "<<scores[n]<<endl;
         }
     }
     cout<<endl;
@@ -439,6 +447,8 @@ int main() {
     calc_temp(Players,Stats2023,event_count);
     cout<<"----------TEMP FPO----------"<<endl;
     calc_temp(Players_FPO,Stats2023_FPO,event_count);
-    cout<<endl<<endl<<"----------Event History----------"<<endl;
+    cout<<endl<<endl<<"----------Event History MPO----------"<<endl;
     event_best(Players,Stats2021,Stats2022,Stats2023,events);
+    cout<<endl<<endl<<"----------Event History FPO----------"<<endl;
+    event_best(Players_FPO,Stats2021_FPO,Stats2022_FPO,Stats2023_FPO,events);
 }
