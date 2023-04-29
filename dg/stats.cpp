@@ -322,12 +322,12 @@ int compile_year(string Players[10000], int Stats[26][10000], string filename){
     regex pattern_4round$(R"((\d+)\t([\d.]+)\t([^\t]+)\t(\d+)\t(\d+)\t([+-]?[\d.E]+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\$[\d,]+))");
     regex pattern_5round$(R"((\d+)\t([\d.]+)\t([^\t]+)\t(\d+)\t(\d+)\t([+-]?[\d.E]+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\$[\d,]+))");
     regex pattern_6round$(R"((\d+)\t([\d.]+)\t([^\t]+)\t(\d+)\t(\d+)\t([+-]?[\d.E]+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\$[\d,]+))");*/
-    regex pattern_1round(R"(^(\d+)\t([\d\.]+)\t([^\t]+)\t(\d*)\t(\d*)\t([+-]?[\d.E]+)\t(\d+)\t(\d+))");
-    regex pattern_2round(R"(^(\d+)\t([\d\.]+)\t([^\t]+)\t(\d*)\t(\d*)\t([+-]?[\d.E]+)\t(\d+)\t(\d+)\t(\d+)\t(\d+))");
-    regex pattern_3round(R"(^(\d+)\t([\d\.]+)\t([^\t]+)\t(\d*)\t(\d*)\t([+-]?[\d.E]+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+))");
-    regex pattern_4round(R"(^(\d+)\t([\d\.]+)\t([^\t]+)\t(\d*)\t(\d*)\t([+-]?[\d.E]+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+))");
-    regex pattern_5round(R"(^(\d+)\t([\d\.]+)\t([^\t]+)\t(\d*)\t(\d*)\t([+-]?[\d.E]+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+))");
-    regex pattern_6round(R"(^(\d+)\t([\d\.]+)\t([^\t]+)\t(\d*)\t(\d*)\t([+-]?[\d.E]+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+))");
+    regex pattern_1round(R"(^(\d+)\t([\d\.]*)\t([^\t]+)\t(\d*)\t(\d*)\t([+-]?[\d.E]+)\t(\d+)\t(\d+))");
+    regex pattern_2round(R"(^(\d+)\t([\d\.]*)\t([^\t]+)\t(\d*)\t(\d*)\t([+-]?[\d.E]+)\t(\d+)\t(\d+)\t(\d+)\t(\d+))");
+    regex pattern_3round(R"(^(\d+)\t([\d\.]*)\t([^\t]+)\t(\d*)\t(\d*)\t([+-]?[\d.E]+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+))");
+    regex pattern_4round(R"(^(\d+)\t([\d\.]*)\t([^\t]+)\t(\d*)\t(\d*)\t([+-]?[\d.E]+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+))");
+    regex pattern_5round(R"(^(\d+)\t([\d\.]*)\t([^\t]+)\t(\d*)\t(\d*)\t([+-]?[\d.E]+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+))");
+    regex pattern_6round(R"(^(\d+)\t([\d\.]*)\t([^\t]+)\t(\d*)\t(\d*)\t([+-]?[\d.E]+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+))");
     // Import Data
     ifstream in (filename);
     int event = 1;
