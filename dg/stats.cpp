@@ -275,41 +275,42 @@ void calc_temp(string Players[10000],int Stats[26][10000], int event_count){
     cout<<"Coldest:"<<endl;
     print_event_worst(Players,Heat);
 }
+// Single Event Best
+void single_event_best(string Players[10000],int Stats2021[26][10000],int Stats2022[26][10000],int Stats2023[26][10000], string events[26], int event){
+    if(events[event] == "") return;
+    int EventScore[10000] = {0};
+    int i = 0;
+    int played = 0;
+    int avg = 0;
+    int sum = 0;
+    while(Players[i] != ""){
+        sum = 0;
+        played = 0;
+        
+        if(Stats2021[event][i] != -999){
+            sum += (Stats2021[event][i]);
+            played++;
+        }
+        if(Stats2022[event][i] != -999){
+            sum += (Stats2022[event][i]);
+            played++;
+        }
+        
+        if(played < 1){ // must have played event both years
+            EventScore[i] = 0;
+        }else{
+            avg = sum / played;
+            EventScore[i] = avg;
+        }
+        i++;
+    }
+    cout<<"Best of '"<<events[event]<<"'"<<endl;
+    print_event_best(Players, EventScore);
+}
 // calculates the best players at every event in the last 2 years
 void event_best(string Players[10000],int Stats2021[26][10000],int Stats2022[26][10000],int Stats2023[26][10000], string events[26]){
-    int event = 1;
     for(int k = 0; k < 26; k++){
-        if(events[k] == "") break;
-        int EventScore[10000] = {0};
-        int i = 0;
-        int played = 0;
-        int avg = 0;
-        int sum = 0;
-        while(Players[i] != ""){
-            sum = 0;
-            played = 0;
-            
-            if(Stats2021[event][i] != -999){
-                sum += (Stats2021[event][i]);
-                played++;
-            }
-            if(Stats2022[event][i] != -999){
-                sum += (Stats2022[event][i]);
-                played++;
-            }
-            
-            if(played < 2){ // must have played event both years
-                EventScore[i] = 0;
-            }else{
-                avg = sum / played;
-                EventScore[i] = avg;
-            }
-            i++;
-        }
-        cout<<"Best of '"<<events[event]<<"'"<<endl;
-        print_event_best(Players, EventScore);
-        event++;
-
+        single_event_best(Players, Stats2021,Stats2022,Stats2023,events,k);
     }
 }
 
@@ -322,12 +323,12 @@ int compile_year(string Players[10000], int Stats[26][10000], string filename){
     regex pattern_4round$(R"((\d+)\t([\d.]+)\t([^\t]+)\t(\d+)\t(\d+)\t([+-]?[\d.E]+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\$[\d,]+))");
     regex pattern_5round$(R"((\d+)\t([\d.]+)\t([^\t]+)\t(\d+)\t(\d+)\t([+-]?[\d.E]+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\$[\d,]+))");
     regex pattern_6round$(R"((\d+)\t([\d.]+)\t([^\t]+)\t(\d+)\t(\d+)\t([+-]?[\d.E]+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\$[\d,]+))");*/
-    regex pattern_1round(R"(^(\d+)\t([\d\.]*)\t([^\t]+)\t(\d*)\t(\d*)\t([+-]?[\d.E]+)\t(\d+)\t(\d+))");
-    regex pattern_2round(R"(^(\d+)\t([\d\.]*)\t([^\t]+)\t(\d*)\t(\d*)\t([+-]?[\d.E]+)\t(\d+)\t(\d+)\t(\d+)\t(\d+))");
-    regex pattern_3round(R"(^(\d+)\t([\d\.]*)\t([^\t]+)\t(\d*)\t(\d*)\t([+-]?[\d.E]+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+))");
-    regex pattern_4round(R"(^(\d+)\t([\d\.]*)\t([^\t]+)\t(\d*)\t(\d*)\t([+-]?[\d.E]+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+))");
-    regex pattern_5round(R"(^(\d+)\t([\d\.]*)\t([^\t]+)\t(\d*)\t(\d*)\t([+-]?[\d.E]+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+))");
-    regex pattern_6round(R"(^(\d+)\t([\d\.]*)\t([^\t]+)\t(\d*)\t(\d*)\t([+-]?[\d.E]+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+))");
+    regex pattern_1round(R"(^(\d+)\t([\d\.\t]*)([^\t]+)\t(\d*)\t(\d*)\t([+-]?[\d.E]+)\t(\d+)\t(\d+))");
+    regex pattern_2round(R"(^(\d+)\t([\d\.\t]*)([^\t]+)\t(\d*)\t(\d*)\t([+-]?[\d.E]+)\t(\d+)\t(\d+)\t(\d+)\t(\d+))");
+    regex pattern_3round(R"(^(\d+)\t([\d\.\t]*)([^\t]+)\t(\d*)\t(\d*)\t([+-]?[\d.E]+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+))");
+    regex pattern_4round(R"(^(\d+)\t([\d\.\t]*)([^\t]+)\t(\d*)\t(\d*)\t([+-]?[\d.E]+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+))");
+    regex pattern_5round(R"(^(\d+)\t([\d\.\t]*)([^\t]+)\t(\d*)\t(\d*)\t([+-]?[\d.E]+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+))");
+    regex pattern_6round(R"(^(\d+)\t([\d\.\t]*)([^\t]+)\t(\d*)\t(\d*)\t([+-]?[\d.E]+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t(\d+))");
     // Import Data
     ifstream in (filename);
     int event = 1;
@@ -437,18 +438,22 @@ int main() {
     compile_year(Players_FPO, Stats2023_FPO, "2023_FPO.txt");
     compile_year(Players_FPO, Stats2022_FPO, "2022_FPO.txt");
     compile_year(Players_FPO, Stats2021_FPO, "2021_FPO.txt");
-    for(int i = 1; i <= event_count; i++){
+    /*for(int i = 1; i <= event_count; i++){
         cout<<events[i]<<endl;
         print_event_best(Players, Stats2023[i]);
         print_event_best(Players_FPO,Stats2023_FPO[i]);
         cout<<endl<<endl;
-    }
+    }*/
     cout<<"----------TEMP MPO----------"<<endl;
     calc_temp(Players,Stats2023,event_count);
     cout<<"----------TEMP FPO----------"<<endl;
     calc_temp(Players_FPO,Stats2023_FPO,event_count);
-    cout<<endl<<endl<<"----------Event History MPO----------"<<endl;
-    event_best(Players,Stats2021,Stats2022,Stats2023,events);
-    cout<<endl<<endl<<"----------Event History FPO----------"<<endl;
-    event_best(Players_FPO,Stats2021_FPO,Stats2022_FPO,Stats2023_FPO,events);
+    //cout<<endl<<endl<<"----------Event History MPO----------"<<endl;
+    //event_best(Players,Stats2021,Stats2022,Stats2023,events);
+    //cout<<endl<<endl<<"----------Event History FPO----------"<<endl;
+    //event_best(Players_FPO,Stats2021_FPO,Stats2022_FPO,Stats2023_FPO,events);
+    for(int x = 8; x <= 11; x++){
+        single_event_best(Players_FPO,Stats2021_FPO,Stats2022_FPO,Stats2023_FPO,events,x);
+        single_event_best(Players,Stats2021,Stats2022,Stats2023,events,x);
+    }
 }
