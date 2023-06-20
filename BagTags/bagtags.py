@@ -78,16 +78,6 @@ def main():
         print("\n"+divisions[i])
         for j in range(0,len(standings[i])):
             print(standings[i][j],end = "")
-    
-
-    
-
-
-            
-
-
-
-
 button1 = tk.Button(text='Click Me', command=main, bg='brown',fg='white')
 canvas1.create_window(150, 150, window=button1)
 
