@@ -24,6 +24,16 @@ def formatInput(players):
         players[i] = ply[:4]
         i+=1
 
+def listSearch(list,val,key):
+    for item in list:
+        mem = item.split(",")
+        #print("Item[key]:"+mem[key])
+        #print("Val:"+val)
+        if(mem[key]==val):
+            return mem
+        
+    return -1
+
 def main():
     label1 = tk.Label(root, text= '', fg='blue', font=('helvetica', 12, 'bold'))
     canvas1.create_window(150, 200, window=label1)
@@ -31,20 +41,18 @@ def main():
     members = []
     players = []
     tags = []
-    #f = open("members.txt","r")
     f = open("members.txt","r")
     members = f.readlines()
-    print(members)
+    #print(members)
     f.close()
 
-    #f = open("players.txt","r")
     f = open("players.txt","r")
     players = f.readlines()
     
     del players[0]
 
     formatInput(players)
-    print(players)
+    #print(players)
     f.close()
     #----------Identifying Tags in Play----------
     for p in players:
@@ -56,13 +64,25 @@ def main():
                 tags.append(int(mem[1]))
     #----------Sorting Scores and Assigning Tags----------
     players.sort(key=sortScores)
+    # sorting tied players (tiebreakers)
+    swaps = 1
+    while(swaps != 0):
+        swaps = 0
+        for i in range(1,len(players)):
+            if(players[i][3] == players[i-1][3]):
+                m1 = listSearch(members,players[i-1][2],0)
+                m2 = listSearch(members,players[i][2],0)
+                if(m1[1] > m2[1]):
+                    players[i],players[i-1] = players[i-1],players[i]
+                    swaps += 1
+
     tags.sort()
-    print(tags)
-    print(players)
+    #print(tags)
+    #print(players)
     print("TAG NUMBERS\n")
     for (p,t) in zip(players,tags):
         count = 0
-        print("Searching: "+p[2])
+        #print("Searching: "+p[2])
         for m in members:
             #ply = p.split(",")
             mem = m.split(",")
@@ -72,7 +92,7 @@ def main():
                 #mem[1] = t
 
                 members[count] = mem[0]+","+str(t)+"\n"
-                print("mem[count]="+members[count])
+                #print("mem[count]="+members[count])
                 break
             count+=1
         print(t,end="")
@@ -107,7 +127,10 @@ def main():
     for i in range(0, len(divisions)):
         print("\n"+divisions[i])
         for j in range(0,len(standings[i])):
-            print(standings[i][j])
+            #print(standings[i][j])
+            print(standings[i][j][1],end = ". ")
+            print(standings[i][j][2],end = ", ")
+            print(standings[i][j][3])
 
 
 button1 = tk.Button(text='Click Me', command=main, bg='brown',fg='white')
