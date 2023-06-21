@@ -79,11 +79,7 @@ def main():
         print(": ",end="")
         print(p[2])
     #----------Sorting Members List----------
-    print("NO SORT")
-    print(members)
-    print("SORT")
     members.sort()
-    print(members)
     f = open("members.txt","w")
     for m in members:
         f.write(m)
