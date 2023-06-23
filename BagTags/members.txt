@@ -1,17 +1,17 @@
-Andrew Nolan,11
-Bradley Stroben,1
-Brinnin Broski,5
-Bryan Vagi,190
-Duncan Crawford,200
-Foxxor,3
-Justin Wouters.9
-Kevin Lichtfuss,10
-Libby Ives,82
-Marco Moreno,8
-Maureen Straub,83
-Max Totten,90
-Noel Ray,102
-Patrick Ives,105
-Rudy Demanett,56
-Sergio Jaramillo,47
-Wessly Cifuentes,50
+Andrew Nolan,8
+Bradley Stroben,10
+Brinnin Broski,47
+Bryan Vagi,3
+Duncan Crawford,82
+Foxxor,50
+Justin Wouters,90
+Kevin Lichtfuss,11
+Libby Ives,190
+Marco Moreno,9
+Maureen Straub,105
+Max Totten,5
+Noel Ray,1
+Patrick Ives,83
+Rudy Demanett,200
+Sergio Jaramillo,102
+Wessly Cifuentes,56

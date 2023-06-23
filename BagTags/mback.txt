@@ -4,7 +4,7 @@ Brinnin Broski,5
 Bryan Vagi,190
 Duncan Crawford,200
 Foxxor,3
-Justin Wouters.9
+Justin Wouters,9
 Kevin Lichtfuss,10
 Libby Ives,82
 Marco Moreno,8
