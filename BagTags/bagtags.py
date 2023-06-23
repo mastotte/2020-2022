@@ -21,6 +21,8 @@ def formatInput(players):
     for p in players:
         ply = p.split(",")
         ply[2] = formatName(ply[2])
+        if(ply[1] == "DNF"):
+            ply[3] = 999
         players[i] = ply[:4]
         i+=1
 
@@ -56,8 +58,6 @@ def main():
     f.close()
     #----------Identifying Tags in Play----------
     for p in players:
-        #ply = p.split(",")
-        #ply[2] = formatName(ply[2])
         for m in members:
             mem = m.split(",")
             if p[2] == mem[0]:
@@ -90,7 +90,6 @@ def main():
             #print(m)
             if p[2] == mem[0]:
                 #mem[1] = t
-
                 members[count] = mem[0]+","+str(t)+"\n"
                 #print("mem[count]="+members[count])
                 break
