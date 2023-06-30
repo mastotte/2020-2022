@@ -6,6 +6,7 @@ canvas1 = tk.Canvas(root, width = 300, height = 300)
 canvas1.pack()
 
 #print(os.getcwd())
+#python -m PyInstaller bagtags.py
 #----------Helper Functions----------
 def sortScores(val):
     #v = val.split(",")
@@ -23,7 +24,10 @@ def formatInput(players):
         ply[2] = formatName(ply[2])
         if(ply[1] == "DNF"):
             ply[3] = 999
-        players[i] = ply[:4]
+        if(ply[1] == "DUP"):
+            del players[i]
+        else:
+            players[i] = ply[:4]
         i+=1
 
 def listSearch(list,val,key):
