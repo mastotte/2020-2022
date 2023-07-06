@@ -21,7 +21,7 @@ Quordle- A twist to the NYT's "Wordle", "Quordle" makes the user solve four word
 at once. With feedback of guess results from the user, this program will produce the
 best guesses to solve the Quordle.
 
-Sol- By far my largest program, Sol is an entire game-scoring interface for one of my
+Sol- Sol is a game-scoring interface for one of my
 favorite games, Multitaire. The game involves multiple players, each with their own decks, playing solitaire with a communal foundations. A player's score is represented
 by (player's cards remaining) - (average cards remaining of all players in game). I call this 
 adjusted player score their "Par" score.
