@@ -1,19 +1,14 @@
 Table of Contents
 
 SCHOOLWORK:
-1 -
-My work from CSE101 (Data Structures and Algorithms)
-CSE13s's grade grievance prevented me from entering this course on time.
-I retook it in Fall 2022 and earned an A.
+1 and 101(pt2) -
+My work from CSE101 
 
 12-
 My work from CSE12 (Computer Systems/Assembly Language)
 
 13-
 My work from CSE13s (Computer Systems and C Programming)
-
-101(pt2)-
-My work from retaking CSE101
 
 PERSONAL PROJECTS:
 
