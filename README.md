@@ -1,6 +1,7 @@
 Table of Contents
 
 SCHOOLWORK:
+
 1 and 101(pt2) -
 My work from CSE101 
 
