@@ -64,6 +64,8 @@ Men's Tournament data from 2021 and 2022.
 4.) Event History FPO
 Women's Tournament data from 2021 and 2022.
 
+BagTags: Weekly bag tag calculations for the Oak Grove Disc Golf Club. Tag numbers are automatically updated in database, and the need for the physical tag is removed. This is helpful because players lose or forget their bag tags very frequently. Also, calculating tag results usually takes up to 30 minutes after the event is finished, and now it can be done instantly.
+
 
 
 
