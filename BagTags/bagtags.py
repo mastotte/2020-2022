@@ -38,7 +38,20 @@ def listSearch(list,val,key):
         if(mem[key]==val):
             return mem
         
-    return -1
+    return -1 
+
+def removeFPO(players):
+    
+    dels = 1
+    while dels != 0:
+        dels = 0
+        i = 0
+        for p in players:
+            if p[0][0] == "F":
+                dels+=1
+                del players[i]
+            i+=1
+
 
 def main():
     label1 = tk.Label(root, text= '', fg='blue', font=('helvetica', 12, 'bold'))
@@ -47,27 +60,47 @@ def main():
     members = []
     players = []
     tags = []
-    f = open("members.txt","r")
+    f = open("members.txt","r",encoding = "utf-8")
     members = f.readlines()
     #print(members)
     f.close()
 
-    f = open("players.txt","r")
+    f = open("players.txt","r",encoding = "utf-8")
     players = f.readlines()
+    
+    FPO_players = []
+    FPO_tags = []
     
     del players[0]
 
     formatInput(players)
-    #print(players)
+    all_players = players.copy()
     f.close()
     #----------Identifying Tags in Play----------
+    i = 0
+    ret = False
     for p in players:
+        found = False
         for m in members:
             mem = m.split(",")
             if p[2] == mem[0]:
-                tags.append(int(mem[1]))
+                if p[0][0] == "F":
+                    FPO_players.append(p)
+                    FPO_tags.append(int(mem[1]))
+                    #del players[i]
+                else:
+                    tags.append(int(mem[1]))
+                found = True
+        if(found == False):
+            print(p[2]+" was not found in members.txt. Check for typos.")
+            ret = True
+        i+=1
+    if(ret == True):
+        return
+    removeFPO(players)   
     #----------Sorting Scores and Assigning Tags----------
     players.sort(key=sortScores)
+    FPO_players.sort(key=sortScores)
     # sorting tied players (tiebreakers)
     swaps = 1
     while(swaps != 0):
@@ -79,12 +112,45 @@ def main():
                 if(m1[1] > m2[1]):
                     players[i],players[i-1] = players[i-1],players[i]
                     swaps += 1
-
+    # Now for FPO
+    swaps = 1
+    while(swaps != 0):
+        swaps = 0
+        for i in range(1,len(FPO_players)):
+            if(FPO_players[i][3] == FPO_players[i-1][3]):
+                m1 = listSearch(members,FPO_players[i-1][2],0)
+                m2 = listSearch(members,FPO_players[i][2],0)
+                if(m1[1] > m2[1]):
+                    FPO_players[i],FPO_players[i-1] = FPO_players[i-1],FPO_players[i]
+                    swaps += 1
     tags.sort()
+    FPO_tags.sort()
     #print(tags)
     #print(players)
-    print("TAG NUMBERS\n")
+    
+    print("MPO TAGS\n")
+    
     for (p,t) in zip(players,tags):
+        count = 0
+        #print("Searching: "+p[2])
+        for m in members:
+            #ply = p.split(",")
+            mem = m.split(",")
+            #print(p)
+            #print(m)
+            if p[2] == mem[0]:
+                #mem[1] = t
+                members[count] = mem[0]+","+str(t)+"\n"
+                #print("mem[count]="+members[count])
+                break
+            count+=1
+        print(t,end="")
+        print(": ",end="")
+        print(p[2])
+
+    # Now for FPO
+    print("\nFPO TAGS\n")
+    for (p,t) in zip(FPO_players,FPO_tags):
         count = 0
         #print("Searching: "+p[2])
         for m in members:
@@ -112,13 +178,13 @@ def main():
     standings = []
     i = 0
     print("\nDIVISION STANDINGS")
-    for p in players:
+    for p in all_players:
         #ply = p.split(",")
         if p[0] not in divisions:
             divisions.append(p[0])
             standings.append([])
     # fill standings
-    for p in players:
+    for p in all_players:
         #ply = p.split(",")
         for i in range(0, len(divisions)):
             if p[0] == divisions[i]:
