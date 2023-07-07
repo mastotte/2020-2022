@@ -1,10 +1,9 @@
 Table of Contents
 
 SCHOOLWORK:
-1 -
-My work from CSE101 (Data Structures and Algorithms)
-CSE13s's grade grievance prevented me from entering this course on time.
-I retook it in Fall 2022 and earned an A.
+
+1 and 101(pt2) -
+My work from CSE101 
 
 12-
 My work from CSE12 (Computer Systems/Assembly Language)
@@ -12,16 +11,13 @@ My work from CSE12 (Computer Systems/Assembly Language)
 13-
 My work from CSE13s (Computer Systems and C Programming)
 
-101(pt2)-
-My work from retaking CSE101
-
 PERSONAL PROJECTS:
 
 Quordle- A twist to the NYT's "Wordle", "Quordle" makes the user solve four words 
 at once. With feedback of guess results from the user, this program will produce the
 best guesses to solve the Quordle.
 
-Sol- By far my largest program, Sol is an entire game-scoring interface for one of my
+Sol- Sol is a game-scoring interface for one of my
 favorite games, Multitaire. The game involves multiple players, each with their own decks, playing solitaire with a communal foundations. A player's score is represented
 by (player's cards remaining) - (average cards remaining of all players in game). I call this 
 adjusted player score their "Par" score.
@@ -67,6 +63,8 @@ Men's Tournament data from 2021 and 2022.
 
 4.) Event History FPO
 Women's Tournament data from 2021 and 2022.
+
+BagTags: Weekly bag tag calculations for the Oak Grove Disc Golf Club. Tag numbers are automatically updated in database, and the need for the physical tag is removed. This is helpful because players lose or forget their bag tags very frequently. Also, calculating tag results usually takes up to 30 minutes after the event is finished, and now it can be done instantly.
 
 
 
