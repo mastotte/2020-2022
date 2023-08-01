@@ -14,12 +14,13 @@ int main() {
     int id_number,exponent,ascii_code,random_number,name_length = 0;
     char letter = ' ';
     string consume_newline = "";
-    string full_name = "";
+    string full_name;
     //------------------------------------Input------------------------------------
-    cout<<"Enter your ID number\n";
+    cout<<"Enter your ID number"<<endl;
     cin>>id_number;
-    cout<<"Enter your full name\n";
-    getline(cin, full_name);
+    cout<<"Enter your full name"<<endl;
+    cin.ignore();
+    getline(cin,full_name);
     cout<<full_name<<endl;
     return 0;
 }
