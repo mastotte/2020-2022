@@ -1,0 +1,33 @@
+**************************************************
+*    Maxwell Totten    (mastotte@ucsc.edu)
+*    
+*    HW 3, Wordrange
+*
+**************************************************
+FILES:
+
+wordrange.cpp
+tree.cpp
+tree.h
+Makefile
+------------------------------
+
+INSTRUCTIONS:
+
+1.) make
+2.) ./wordrange <input file> <output file>
+------------------------------
+BORROWED CODE:
+
+Outlined by the marker below:
+// -------------------------------------------------------------------------------------------------
+// SOURCE FOR THE FOLLOWING SECTION - https://www.geeksforgeeks.org/insertion-in-an-avl-tree/
+// -------------------------------------------------------------------------------------------------
+
+And concluded by the marker below:
+// -------------------------------------------------------------------------------------------------
+// END OF CITED SECTION - https://www.geeksforgeeks.org/insertion-in-an-avl-tree/
+// -------------------------------------------------------------------------------------------------
+
+Borrowed code was used in tree.cpp and tree.h.
+------------------------------

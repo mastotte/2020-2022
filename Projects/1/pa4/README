@@ -1,0 +1,36 @@
+Max Totten, mastotte, pa4
+
+List.h:
+    Defines the functions that are used in List.c.
+    #included directly in Matrix.h, List.c
+    Should not be called.
+List.c
+    List manipulation functions, UPDATED from pa1.
+    Should not be called.
+ListTest.c
+    Tests the functions in List.c. 
+    How to call:
+        make
+        make ListTest
+        ./ListTest
+Matrix.h:
+    Defines the functions that are used in Matrix.c.
+    #included in Matrix.c
+    Should not be called.
+Matrix.c
+    Matrix manipulation functions, used by Sparse.c and MatrixTest.c.
+    Should not be called.
+MatrixTest.c
+    Tests the functions in Matrix.c. 
+    How to call:
+        make
+        make MatrixTest
+        ./MatrixTest
+Sparse.c:
+    How to call: 
+        make
+        ./Sparse <inputfile> <outputfile>
+    Performs the matrix calculations, and outputs the result to 
+    the output file.
+Makefile
+    Builds the program.

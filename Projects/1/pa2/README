@@ -1,0 +1,28 @@
+Max Totten, mastotte, pa2
+
+List.h:
+    Defines the functions that are used in List.c.
+    #included directly in Graph.h, List.c
+    Should not be called.
+List.c
+    List manipulation functions, from pa1.
+    Should not be called.
+Graph.c
+    Graph manipulation functions, used by FindPath.c and GraphTest.c.
+    Should not be called.
+GraphTest.c
+    Tests the functions in Graph.c.
+    How to call:
+        make
+        make GraphTest.c
+        ./GraphTest
+FindPath.c:
+    How to call: 
+        make
+        make FindPath
+        ./FindPath <inputfile> <outputfile>
+    Finds the shortest path between points given in inputfile, based on
+    the graph also read from inputfile.
+    Outputs analysis of graph to outputfile.
+Makefile
+    Builds the program.
