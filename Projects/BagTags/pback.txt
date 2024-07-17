@@ -1,4 +1,0 @@
-max totten,MPO,3
-bradley stroben,MA1,2
-cienna deleon,MA1,1
-jack stroben,MPO,-1
