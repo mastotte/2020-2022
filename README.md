@@ -2,8 +2,8 @@ Table of Contents
 
 SCHOOLWORK:
 
-1 and 101(pt2) -
-My work from CSE101 
+1 -
+My work from CSE101 (Data Structures and Algorithms)
 
 12-
 My work from CSE12 (Computer Systems/Assembly Language)
