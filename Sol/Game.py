@@ -24,7 +24,7 @@ def calculateSD(data, p, matches_call):
     else:
         return math.sqrt(sd / (p - z))
 
-def output(best_round, n, rounds, p, ppg, players, names):
+def output(best_round, n, rounds, ppg, players, names):
     BUFSIZE = 10 * players
     buf = ''
     with open("GameFiles/out", "r") as infile, \
@@ -35,7 +35,9 @@ def output(best_round, n, rounds, p, ppg, players, names):
         f2_output.write(f"{n}\n{rounds}\n{ppg}\n")
         c = 1
         for line in infile:
-            if int(line.strip()) == best_round:
+            if not line.strip().isnumeric():
+                continue
+            elif int(line.strip()) == best_round:
                 for _ in range(rounds):
                     buf = infile.readline()
                     best_output.write(f"Round {c}\n")
@@ -293,7 +295,7 @@ def game(players, rounds, TESTSIZE, ppg, names):
                 for y in range(players):
                     best[x][y] = matches[x][y]
 
-        outFile.write(f"\n{test_count}")
+        outFile.write(f"\n{test_count}\n")
 
     print("\n\n", end="")
     for x in range(players):
@@ -301,6 +303,7 @@ def game(players, rounds, TESTSIZE, ppg, names):
         for y in range(players):
             print(f" {best[x][y]}", end="")
 
+    output(best_round, players, rounds, ppg, players, names)
     """
     end = clock()
     cpu_time_used = (end - start) / CLOCKS_PER_SEC

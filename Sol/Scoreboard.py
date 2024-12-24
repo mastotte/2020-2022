@@ -1,5 +1,13 @@
 import math
 
+
+# NOTES:
+#
+#   Need to print schedule to f2
+#
+#
+#
+#
 def scoreBoard(rounds, players, ppg, names):
     # Open appropriate score file based on round number
     if rounds % 2 == 1:
@@ -25,12 +33,14 @@ def scoreBoard(rounds, players, ppg, names):
     for i in range(1, players + 1):
         buf_scores = SCORES.readline()
         score_values = buf_scores.split()
+        print("Score Values: ",score_values)
         for j in range(1, rounds + 1):
-            scores[i][j] = int(score_values[j-1])
-    
+            scores[i][j] = int(score_values[j])
+
     # Process matches
     for j in range(1, rounds + 1):
         buf = infile.readline().strip()
+        print("BUF: ",buf)
         matches = buf.split('-')
         
         for i in range(players // ppg):
@@ -39,6 +49,7 @@ def scoreBoard(rounds, players, ppg, names):
             s1 = s2 = s3 = s4 = s5 = s6 = s7 = 0.0
             
             # Parse player numbers
+            print("Matches: ",matches)
             players_in_match = matches[i].split('  vs  ')
             p1 = int(players_in_match[0])
             p2 = int(players_in_match[1])
