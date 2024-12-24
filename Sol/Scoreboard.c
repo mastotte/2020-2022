@@ -8,7 +8,7 @@
 #include <stdbool.h>
 //********************************************************************
 //*                                                                  *
-//*     Solitaire Scoreboard				             *
+//*     Solitaire Scoreboard				                         *
 //*                                                                  *
 //*     mastotte, ucsc 2024                                          *
 //*                                                                  *
@@ -16,6 +16,7 @@
 
 void scoreBoard(int rounds,int players,int ppg,char names[players][2]){
 	FILE* SCORES;
+
 	if(rounds%2 == 1){
                 SCORES = fopen("GameFiles/scoreboard","r");
         }else if(rounds%2 == 0){
@@ -30,7 +31,6 @@ void scoreBoard(int rounds,int players,int ppg,char names[players][2]){
 	int p1,p2,p3,p4,p5,p6,p7;
 	float s1,s2,s3,s4,s5,s6,s7;
 	s1=s2=s3=s4=s5=s6=s7=0.0;
-	char *del;
 	int s;
 	
 	fgets(p, 50, infile);
@@ -52,7 +52,7 @@ void scoreBoard(int rounds,int players,int ppg,char names[players][2]){
 	for(int i = 1; i <= players; i++){
 		memset(buf_scores, '\0',BUFSCORES);
 		fgets(buf_scores, BUFSCORES, SCORES);
-		del = strtok(buf_scores,"	");
+		s = atoi(strtok(buf_scores,"	"));
 		for(int j = 1; j <= rounds; j++){
 			s = atoi(strtok(NULL,"	"));
 			scores[i][j] = s;
@@ -74,7 +74,6 @@ void scoreBoard(int rounds,int players,int ppg,char names[players][2]){
 			buf_copy = strtok(NULL, "-");
 		}
 			
-		
 	for(int i = 0; i < players/ppg; i++){	
 		p1 = p2 = p3 = p4 = p5 = p6 = p7 = 0;
 		p1 = atoi(strtok(m[i], "  vs  "));
@@ -175,7 +174,7 @@ void scoreBoard(int rounds,int players,int ppg,char names[players][2]){
 				sorted++;
 			}
 		}
-	} 		
+	} 	
 	fprintf(sc_out,"\n      \nStandings:");
 	for(int i = 1; i <= players; i++){
 		fprintf(sc_out,"\n");
