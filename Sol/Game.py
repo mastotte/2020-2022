@@ -33,8 +33,11 @@ def output(best_round, n, rounds, ppg, players, names):
         
         print(f"\nBest round = {best_round}\n")
         f2_output.write(f"{n}\n{rounds}\n{ppg}\n")
+        print(f"TO FFFFFFFFFFF2: {n}\n{rounds}\n{ppg}\n")
         c = 1
+        # ----------------------------------------------------------------------------------------
         for line in infile:
+            print(f"LINE: {line}\n")
             if not line.strip().isnumeric():
                 continue
             elif int(line.strip()) == best_round:
@@ -51,6 +54,8 @@ def output(best_round, n, rounds, ppg, players, names):
                     print(buf)
                     c += 1
                 break
+        # -----------------------------------------------------------------------------------------
+        # Not putting best schedule on f2
 
 def is_sitting(val, mod, sitters):
     for i in range(int(mod)):
