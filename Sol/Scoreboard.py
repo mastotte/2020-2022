@@ -50,7 +50,7 @@ def scoreBoard(rounds, players, ppg, names):
             
             # Parse player numbers
             print("Matches: ",matches)
-            players_in_match = matches[i].split('  vs  ')
+            players_in_match = matches[i].split(' vs ')        # USED TO BE '{tab}vs{tab}', changed to '{space}vs{space}'
             p1 = int(players_in_match[0])
             p2 = int(players_in_match[1])
             if ppg > 2 and len(players_in_match) > 2:

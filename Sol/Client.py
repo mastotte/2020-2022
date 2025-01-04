@@ -315,6 +315,7 @@ def main():
             print_scores(10*players, 8*rounds)
         else:
             break
+    
         saveGame(players, rounds, ppg, i-1, names, saveslot)
         print("Game Saved.")
 
