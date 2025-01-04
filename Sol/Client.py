@@ -4,7 +4,6 @@ import Scoreboard
 SEED = 2022
 TEST = False
 name_sample = ['AA','AB','AC','AD','AE','AF','AG','AH','AI','AJ']
-#
 
 def scores_input(players, round, names):
     global TEST
@@ -24,7 +23,6 @@ def scores_input(players, round, names):
         f2 = open("GameFiles/scoreboard2", "w")
 
     if in_choice != 1:
-        BUFSIZE = (10 * round) + 5
         for i in range(1, players + 1):
             buf = f.readline().strip()
             if not TEST:
@@ -49,7 +47,7 @@ def scores_input(players, round, names):
     f2.close()
     return in_choice == 1
 
-def print_scores(BUFSIZE, BUF2SIZE):
+def print_scores():
     f = open("GameFiles/best", "r")
     f2 = open("GameFiles/scOut", "r")
     buf = ""
@@ -321,14 +319,17 @@ def main():
     else:
         saveslot = loadGame(players, rounds, ppg, rounds_played, names)  
         Scoreboard.scoreBoard(rounds_played, players, ppg, names)  
-        print_scores(10*players, 8*rounds)  
+        #print_scores(10*players, 8*rounds)
+        print_scores()   
     
     for i in range(rounds_played + 1, rounds + 1):
-        print_scores(10*players, 8*rounds)
+        #print_scores(10*players, 8*rounds)
+        print_scores() 
         exit = scores_input(players, i, names)  
         if exit == 0 or i == 1:
             Scoreboard.scoreBoard(i, players, ppg, names)
-            print_scores(10*players, 8*rounds)
+            #print_scores(10*players, 8*rounds)
+            print_scores() 
         else:
             break
     
