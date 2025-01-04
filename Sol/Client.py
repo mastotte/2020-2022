@@ -2,10 +2,14 @@ import random
 import Game
 import Scoreboard
 SEED = 2022
+TEST = False
+name_sample = ['AA','AB','AC','AD','AE','AF','AG','AH','AI','AJ']
+#
 
-def scores_input(players, round, isTest, names):
+def scores_input(players, round, names):
+    global TEST
     in_choice = 0
-    if not isTest and round > 1:
+    if not TEST and round > 1:
         print("\n1: Exit\n2: Continue\n")
         in_choice = int(input())
         print("\n")
@@ -23,7 +27,7 @@ def scores_input(players, round, isTest, names):
         BUFSIZE = (10 * round) + 5
         for i in range(1, players + 1):
             buf = f.readline().strip()
-            if not isTest:
+            if not TEST:
                 print("\n")
                 print(f"{names[i - 1][0]}{names[i - 1][1]}'s score: ", end="")
                 y = int(input())
@@ -31,7 +35,7 @@ def scores_input(players, round, isTest, names):
                 y = 5
             f2.write(f"{buf}\t{y}\n")
 
-        if not isTest:
+        if not TEST:
             print("\n0: Yes\n1: No\nFinalize Scores?")
             x = int(input())
             print("\n\n\n\n")
@@ -39,7 +43,7 @@ def scores_input(players, round, isTest, names):
             x = 0
 
         if x == 1:
-            scores_input(players, round, isTest, p, names)
+            scores_input(players, round, names)
 
     f.close()
     f2.close()
@@ -120,11 +124,17 @@ def getInput():
     rounds = 0
     out = None
     print("\n-- Main Menu --")
-    print("0: New Game\n1: Load Saved Game")
+    print("0: New Game\n1: Load Saved Game\n2: Testing Mode")
     out = int(input())
 
-    if out == 1:
+    if out == 1: 
         return out
+    
+    if out == 2: # ADDED OPTION 3 FOR TESTING
+        global TEST
+        TEST = True
+        print("TEST: ",TEST)
+        return (3, 5, 8) # ppg, players, rounds
 
     print("How many players?")
     players = int(input())
@@ -230,7 +240,7 @@ def createGame():
     BUFSIZE = 20
     buf = ""
     
-    displaySaveList()  # Assuming this function exists
+    displaySaveList()  
     saveslot = int(input("Enter a save slot: "))
     
     with open("GameFiles/saveList", "r+") as saveList:
@@ -286,30 +296,36 @@ def main():
     players = rounds = ppg = rounds_played = saveslot = exit = 0
     ppg = rounds_played = 0
     
-    ppg, players, rounds = getInput()  # Assuming this function exists
+    ppg, players, rounds = getInput()  
+    global TEST
+    
     print(players, " players\n")
     names = [['' for _ in range(2)] for _ in range(players)]
     
     if ppg > 1:
-        print("\nEnter Each Player's First and Last Initials")
-        for i in range(players):
-            print(f"\nPlayer {i+1}: ")
-            name = input()
-            for j in range(len(name)):
-                names[i][j] = name[j]
-        
-        Game.game(players, rounds, 2000, ppg, names)  # Assuming this function exists
+        if (TEST):
+            names = name_sample[:players]
+        else:
+            print("\nEnter Each Player's First and Last Initials")
+            for i in range(players):
+                print(f"\nPlayer {i+1}: ")
+                name = input()
+                names[i] = name
+
+                #for j in range(len(name)):
+                    #names[i][j] = name[j]
+        Game.game(players, rounds, 2000, ppg, names)  
         saveslot = createGame()
-        makeTemplate(players)  # Assuming this function exists
-        reset()  # Assuming this function exists
+        makeTemplate(players)  
+        reset()  
     else:
-        saveslot = loadGame(players, rounds, ppg, rounds_played, names)  # Assuming this function exists
-        Scoreboard.scoreBoard(rounds_played, players, ppg, names)  # Assuming this function exists
-        print_scores(10*players, 8*rounds)  # Assuming this function exists
+        saveslot = loadGame(players, rounds, ppg, rounds_played, names)  
+        Scoreboard.scoreBoard(rounds_played, players, ppg, names)  
+        print_scores(10*players, 8*rounds)  
     
     for i in range(rounds_played + 1, rounds + 1):
         print_scores(10*players, 8*rounds)
-        exit = scores_input(players, i, False, names)  # Assuming this function exists
+        exit = scores_input(players, i, names)  
         if exit == 0 or i == 1:
             Scoreboard.scoreBoard(i, players, ppg, names)
             print_scores(10*players, 8*rounds)
