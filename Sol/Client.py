@@ -3,7 +3,7 @@ import Game
 import Scoreboard
 SEED = 2022
 TEST = False
-name_sample = ['AA','AB','AC','AD','AE','AF','AG','AH','AI','AJ']
+name_sample = ['AA','AB','AC','AD','AE','AF','AG','AH','AI','AJ','AK']
 
 def scores_input(players, round, names):
     global TEST
