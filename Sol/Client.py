@@ -128,7 +128,7 @@ def getInput():
     if out == 1: 
         return out
     
-    if out == 2: # ADDED OPTION 3 FOR TESTING
+    if out == 2: # ADDED OPTION 2 FOR TESTING
         global TEST
         TEST = True
         print("TEST: ",TEST)
