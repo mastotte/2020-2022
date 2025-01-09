@@ -126,7 +126,7 @@ def getInput():
     out = int(input())
 
     if out == 1: 
-        return out
+        return (out, out, out)
     
     if out == 2: # ADDED OPTION 2 FOR TESTING
         global TEST
@@ -175,44 +175,55 @@ def loadGame(players, rounds, ppg, rounds_played, names):
     }
     save = open(save_file_map.get(saveslot, "GameFiles/save5"), "r")
 
-    line = save.readline()  # first line
-    buf_small = save.readline().strip()  # players
-    players[0] = int(buf_small)
-    f2.write(f"{players[0]}\n")
-    print(f"{players[0]} Players buf:({buf_small})")
+    #----------------------------
+    """i = 0
+    while(i < 100):
+        line = save.readline().strip()
+        i += 1
+        print(line)
 
-    line = save.readline()  # next line
+
+    """
+    #----------------------------
+    line = save.readline().strip()  # first line
+    print(line)
+    buf_small = save.readline().strip()  # players 
+    print(buf_small)
+    players = int(buf_small[0])
+    f2.write(f"{players}\n")
+    #print(f"{players} Players buf:({buf_small})")
+
     buf_small = save.readline().strip()  # rounds
-    rounds[0] = int(buf_small)
-    f2.write(f"{rounds[0]}\n")
-    print(f"{rounds[0]} rounds buf:({buf_small})")
+    print(buf_small)
+    rounds = int(buf_small[0])
+    f2.write(f"{rounds}\n")
+    #print(f"{rounds} rounds buf:({buf_small})")
 
-    line = save.readline()  # next line
     buf_small = save.readline().strip()  # ppg
-    ppg[0] = int(buf_small)
-    f2.write(f"{ppg[0]}\n")
-    print(f"{ppg[0]} ppg buf:({buf_small})")
+    print(buf_small)
+    ppg = int(buf_small[0])
+    f2.write(f"{ppg}\n")
+    #print(f"{ppg} ppg buf:({buf_small})")
 
-    line = save.readline()  # next line
     buf_small = save.readline().strip()  # rounds played
-    rounds_played[0] = int(buf_small)
-    print(f"{rounds_played[0]} rounds played buf:({buf_small})")
-    line = save.readline()
+    print(buf_small)
+    rounds_played = int(buf_small[0])
+    #print(f"{rounds_played} rounds played buf:({buf_small})")
 
-    BUFSIZE = (10 * rounds[0]) + 3
-    BUF2 = (35 * players[0])
+    BUFSIZE = (10 * rounds) + 3
+    BUF2 = (35 * players)
     if BUF2 > BUFSIZE:
         BUFSIZE = BUF2
     buf = [''] * BUFSIZE
 
     print("------------SCHEDULE----------")
-    for i in range(rounds[0]):
+    for i in range(rounds):
         buf[i] = save.readline()
         f2.write(buf[i])
         print(buf[i], end='')
 
     print("\n------------SCOREBOARD----------")
-    for i in range(players[0]):
+    for i in range(players):
         buf[i] = save.readline()
         s1.write(buf[i])
         s2.write(buf[i])
@@ -220,11 +231,7 @@ def loadGame(players, rounds, ppg, rounds_played, names):
 
     print("\n------------PLAYERS------------")
     buf = save.readline()
-    for i in range(players[0]):
-        for j in range(2):
-            names[i][j] = buf[j + (i * 2)]
-            print(buf[j + (i * 2)], end='')
-        print()
+    print(buf)
 
     save.close()
     f2.close()
@@ -298,7 +305,7 @@ def main():
     global TEST
     
     print(players, " players\n")
-    names = [['' for _ in range(2)] for _ in range(players)]
+    names = name_sample[:players]
     
     if ppg > 1:
         if (TEST):

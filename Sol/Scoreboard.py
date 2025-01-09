@@ -18,39 +18,46 @@ def scoreBoard(rounds, players, ppg, names):
     infile = open("GameFiles/f2", "r")
     
     # Read initial parameters
-    p = infile.readline()
-    r = infile.readline()
-    ppG = infile.readline()
+    p = int(infile.readline())
+    r = int(infile.readline())
+    ppG = int(infile.readline())
     
     BUFSIZE = 35 * players
     BUFSCORES = (10 * rounds) + 5
     
     # Initialize scores and pars arrays
-    pars = [[0.0] * (rounds + 1) for _ in range(players + 1)]
-    scores = [[0] * (rounds + 1) for _ in range(players + 1)]
+    pars = [[0.0] * (rounds + 1) for _ in range(p + 1)]
+    scores = [[0] * (rounds + 1) for _ in range(p + 1)]
     
+    print("p: ",p)
+    print("r: ",r)
+    print("ppg: ",ppG)
+    print("players: ",players)
     # Read scores
-    for i in range(1, players + 1):
-        buf_scores = SCORES.readline()
+    for i in range(0, p + 1):
+        buf_scores = SCORES.readline().strip()
         score_values = buf_scores.split()
         print("Score Values: ",score_values)
-        for j in range(1, rounds + 1):
+        for j in range(1, len(score_values)):
+            print("j: ",j)
             scores[i][j] = int(score_values[j])
-
+            
+    print("SCORES: ",scores)
     # Process matches
-    for j in range(1, rounds + 1):
+    for j in range(0, len(scores[0]) - 1):
         buf = infile.readline().strip()
-        print("BUF: ",buf)
         matches = buf.split('-')
+        print("Matches: ",matches)
         
-        for i in range(players // ppg):
+        
+        for i in range(p // ppg):
             # Initialize player scores
             p1 = p2 = p3 = p4 = p5 = p6 = p7 = 0
             s1 = s2 = s3 = s4 = s5 = s6 = s7 = 0.0
             
             # Parse player numbers
-            print("Matches: ",matches)
             players_in_match = matches[i].split(' vs ')        # USED TO BE '{tab}vs{tab}', changed to '{space}vs{space}'
+            print("players_in_match: ",players_in_match)
             p1 = int(players_in_match[0])
             p2 = int(players_in_match[1])
             if ppg > 2 and len(players_in_match) > 2:
@@ -65,6 +72,7 @@ def scoreBoard(rounds, players, ppg, names):
                 p7 = int(players_in_match[6])
             
             # Get scores
+            print("(p1,j) = ",p1,",",j)
             s1 = scores[p1][j]
             s2 = scores[p2][j]
             if ppg > 2: s3 = scores[p3][j]
