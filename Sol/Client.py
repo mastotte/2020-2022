@@ -3,7 +3,11 @@ import Game
 import Scoreboard
 SEED = 2022
 TEST = False
+players = 0
+ppg = 0
+rounds = 0
 name_sample = ['AA','AB','AC','AD','AE','AF','AG','AH','AI','AJ','AK','AL']
+names = name_sample
 
 def scores_input(players, round, names):
     global TEST
@@ -118,21 +122,25 @@ def resetSaves():
     f.close()
 
 def getInput():
-    players = 0
-    rounds = 0
+    global players
+    global rounds
+    global ppg
     out = None
     print("\n-- Main Menu --")
     print("0: New Game\n1: Load Saved Game\n2: Testing Mode")
     out = int(input())
 
     if out == 1: 
-        return (out, out, out)
+        return out
     
     if out == 2: # ADDED OPTION 2 FOR TESTING
         global TEST
+        players = 5
+        rounds = 8
+        ppg = 3
         TEST = True
         print("TEST: ",TEST)
-        return (3, 5, 8) # ppg, players, rounds
+        return  out # ppg, players, rounds
 
     print("How many players?")
     players = int(input())
@@ -147,7 +155,6 @@ def getInput():
         if out == 0:
             break
 
-    return (out, players, rounds)
 
 def displaySaveList():
     with open("GameFiles/saveList", "r") as save_list:
@@ -156,7 +163,11 @@ def displaySaveList():
                 line = line.replace('_', ' ')
             print(line, end='')
 
-def loadGame(players, rounds, ppg, rounds_played, names):
+def loadGame():
+    global players
+    global rounds
+    global ppg
+    global names
     saveslot = 0
     save = None
     f2 = open("GameFiles/f2", "w")
@@ -231,7 +242,10 @@ def loadGame(players, rounds, ppg, rounds_played, names):
 
     print("\n------------PLAYERS------------")
     buf = save.readline()
+    for i in range(players,2):
+        names[i] = buf[i:i+1]
     print(buf)
+    print("Names3: ",names)
 
     save.close()
     f2.close()
@@ -298,36 +312,37 @@ def saveGame(players, rounds, ppg, rounds_played, names, saveslot):
                     f.write(names[i][j])
 
 def main():
-    players = rounds = ppg = rounds_played = saveslot = exit = 0
-    ppg = rounds_played = 0
+    rounds_played = saveslot = exit = 0
     
-    ppg, players, rounds = getInput()  
+    menu_select = getInput()  
     global TEST
-    
+    global names
     print(players, " players\n")
-    names = name_sample[:players]
     
-    if ppg > 1:
-        if (TEST):
-            names = name_sample[:players]
-        else:
-            print("\nEnter Each Player's First and Last Initials")
-            for i in range(players):
-                print(f"\nPlayer {i+1}: ")
-                name = input()
-                names[i] = name
+    if menu_select == 0:
+        print("\nEnter Each Player's First and Last Initials")
+        for i in range(players):
+            print(f"\nPlayer {i+1}: ")
+            name = input()
+            names[i] = name
 
-                #for j in range(len(name)):
-                    #names[i][j] = name[j]
         Game.game(players, rounds, 2000, ppg, names)  
         saveslot = createGame()
         makeTemplate(players)  
         reset()  
-    else:
-        saveslot = loadGame(players, rounds, ppg, rounds_played, names)  
+    elif menu_select == 1:
+        saveslot = loadGame()  
         Scoreboard.scoreBoard(rounds_played, players, ppg, names)  
         #print_scores(10*players, 8*rounds)
-        print_scores()   
+        print_scores()  
+    elif menu_select == 2:
+        print("MENU WORKING")
+        names = name_sample[:players]
+        Game.game(players, rounds, 2000, ppg, names)  
+        saveslot = createGame()
+        makeTemplate(players)  
+        reset() 
+
     
     for i in range(rounds_played + 1, rounds + 1):
         #print_scores(10*players, 8*rounds)

@@ -8,7 +8,7 @@ import math
 #
 #
 #
-def scoreBoard(rounds, players, ppg, names):
+def scoreBoard(rounds, p, ppg, names):
     # Open appropriate score file based on round number
     if rounds % 2 == 1:
         SCORES = open("GameFiles/scoreboard", "r")
@@ -20,19 +20,20 @@ def scoreBoard(rounds, players, ppg, names):
     # Read initial parameters
     p = int(infile.readline())
     r = int(infile.readline())
-    ppG = int(infile.readline())
+    ppg = int(infile.readline())
     
-    BUFSIZE = 35 * players
+    BUFSIZE = 35 * p
     BUFSCORES = (10 * rounds) + 5
     
     # Initialize scores and pars arrays
-    pars = [[0.0] * (rounds + 1) for _ in range(p + 1)]
-    scores = [[0] * (rounds + 1) for _ in range(p + 1)]
+    pars = [[0.0] * (r + 1) for _ in range(p + 1)]
+    scores = [[0] * (r + 1) for _ in range(p + 1)]
     
     print("p: ",p)
     print("r: ",r)
-    print("ppg: ",ppG)
-    print("players: ",players)
+    print("ppg: ",ppg)
+    print("p: ",p)
+    print("Names: ",names)
     # Read scores
     for i in range(0, p + 1):
         buf_scores = SCORES.readline().strip()
@@ -47,29 +48,34 @@ def scoreBoard(rounds, players, ppg, names):
     for j in range(0, len(scores[0]) - 1):
         buf = infile.readline().strip()
         matches = buf.split('-')
+        matches.pop()       # lists read ['1','2','3',''] for some reason, so removing last index
+        
         print("Matches: ",matches)
         
         
-        for i in range(p // ppg):
+        for i in range(0, math.floor(p/ppg) - 1):
             # Initialize player scores
             p1 = p2 = p3 = p4 = p5 = p6 = p7 = 0
             s1 = s2 = s3 = s4 = s5 = s6 = s7 = 0.0
             
             # Parse player numbers
-            players_in_match = matches[i].split(' vs ')        # USED TO BE '{tab}vs{tab}', changed to '{space}vs{space}'
-            print("players_in_match: ",players_in_match)
-            p1 = int(players_in_match[0])
-            p2 = int(players_in_match[1])
-            if ppg > 2 and len(players_in_match) > 2:
-                p3 = int(players_in_match[2])
-            if ppg > 3 and len(players_in_match) > 3:
-                p4 = int(players_in_match[3])
-            if ppg > 4 and len(players_in_match) > 4:
-                p5 = int(players_in_match[4])
-            if ppg > 5 and len(players_in_match) > 5:
-                p6 = int(players_in_match[5])
-            if ppg > 6 and len(players_in_match) > 6:
-                p7 = int(players_in_match[6])
+            print("p: ",p)
+            print("ppg: ",ppg)
+            print("Solution: ",math.floor(p/ppg))
+            p_in_match = matches[i].split(' vs ')        # USED TO BE '{tab}vs{tab}', changed to '{space}vs{space}'
+            print("p_in_match: ",p_in_match)
+            p1 = int(p_in_match[0])
+            p2 = int(p_in_match[1])
+            if ppg > 2 and len(p_in_match) > 2:
+                p3 = int(p_in_match[2])
+            if ppg > 3 and len(p_in_match) > 3:
+                p4 = int(p_in_match[3])
+            if ppg > 4 and len(p_in_match) > 4:
+                p5 = int(p_in_match[4])
+            if ppg > 5 and len(p_in_match) > 5:
+                p6 = int(p_in_match[5])
+            if ppg > 6 and len(p_in_match) > 6:
+                p7 = int(p_in_match[6])
             
             # Get scores
             print("(p1,j) = ",p1,",",j)
@@ -104,20 +110,23 @@ def scoreBoard(rounds, players, ppg, names):
     with open("GameFiles/scOut", "w") as sc_out:
         # Write scores
         sc_out.write("Scores")
-        for i in range(1, players + 1):
+        
+        for i in range(1, p + 1):
+            print("Names: ",names)
+            print("I: ",i)
             sc_out.write("\n")
-            sc_out.write(f"{names[i-1][0]}{names[i-1][1]}:")
+            sc_out.write(f"{names[i-1]}:")
             for j in range(1, rounds + 1):
                 score = scores[i][j]
                 sc_out.write(f" {score:2d}")
         
         # Write pars
         sc_out.write("\n      \nPars")
-        standings = [[0, 0, 0] for _ in range(players + 1)]
-        for i in range(1, players + 1):
+        standings = [[0, 0, 0] for _ in range(p + 1)]
+        for i in range(1, p + 1):
             sum_pars = 0.0
             sc_out.write("\n")
-            sc_out.write(f"{names[i-1][0]}{names[i-1][1]}:")
+            sc_out.write(f"{names[i-1]}:")
             for j in range(1, rounds + 1):
                 par = pars[i][j]
                 sum_pars += par
@@ -126,14 +135,14 @@ def scoreBoard(rounds, players, ppg, names):
             standings[i][2] = sum_pars
         
         # Sort standings
-        for i in range(1, players):
-            for j in range(1, players - i + 1):
+        for i in range(1, p):
+            for j in range(1, p - i + 1):
                 if standings[j][2] > standings[j+1][2]:
                     standings[j], standings[j+1] = standings[j+1], standings[j]
         
         # Write standings
         sc_out.write("\n      \nStandings:")
-        for i in range(1, players + 1):
+        for i in range(1, p + 1):
             player_idx = int(standings[i][1]) - 1
-            sc_out.write(f"\n{names[player_idx][0]}{names[player_idx][1]}: {standings[i][2]:.1f}")
+            sc_out.write(f"\n{names[player_idx]}: {standings[i][2]:.1f}")
 
