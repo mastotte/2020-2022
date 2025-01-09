@@ -1,11 +1,17 @@
 import random
 import Game
 import Scoreboard
+import tkinter as tk
+root = tk.Tk()
+canvas1 = tk.Canvas(root, width = 1000, height = 1000)
+canvas1.pack()
 SEED = 2022
 TEST = False
 players = 0
 ppg = 0
 rounds = 0
+saveslot = 0
+rounds_played = 0
 name_sample = ['AA','AB','AC','AD','AE','AF','AG','AH','AI','AJ','AK','AL']
 names = name_sample
 
@@ -170,15 +176,17 @@ def loadGame():
     global rounds
     global ppg
     global names
-    saveslot = 0
+    global saveslot
+    global rounds_played
     save = None
     f2 = open("GameFiles/f2", "w")
     s1 = open("GameFiles/scoreboard", "w")
     s2 = open("GameFiles/scoreboard2", "w")
     
     displaySaveList()
-    print("\nEnter a save slot: ")
-    saveslot = int(input())
+    display_saves_window()      # this calls select_save_slot() which sets saveslot
+    #print("\nEnter a save slot: ")
+    #saveslot = int(input())
 
     save_file_map = {
         1: "GameFiles/save1",
@@ -253,10 +261,9 @@ def loadGame():
     f2.close()
     s1.close()
     s2.close()
-    return saveslot
 
 def createGame():
-    saveslot = 0
+    global saveslot
     first_input = True
     BUFSIZE = 20
     buf = ""
@@ -280,9 +287,10 @@ def createGame():
                 print(f"Length: {len(buf)}   ")
                 saveList.write(buf)
     
-    return saveslot
 
-def saveGame(players, rounds, ppg, rounds_played, names, saveslot):
+
+def saveGame(players, rounds, ppg, rounds_played, names):
+    global saveslot
     BUFSIZE = (10 * rounds) + 5
     
     save_filename = f"GameFiles/save{saveslot}"
@@ -313,12 +321,71 @@ def saveGame(players, rounds, ppg, rounds_played, names, saveslot):
                 for j in range(2):
                     f.write(names[i][j])
 
+def do_nothing():
+    pass
+
+def newgame_button():
+    print("\nEnter Each Player's First and Last Initials")
+    for i in range(players):
+        print(f"\nPlayer {i+1}: ")
+        name = input()
+        names[i] = name
+
+    Game.game(players, rounds, 2000, ppg, names)  
+    createGame()
+    makeTemplate(players)  
+    reset() 
+
+def clear_frame():
+    for widget in root.winfo_children():
+        if widget != canvas1:
+            widget.destroy()
+
+def loadgame_button():
+    clear_frame()
+    loadGame()  
+    Scoreboard.scoreBoard(rounds_played, players, ppg, names)  
+    #print_scores(10*players, 8*rounds)
+    print_scores() 
+    pass
+
+def select_save_slot(selection):
+    global saveslot
+    saveslot = selection
+    clear_frame()
+
+def display_saves_window():
+    button1 = tk.Button(text='Save 1', command=lambda: select_save_slot(1), bg='brown',fg='white')
+    button2 = tk.Button(text='Save 2', command=lambda: select_save_slot(2), bg='brown',fg='white')
+    button3 = tk.Button(text='Save 3', command=lambda: select_save_slot(3), bg='brown',fg='white')
+    button4 = tk.Button(text='Save 4', command=lambda: select_save_slot(4), bg='brown',fg='white')
+    button5 = tk.Button(text='Save 5', command=lambda: select_save_slot(5), bg='brown',fg='white')
+
+    canvas1.create_window(150, 150, window=button1)
+    canvas1.create_window(150, 200, window=button2)
+    canvas1.create_window(150, 250, window=button3)
+    canvas1.create_window(150, 300, window=button4)
+    canvas1.create_window(150, 350, window=button5)
+
 def main():
-    rounds_played = saveslot = exit = 0
+    #label1 = tk.Label(root, text= '', fg='blue', font=('helvetica', 12, 'bold'))
+    #canvas1.create_window(150, 200, window=label1)
+    button1 = tk.Button(text='New Game', command=newgame_button, bg='brown',fg='white')
+    canvas1.create_window(150, 150, window=button1)
+
+    button2 = tk.Button(text='Load Game', command=loadgame_button, bg='blue', fg='white')
+    canvas1.create_window(150, 200, window=button2)
+
+    button3 = tk.Button(text='Testing Mode', command=do_nothing, bg='green', fg='white')
+    canvas1.create_window(150, 250, window=button3)
+
+
+    exit = 0
     
     menu_select = getInput()  
     global TEST
     global names
+    global rounds_played
     print(players, " players\n")
     
     if menu_select == 0:
@@ -329,11 +396,11 @@ def main():
             names[i] = name
 
         Game.game(players, rounds, 2000, ppg, names)  
-        saveslot = createGame()
+        createGame()
         makeTemplate(players)  
         reset()  
     elif menu_select == 1:
-        saveslot = loadGame()  
+        loadGame()  
         Scoreboard.scoreBoard(rounds_played, players, ppg, names)  
         #print_scores(10*players, 8*rounds)
         print_scores()  
@@ -341,7 +408,7 @@ def main():
         print("MENU WORKING")
         names = name_sample[:players]
         Game.game(players, rounds, 2000, ppg, names)  
-        saveslot = createGame()
+        createGame()
         makeTemplate(players)  
         reset() 
 
@@ -357,7 +424,7 @@ def main():
         else:
             break
     
-        saveGame(players, rounds, ppg, i-1, names, saveslot)
+        saveGame(players, rounds, ppg, i-1, names)
         print("Game Saved.")
 
 if __name__ == "__main__":
