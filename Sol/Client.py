@@ -15,6 +15,17 @@ rounds_played = 0
 name_sample = ['AA','AB','AC','AD','AE','AF','AG','AH','AI','AJ','AK','AL']
 names = name_sample
 
+# NOTES
+#
+# ALL terminal inputs will have to be replaced with GUI inputs
+# LoadGame is in the process of being changed
+#
+#
+#
+
+
+
+
 def scores_input(players, round, names):
     global TEST
     in_choice = 0
