@@ -34,7 +34,8 @@ def scores_input(players, round, names):
                 print(f"{names[i - 1][0]}{names[i - 1][1]}'s score: ", end="")
                 y = int(input())
             else:
-                y = 5
+                y = random.randint(1,52)
+                print("RANDOM SCORE: ",y)
             f2.write(f"{buf}\t{y}\n")
 
         if not TEST:
@@ -148,12 +149,13 @@ def getInput():
     print("How many rounds?")
     rounds = int(input())
 
-    while out not in range(2, 8):
+    ppg = 0
+    while ppg not in range(2, 8):
         print("\n-- Game Selection --")
         print("2: Double\n3: Triple\n4: Quadruple\n5: Pentuple\n6: Hextuple\n7: Septuple\n0: Exit")
-        out = int(input())
-        if out == 0:
-            break
+        ppg = int(input())
+
+    return 0
 
 
 def displaySaveList():

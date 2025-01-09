@@ -35,7 +35,7 @@ def scoreBoard(rounds, p, ppg, names):
     print("p: ",p)
     print("Names: ",names)
     # Read scores
-    for i in range(0, p + 1):
+    for i in range(1, p + 1):
         buf_scores = SCORES.readline().strip()
         score_values = buf_scores.split()
         print("Score Values: ",score_values)
@@ -45,7 +45,7 @@ def scoreBoard(rounds, p, ppg, names):
             
     print("SCORES: ",scores)
     # Process matches
-    for j in range(0, len(scores[0]) - 1):
+    for j in range(1, len(scores[1])):
         buf = infile.readline().strip()
         matches = buf.split('-')
         matches.pop()       # lists read ['1','2','3',''] for some reason, so removing last index
@@ -53,7 +53,7 @@ def scoreBoard(rounds, p, ppg, names):
         print("Matches: ",matches)
         
         
-        for i in range(0, math.floor(p/ppg) - 1):
+        for i in range(0, math.floor(p/ppg)):
             # Initialize player scores
             p1 = p2 = p3 = p4 = p5 = p6 = p7 = 0
             s1 = s2 = s3 = s4 = s5 = s6 = s7 = 0.0
@@ -116,7 +116,7 @@ def scoreBoard(rounds, p, ppg, names):
             print("I: ",i)
             sc_out.write("\n")
             sc_out.write(f"{names[i-1]}:")
-            for j in range(1, rounds + 1):
+            for j in range(1, r + 1):
                 score = scores[i][j]
                 sc_out.write(f" {score:2d}")
         
@@ -127,7 +127,7 @@ def scoreBoard(rounds, p, ppg, names):
             sum_pars = 0.0
             sc_out.write("\n")
             sc_out.write(f"{names[i-1]}:")
-            for j in range(1, rounds + 1):
+            for j in range(1, r + 1):
                 par = pars[i][j]
                 sum_pars += par
                 sc_out.write(f" {int(par):3d}")
