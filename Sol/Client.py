@@ -19,7 +19,7 @@ names = name_sample
 #
 # ALL terminal inputs will have to be replaced with GUI inputs
 # LoadGame is in the process of being changed
-#
+# +note for jan 10
 #
 #
 
@@ -194,7 +194,7 @@ def loadGame():
     s1 = open("GameFiles/scoreboard", "w")
     s2 = open("GameFiles/scoreboard2", "w")
     
-    displaySaveList()
+    #displaySaveList()
     display_saves_window()      # this calls select_save_slot() which sets saveslot
     #print("\nEnter a save slot: ")
     #saveslot = int(input())
@@ -279,8 +279,9 @@ def createGame():
     BUFSIZE = 20
     buf = ""
     
-    displaySaveList()  
-    saveslot = int(input("Enter a save slot: "))
+    #displaySaveList()  
+    display_saves_window()
+    #saveslot = int(input("Enter a save slot: "))     # HERE 
     
     with open("GameFiles/saveList", "r+") as saveList:
         saveList.seek(3 + (35 * (saveslot-1)))
