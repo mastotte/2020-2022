@@ -2,6 +2,7 @@ import random
 import Game
 import Scoreboard
 import tkinter as tk
+from enum import Enum
 root = tk.Tk()
 canvas1 = tk.Canvas(root, width = 1000, height = 1000)
 canvas1.pack()
@@ -15,7 +16,17 @@ rounds_played = 0
 name_sample = ['AA','AB','AC','AD','AE','AF','AG','AH','AI','AJ','AK','AL']
 names = name_sample
 mode_options = ["Double", "Triple", "Quadruple", "Pentuple", "Hextuple", "Septuple"]
+players_var = tk.StringVar()
+rounds_var = tk.StringVar()
+game_mode_var = tk.StringVar()
 
+class Mode(Enum):
+    DOUBLE = 2
+    TRIPLE = 3
+    QUADRUPLE = 4
+    PENTUPLE = 5
+    HEXTUPLE = 6
+    SEPTUPLE = 7
 
 # NOTES
 #
@@ -339,6 +350,7 @@ def do_nothing():
     pass
 
 def newgame_button():
+    new_game_input_screen()
     print("\nEnter Each Player's First and Last Initials")
     for i in range(players):
         print(f"\nPlayer {i+1}: ")
@@ -349,6 +361,7 @@ def newgame_button():
     createGame()
     makeTemplate(players)  
     reset() 
+    
 
 def clear_frame():
     for widget in root.winfo_children():
@@ -381,6 +394,38 @@ def display_saves_window():
     canvas1.create_window(150, 300, window=button4)
     canvas1.create_window(150, 350, window=button5)
 
+def submit_button():
+    global players
+    global rounds
+    global ppg
+    players = int(players_var.get())
+    mode = game_mode_var.get()
+    ppg = Mode[mode].value
+
+    print("submit button called\n")
+    pass
+
+def new_game_input_screen():
+    print("new game input screen called\n")
+    clear_frame()
+    global players_var
+    global game_mode_var
+    # if this doesn't work try including mode options as global variable
+    players_label = tk.Label(root, text='Enter number of players:', fg='blue', font=('helvetica', 12, 'bold'))
+    players_entry = tk.Entry(root, textvariable= players_var, font=('helvetica', 12, 'bold'))
+    players_label.pack()
+    players_entry.pack()
+    rounds_label = tk.Label(root, text='Enter number of rounds:', fg='blue', font=('helvetica', 12, 'bold'))
+    rounds_entry = tk.Entry(root, textvariable= rounds_var, font=('helvetica', 12, 'bold'))
+    rounds_label.pack()
+    rounds_entry.pack()
+    game_mode_var.set("Double")
+    dropdown = tk.OptionMenu(root, game_mode_var, *mode_options)
+    dropdown.pack()
+    root.mainloop()
+
+
+    
 def main():
     #label1 = tk.Label(root, text= '', fg='blue', font=('helvetica', 12, 'bold'))
     #canvas1.create_window(150, 200, window=label1)
@@ -397,6 +442,7 @@ def main():
     exit = 0
     
     menu_select = getInput()  
+    #menu_select = 0
     global TEST
     global names
     global rounds_played
@@ -440,6 +486,6 @@ def main():
     
         saveGame(players, rounds, ppg, i-1, names)
         print("Game Saved.")
-
+        
 if __name__ == "__main__":
     main()
