@@ -8,20 +8,22 @@ canvas1.pack()
 SEED = 2022
 TEST = False
 players = 0
-ppg = 0
+ppg = 0                 
 rounds = 0
 saveslot = 0
 rounds_played = 0
 name_sample = ['AA','AB','AC','AD','AE','AF','AG','AH','AI','AJ','AK','AL']
 names = name_sample
+mode_options = ["Double", "Triple", "Quadruple", "Pentuple", "Hextuple", "Septuple"]
+
 
 # NOTES
 #
 # ALL terminal inputs will have to be replaced with GUI inputs
 # LoadGame is in the process of being changed
-# +note for jan 10
+# +note for jan 11
 #
-#
+# 
 
 
 
@@ -281,7 +283,7 @@ def createGame():
     
     #displaySaveList()  
     display_saves_window()
-    #saveslot = int(input("Enter a save slot: "))     # HERE 
+    #saveslot = int(input("Enter a save slot: "))     
     
     with open("GameFiles/saveList", "r+") as saveList:
         saveList.seek(3 + (35 * (saveslot-1)))
