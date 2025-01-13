@@ -18,6 +18,7 @@ name_sample = ['AA','AB','AC','AD','AE','AF','AG','AH','AI','AJ','AK','AL']
 names = name_sample
 mode_options = ["Double", "Triple", "Quadruple", "Pentuple", "Hextuple", "Septuple"]
 player_names_var = [tk.StringVar() for _ in range(100)]
+player_names = ["" for _ in range(100)] 
 players_var = tk.StringVar()
 rounds_var = tk.StringVar()
 game_mode_var = tk.StringVar()
@@ -411,6 +412,7 @@ def submit_button():
 
     print("submit button called\n")
     print(f"players: {players}, rounds: {rounds}, ppg: {ppg}\n")
+    player_name_input_screen()
     pass
 
 def new_game_input_screen():
@@ -438,7 +440,16 @@ def new_game_input_screen():
     canvas1.create_window(150, 400, window=sub_btn)
     root.mainloop()
 
+def submit_player_names():
+    global player_names
+    print("submit player names called\n")
+    for i in range(players):
+        player_names[i] = player_names_var[i].get()
+    print(player_names)
+    pass
+
 def player_name_input_screen():
+    global player_names
     print("player name input screen called\n")
     clear_frame()
 
@@ -448,6 +459,11 @@ def player_name_input_screen():
     for i in range(players):
         pe = tk.Entry(root, textvariable= player_names_var[i], font=('helvetica', 12, 'bold'))
         canvas1.create_window(150, 200 + (50 * i), window=pe)
+
+    sub_btn = tk.Button(root, text='Submit', command=submit_player_names, bg='brown', fg='white')
+    canvas1.create_window(150, 200 + (50 * players), window=sub_btn)
+
+
 
     
 def main():
