@@ -14,6 +14,7 @@ rounds = 0
 saveslot = 0
 rounds_played = 0
 name_sample = ['AA','AB','AC','AD','AE','AF','AG','AH','AI','AJ','AK','AL']
+input_wait_flag = False
 
 names = name_sample
 mode_options = ["Double", "Triple", "Quadruple", "Pentuple", "Hextuple", "Septuple"]
@@ -356,17 +357,12 @@ def saveGame(players, rounds, ppg, rounds_played, names):
 def do_nothing():
     pass
 
-def newgame_button():
-    new_game_input_screen()
-    print("\nEnter Each Player's First and Last Initials")
-    for i in range(players):
-        print(f"\nPlayer {i+1}: ")
-        name = input()
-        names[i] = name
-
+def newgame_create(): 
+    clear_frame()
     Game.game(players, rounds, 2000, ppg, names)  
     createGame()
     makeTemplate(players)  
+    # submit_player_names() ------------------------------------------------ ????
     reset() 
     
 
@@ -412,6 +408,7 @@ def submit_button():
 
     print("submit button called\n")
     print(f"players: {players}, rounds: {rounds}, ppg: {ppg}\n")
+    newgame_create()
     player_name_input_screen()
     pass
 
@@ -438,7 +435,7 @@ def new_game_input_screen():
     canvas1.create_window(150, 300, window=rounds_entry)
     canvas1.create_window(150, 350, window=dropdown)
     canvas1.create_window(150, 400, window=sub_btn)
-    root.mainloop()
+    #root.mainloop()
 
 def submit_player_names():
     global player_names
@@ -469,7 +466,7 @@ def player_name_input_screen():
 def main():
     #label1 = tk.Label(root, text= '', fg='blue', font=('helvetica', 12, 'bold'))
     #canvas1.create_window(150, 200, window=label1)
-    button1 = tk.Button(text='New Game', command=newgame_button, bg='brown',fg='white')
+    button1 = tk.Button(text='New Game', command=new_game_input_screen, bg='brown',fg='white')
     canvas1.create_window(150, 150, window=button1)
 
     button2 = tk.Button(text='Load Game', command=loadgame_button, bg='blue', fg='white')
