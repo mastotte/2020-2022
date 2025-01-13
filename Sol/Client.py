@@ -14,25 +14,27 @@ rounds = 0
 saveslot = 0
 rounds_played = 0
 name_sample = ['AA','AB','AC','AD','AE','AF','AG','AH','AI','AJ','AK','AL']
+
 names = name_sample
 mode_options = ["Double", "Triple", "Quadruple", "Pentuple", "Hextuple", "Septuple"]
+player_names_var = [tk.StringVar() for _ in range(100)]
 players_var = tk.StringVar()
 rounds_var = tk.StringVar()
 game_mode_var = tk.StringVar()
 
 class Mode(Enum):
-    DOUBLE = 2
-    TRIPLE = 3
-    QUADRUPLE = 4
-    PENTUPLE = 5
-    HEXTUPLE = 6
-    SEPTUPLE = 7
+    Double = 2
+    Triple = 3
+    Quadruple = 4
+    Pentuple = 5
+    Hextuple = 6
+    Septuple = 7
 
 # NOTES
 #
 # ALL terminal inputs will have to be replaced with GUI inputs
 # LoadGame is in the process of being changed
-# +note for jan 11
+# For future: save and display full names, not just initials
 #
 # 
 
@@ -399,10 +401,12 @@ def submit_button():
     global rounds
     global ppg
     players = int(players_var.get())
+    rounds = int(rounds_var.get())
     mode = game_mode_var.get()
     ppg = Mode[mode].value
 
     print("submit button called\n")
+    print(f"players: {players}, rounds: {rounds}, ppg: {ppg}\n")
     pass
 
 def new_game_input_screen():
@@ -413,17 +417,33 @@ def new_game_input_screen():
     # if this doesn't work try including mode options as global variable
     players_label = tk.Label(root, text='Enter number of players:', fg='blue', font=('helvetica', 12, 'bold'))
     players_entry = tk.Entry(root, textvariable= players_var, font=('helvetica', 12, 'bold'))
-    players_label.pack()
-    players_entry.pack()
     rounds_label = tk.Label(root, text='Enter number of rounds:', fg='blue', font=('helvetica', 12, 'bold'))
     rounds_entry = tk.Entry(root, textvariable= rounds_var, font=('helvetica', 12, 'bold'))
-    rounds_label.pack()
-    rounds_entry.pack()
+
     game_mode_var.set("Double")
     dropdown = tk.OptionMenu(root, game_mode_var, *mode_options)
-    dropdown.pack()
+    
+
+    # creating submit button
+    sub_btn = tk.Button(root, text='Submit', command=submit_button, bg='brown', fg='white')
+    canvas1.create_window(150, 150, window=players_label)
+    canvas1.create_window(150, 200, window=players_entry)
+    canvas1.create_window(150, 250, window=rounds_label)
+    canvas1.create_window(150, 300, window=rounds_entry)
+    canvas1.create_window(150, 350, window=dropdown)
+    canvas1.create_window(150, 400, window=sub_btn)
     root.mainloop()
 
+def player_name_input_screen():
+    print("player name input screen called\n")
+    clear_frame()
+
+    player_name_label = tk.Label(root, text='Enter player names:', fg='blue', font=('helvetica', 12, 'bold'))
+    canvas1.create_window(150, 150, window=player_name_label)
+    # pe stands for player entry
+    for i in range(players):
+        pe = tk.Entry(root, textvariable= player_names_var[i], font=('helvetica', 12, 'bold'))
+        canvas1.create_window(150, 200 + (50 * i), window=pe)
 
     
 def main():
