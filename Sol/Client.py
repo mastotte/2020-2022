@@ -35,7 +35,11 @@ class Mode(Enum):
 # ALL terminal inputs will have to be replaced with GUI inputs
 # LoadGame is in the process of being changed
 # For future: save and display full names, not just initials
-#
+
+
+# PLAYER NAME INPUT screen still needs to be called after submit button is pushed,
+# and it needs its own submit button to move on to the game. The submit button doesn't have
+# to do anything, it just needs to move on to the next screen
 # 
 
 
