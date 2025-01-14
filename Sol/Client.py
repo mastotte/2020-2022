@@ -358,6 +358,75 @@ def saveGame(players, rounds, ppg, rounds_played, names):
 def do_nothing():
     pass
 
+# New Game Screen 1
+def new_game_input_screen():
+    print("new game input screen called\n")
+    clear_frame()
+    global players_var
+    global game_mode_var
+    # if this doesn't work try including mode options as global variable
+    players_label = tk.Label(root, text='Enter number of players:', fg='blue', font=('helvetica', 12, 'bold'))
+    players_entry = tk.Entry(root, textvariable= players_var, font=('helvetica', 12, 'bold'))
+    rounds_label = tk.Label(root, text='Enter number of rounds:', fg='blue', font=('helvetica', 12, 'bold'))
+    rounds_entry = tk.Entry(root, textvariable= rounds_var, font=('helvetica', 12, 'bold'))
+
+    game_mode_var.set("Double")
+    dropdown = tk.OptionMenu(root, game_mode_var, *mode_options)
+    
+
+    # creating submit button
+    sub_btn = tk.Button(root, text='Submit', command=submit_button, bg='brown', fg='white')
+    canvas1.create_window(150, 150, window=players_label)
+    canvas1.create_window(150, 200, window=players_entry)
+    canvas1.create_window(150, 250, window=rounds_label)
+    canvas1.create_window(150, 300, window=rounds_entry)
+    canvas1.create_window(150, 350, window=dropdown)
+    canvas1.create_window(150, 400, window=sub_btn)
+    #root.mainloop()
+
+# New Game Screen 1
+def submit_button():
+    global players
+    global rounds
+    global ppg
+    players = int(players_var.get())
+    rounds = int(rounds_var.get())
+    mode = game_mode_var.get()
+    ppg = Mode[mode].value
+
+    print("submit button called\n")
+    print(f"players: {players}, rounds: {rounds}, ppg: {ppg}\n")
+    player_name_input_screen()
+    pass
+
+# New Game Screen 32
+def player_name_input_screen():
+    global player_names
+    print("player name input screen called\n")
+    clear_frame()
+
+    player_name_label = tk.Label(root, text='Enter player names:', fg='blue', font=('helvetica', 12, 'bold'))
+    canvas1.create_window(150, 150, window=player_name_label)
+    # pe stands for player entry
+    for i in range(players):
+        pe = tk.Entry(root, textvariable= player_names_var[i], font=('helvetica', 12, 'bold'))
+        canvas1.create_window(150, 200 + (50 * i), window=pe)
+
+    sub_btn = tk.Button(root, text='Submit', command=submit_player_names, bg='brown', fg='white')
+    canvas1.create_window(150, 200 + (50 * players), window=sub_btn)
+
+# New Game Screen 2
+def submit_player_names():
+    global player_names
+    print("submit player names called\n")
+    for i in range(players):
+        player_names[i] = player_names_var[i].get()
+    print(player_names)
+
+    newgame_create()
+    pass
+
+# New Game Screen 3
 def newgame_create(): 
     clear_frame()
     Game.game(players, rounds, 2000, ppg, names)  
@@ -398,54 +467,7 @@ def display_saves_window():
     canvas1.create_window(150, 300, window=button4)
     canvas1.create_window(150, 350, window=button5)
 
-def submit_button():
-    global players
-    global rounds
-    global ppg
-    players = int(players_var.get())
-    rounds = int(rounds_var.get())
-    mode = game_mode_var.get()
-    ppg = Mode[mode].value
 
-    print("submit button called\n")
-    print(f"players: {players}, rounds: {rounds}, ppg: {ppg}\n")
-    player_name_input_screen()
-    pass
-
-def new_game_input_screen():
-    print("new game input screen called\n")
-    clear_frame()
-    global players_var
-    global game_mode_var
-    # if this doesn't work try including mode options as global variable
-    players_label = tk.Label(root, text='Enter number of players:', fg='blue', font=('helvetica', 12, 'bold'))
-    players_entry = tk.Entry(root, textvariable= players_var, font=('helvetica', 12, 'bold'))
-    rounds_label = tk.Label(root, text='Enter number of rounds:', fg='blue', font=('helvetica', 12, 'bold'))
-    rounds_entry = tk.Entry(root, textvariable= rounds_var, font=('helvetica', 12, 'bold'))
-
-    game_mode_var.set("Double")
-    dropdown = tk.OptionMenu(root, game_mode_var, *mode_options)
-    
-
-    # creating submit button
-    sub_btn = tk.Button(root, text='Submit', command=submit_button, bg='brown', fg='white')
-    canvas1.create_window(150, 150, window=players_label)
-    canvas1.create_window(150, 200, window=players_entry)
-    canvas1.create_window(150, 250, window=rounds_label)
-    canvas1.create_window(150, 300, window=rounds_entry)
-    canvas1.create_window(150, 350, window=dropdown)
-    canvas1.create_window(150, 400, window=sub_btn)
-    #root.mainloop()
-
-def submit_player_names():
-    global player_names
-    print("submit player names called\n")
-    for i in range(players):
-        player_names[i] = player_names_var[i].get()
-    print(player_names)
-
-    newgame_create()
-    pass
 
 def player_name_input_screen():
     global player_names
@@ -461,6 +483,12 @@ def player_name_input_screen():
 
     sub_btn = tk.Button(root, text='Submit', command=submit_player_names, bg='brown', fg='white')
     canvas1.create_window(150, 200 + (50 * players), window=sub_btn)
+
+
+
+
+
+
 
 
 
