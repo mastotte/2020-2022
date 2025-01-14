@@ -33,7 +33,7 @@ class Mode(Enum):
     Septuple = 7
 
 # NOTES
-#
+# jan 13
 # ALL terminal inputs will have to be replaced with GUI inputs
 # LoadGame is in the process of being changed
 # For future: save and display full names, not just initials
@@ -45,7 +45,8 @@ class Mode(Enum):
 # 
 
 
-
+# New game -> new_game_input_screen -> submit_button -> player_name_input_screen -> submit_player_names -> newgame_create
+# Load game -> loadgame_button ->
 
 def scores_input(players, round, names):
     global TEST
@@ -362,7 +363,7 @@ def newgame_create():
     Game.game(players, rounds, 2000, ppg, names)  
     createGame()
     makeTemplate(players)  
-    # submit_player_names() ------------------------------------------------ ????
+    submit_player_names() #------------------------------------------------ ????
     reset() 
     
 
@@ -408,7 +409,6 @@ def submit_button():
 
     print("submit button called\n")
     print(f"players: {players}, rounds: {rounds}, ppg: {ppg}\n")
-    newgame_create()
     player_name_input_screen()
     pass
 
@@ -443,6 +443,8 @@ def submit_player_names():
     for i in range(players):
         player_names[i] = player_names_var[i].get()
     print(player_names)
+
+    newgame_create()
     pass
 
 def player_name_input_screen():
