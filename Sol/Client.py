@@ -8,6 +8,7 @@ canvas1 = tk.Canvas(root, width = 1000, height = 1000)
 canvas1.pack()
 SEED = 2022
 TEST = False
+save_name = ""
 players = 0
 ppg = 0                 
 rounds = 0
@@ -25,6 +26,7 @@ player_names = ["" for _ in range(100)]
 players_var = tk.StringVar()
 rounds_var = tk.StringVar()
 game_mode_var = tk.StringVar()
+save_name_var = tk.StringVar()
 
 class Mode(Enum):
     Double = 2
@@ -461,7 +463,8 @@ def select_save_slot(selection):
         pass
         # This should continue with a loaded game !IMPLEMENT!
     else:
-        newgame_create()
+        enter_save_name()
+        
     
 
 def display_saves_window():
@@ -477,6 +480,23 @@ def display_saves_window():
     canvas1.create_window(150, 250, window=button3)
     canvas1.create_window(150, 300, window=button4)
     canvas1.create_window(150, 350, window=button5)
+
+# New Game Screen 5
+def enter_save_name():
+    clear_frame()
+    name_label = tk.Label(root, text='Enter a name for the save:', fg='blue', font=('helvetica', 12, 'bold'))
+    name_entry = tk.Entry(root, textvariable= save_name_var, font=('helvetica', 12, 'bold'))
+    sub_btn = tk.Button(root, text='Submit', command=submit_save_name_button, bg='brown', fg='white')
+    canvas1.create_window(150, 400, window=name_label)
+    canvas1.create_window(150, 450, window=name_entry)
+    canvas1.create_window(150, 500, window=sub_btn)
+
+# New Game Screen 5
+def submit_save_name_button():
+    global save_name
+    save_name = save_name_var.get()
+    newgame_create()
+
 
 
 
@@ -516,8 +536,8 @@ def main():
     button3 = tk.Button(text='Testing Mode', command=do_nothing, bg='green', fg='white')
     canvas1.create_window(150, 250, window=button3)
 
-
-    exit = 0
+    root.mainloop()
+    """exit = 0
     
     menu_select = getInput()  
     #menu_select = 0
@@ -549,8 +569,8 @@ def main():
         createGame()
         makeTemplate(players)  
         reset() 
-
     
+    """
     for i in range(rounds_played + 1, rounds + 1):
         #print_scores(10*players, 8*rounds)
         print_scores() 
