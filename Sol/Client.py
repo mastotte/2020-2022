@@ -15,6 +15,8 @@ saveslot = 0
 rounds_played = 0
 name_sample = ['AA','AB','AC','AD','AE','AF','AG','AH','AI','AJ','AK','AL']
 input_wait_flag = False
+load_game = False
+
 
 names = name_sample
 mode_options = ["Double", "Triple", "Quadruple", "Pentuple", "Hextuple", "Septuple"]
@@ -211,6 +213,8 @@ def loadGame():
     global names
     global saveslot
     global rounds_played
+    global load_game
+    load_game = True
     save = None
     f2 = open("GameFiles/f2", "w")
     s1 = open("GameFiles/scoreboard", "w")
@@ -399,7 +403,7 @@ def submit_button():
     player_name_input_screen()
     pass
 
-# New Game Screen 32
+# New Game Screen 2
 def player_name_input_screen():
     global player_names
     print("player name input screen called\n")
@@ -423,7 +427,7 @@ def submit_player_names():
         player_names[i] = player_names_var[i].get()
     print(player_names)
 
-    newgame_create()
+    display_saves_window()
     pass
 
 # New Game Screen 3
@@ -432,7 +436,6 @@ def newgame_create():
     Game.game(players, rounds, 2000, ppg, names)  
     createGame()
     makeTemplate(players)  
-    submit_player_names() #------------------------------------------------ ????
     reset() 
     
 
@@ -449,12 +452,20 @@ def loadgame_button():
     print_scores() 
     pass
 
+# New Game Sceen 4
 def select_save_slot(selection):
     global saveslot
     saveslot = selection
     clear_frame()
+    if(load_game):
+        pass
+        # This should continue with a loaded game !IMPLEMENT!
+    else:
+        newgame_create()
+    
 
 def display_saves_window():
+    clear_frame()
     button1 = tk.Button(text='Save 1', command=lambda: select_save_slot(1), bg='brown',fg='white')
     button2 = tk.Button(text='Save 2', command=lambda: select_save_slot(2), bg='brown',fg='white')
     button3 = tk.Button(text='Save 3', command=lambda: select_save_slot(3), bg='brown',fg='white')
