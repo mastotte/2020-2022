@@ -7,7 +7,7 @@ SEED = 2022
 
 def calculateSD(data, p, matches_call):
     sum_data = 0.0
-    z = 0
+    z = 0.1
     for i in range(int(p)):
         sum_data += data[i]
         if data[i] == 0.0:
@@ -59,12 +59,14 @@ def is_sitting(val, mod, sitters):
     return False
 
 def findMax(players, x, C, ppg, sitters):
-    highest = 0
+    highest = -999
     index = 0
     for i in range(players):
         if (x[i] > highest) and (C[i] == True) and (not is_sitting(i, players % ppg, sitters)):
+            
             highest = x[i]
             index = i
+
     return index
 
 def findMin(players, ppg, sitters, x, C):
@@ -74,6 +76,7 @@ def findMin(players, ppg, sitters, x, C):
         if (x[i] < lowest) and (C[i] == True) and (not is_sitting(i, players % ppg, sitters)):
             lowest = x[i]
             index = i
+
     return index
 
 def game(players, rounds, TESTSIZE, ppg, names):
@@ -81,6 +84,7 @@ def game(players, rounds, TESTSIZE, ppg, names):
     start = time.process_time()
     
     outFile = open("GameFiles/out", "w")
+    print("Players: ",players, "Rounds: ",rounds, "TESTSIZE: ",TESTSIZE, "ppg: ",ppg, "Names: ",names)
     C = [False] * players
     sitting = (players % ppg != 0)
     HIT_MAX = False
@@ -106,6 +110,7 @@ def game(players, rounds, TESTSIZE, ppg, names):
     #    TESTSIZE = players + 1
     
     for test_count in range(players + 1, TESTSIZE + 1):
+        
         outFile.write(f"{test_count}")
         HIT_MAX = False
         
@@ -143,11 +148,32 @@ def game(players, rounds, TESTSIZE, ppg, names):
             
             outFile.write("\n")
             w_count = players
-            #for z in range(players):
-            #    stdevs[z] = calculateSD(matches[z], float(players), 1)
-            
+            for z in range(players):
+               stdevs[z] = calculateSD(matches[z], float(players), 1)
+
             while w_count >= ppg:
+                r1 = findMax(players, stdevs, C, ppg, sitters)
+                C[r1] = False
+                r2 = findMin(players, ppg, sitters, matches[r1], C)
+                C[r2] = False
+                if ppg > 2:
+                    r3 = findMin(players, ppg, sitters, matches[r1], C)
+                    C[r3] = False
+                if ppg > 3:
+                    r4 = findMin(players, ppg, sitters, matches[r1], C)
+                    C[r4] = False
+                if ppg > 4:
+                    r5 = findMin(players, ppg, sitters, matches[r1], C)
+                    C[r5] = False
+                if ppg > 5:
+                    r6 = findMin(players, ppg, sitters, matches[r1], C)
+                    C[r6] = False
+                if ppg > 6:
+                    r7 = findMin(players, ppg, sitters, matches[r1], C)
+                    C[r7] = False
+                """
                 if j > 0:
+                    print("J\n")
                     if sitting and (w_count == players):
                         r1 = (j + 1) % players
                     else:
@@ -171,6 +197,7 @@ def game(players, rounds, TESTSIZE, ppg, names):
                         r7 = findMin(players, ppg, sitters, matches[r1], C)
                         C[r7] = False
                 else:
+                    print("ELSE\n")
                     r1 = 0 + (players - w_count)
                     if sitting: r1 += 1
                     C[r1] = False
@@ -202,7 +229,7 @@ def game(players, rounds, TESTSIZE, ppg, names):
                         if sitting:
                             r7 += 1
                         C[r7] = False
-
+                """
                 outFile.write(f" {r1 + 1} vs {r2 + 1}")
                 if ppg > 2:
                     outFile.write(f" vs {r3 + 1}")
@@ -309,4 +336,6 @@ def game(players, rounds, TESTSIZE, ppg, names):
     cpu_time_used = (end - start) / CLOCKS_PER_SEC
     print(f"Time: {cpu_time_used:.3f} \n")
     """
+    
     C = None
+
