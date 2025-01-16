@@ -4,7 +4,7 @@ import Scoreboard
 import tkinter as tk
 from enum import Enum
 root = tk.Tk()
-canvas1 = tk.Canvas(root, width = 1000, height = 1000)
+canvas1 = tk.Canvas(root, width = 2000, height = 1000)
 canvas1.pack()
 SEED = 2022
 TEST = False
@@ -20,7 +20,7 @@ load_game = False
 
 
 #names = name_sample
-names = ['Maxwell','Cienna De Leon','Alec111','Cecilia','Cornelius','Kay Fontelle Slater','Rain Stecklein-Totten','AH','AI','AJ','AK','AL']    #for testing
+names = ['Maxwell','Cienna De Leon Cienna De Leon','Alec111','Cecilia','Cornelius','Kay Fontelle Slater','Rain Stecklein-Totten','AH','AI','AJ','AK','AL']    #for testing
 mode_options = ["Double", "Triple", "Quadruple", "Pentuple", "Hextuple", "Septuple"]
 player_names_var = [tk.StringVar() for _ in range(100)]
 player_names = ["" for _ in range(100)] 
@@ -158,8 +158,16 @@ def print_scores():
     for line in f2:
         j = 0
         for name in name_sample:        # replace initials with full names
-            line.replace(name, names[j])
+            line = line.replace(name, names[j][:10])
             j += 1
+        k = 0
+        #---------------might not be needed-------------
+        for name in names:        # replace full names with shortened ones
+            print("Line: ",line)
+            line = line.replace(name, names[k][:10])
+            k += 1
+        #-----------------------------------------------
+        print("New Line: ",line)
         if "Pars" in line or "Standings" in line or "Scores" in line:       # Color the line black if it's a header
             label = tk.Label(root, text=line, fg='black', font=('helvetica', 12, 'bold')) 
         else:
@@ -171,13 +179,31 @@ def print_scores():
     for line in f:
         j = 0
         for name in name_sample:        # replace initials with full names
-            line.replace(name, names[j])
+            line = line.replace(name, names[j][:10])
             j += 1
+
         if "Round" in line:             # Color the line black if it's a round header
+            label = tk.Label(root, text=line, fg='black', font=('helvetica', 12, 'bold'))
+            canvas1.create_window(700, 100 + (25 * i), window=label, anchor=tk.W)
+        else:
+            matches = line.split("-")
+            m = 0
+            for match in matches:
+                if m%2 == 0:
+                    label = tk.Label(root, text=match, fg='red', font=('helvetica', 12, 'bold'))
+                    canvas1.create_window(775 + (200 * m), 100 + (25 * (i-1)), window=label, anchor=tk.W)
+                else:
+                    label = tk.Label(root, text=match, fg='blue', font=('helvetica', 12, 'bold'))
+                    canvas1.create_window(775 + (200 * m), 100 + (25 * (i-1)), window=label, anchor=tk.W)
+                m += 1
+                    
+        
+
+        """if "Round" in line:             # Color the line black if it's a round header
             label = tk.Label(root, text=line, fg='black', font=('helvetica', 12, 'bold'))
         else:
             label = tk.Label(root, text=line, fg='blue', font=('helvetica', 12, 'bold'))
-        canvas1.create_window(700, 100 + (25 * i), window=label, anchor=tk.W)
+        canvas1.create_window(700, 100 + (25 * i), window=label, anchor=tk.W)"""
         i += 1
         #players_label = tk.Label(root, text=f"{names[i]}'s score:", fg='blue', font=('helvetica', 12, 'bold'))
         
