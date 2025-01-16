@@ -19,7 +19,8 @@ input_wait_flag = False
 load_game = False
 
 
-names = name_sample
+#names = name_sample
+names = ['Maxwell','Cienna De Leon','Alec111','Cecilia','Cornelius','Kay Fontelle Slater','Rain Stecklein-Totten','AH','AI','AJ','AK','AL']    #for testing
 mode_options = ["Double", "Triple", "Quadruple", "Pentuple", "Hextuple", "Septuple"]
 player_names_var = [tk.StringVar() for _ in range(100)]
 player_names = ["" for _ in range(100)] 
@@ -88,7 +89,7 @@ def scores_input(names):
     clear_frame()
     # if this doesn't work try including mode options as global variable
     for i in range(players):
-        players_label = tk.Label(root, text=f"{names[i][:10]}'s score:", fg='blue', font=('helvetica', 12, 'bold'), anchor=tk.W, width=19)
+        players_label = tk.Label(root, text=f"{names[i][:10]}'s score:", fg='blue', font=('helvetica', 12, 'bold'), anchor=tk.E, width=19)
         player_scores[i] = tk.Entry(root, font=('helvetica', 12, 'bold'),width=3)
         canvas1.create_window(125, 150 + (25 * i), window=players_label)
         canvas1.create_window(200, 150 + (25 * i), window=player_scores[i])
@@ -155,17 +156,31 @@ def print_scores():
     # Printing Scores, Pars, Standings
     i = 0
     for line in f2:
-        label = tk.Label(root, text=line, fg='blue', font=('helvetica', 12, 'bold'))
-        canvas1.create_window(500, 150 + (50 * i), window=label)
+        j = 0
+        for name in name_sample:        # replace initials with full names
+            line.replace(name, names[j])
+            j += 1
+        if "Pars" in line or "Standings" in line or "Scores" in line:       # Color the line black if it's a header
+            label = tk.Label(root, text=line, fg='black', font=('helvetica', 12, 'bold')) 
+        else:
+            label = tk.Label(root, text=line, fg='blue', font=('helvetica', 12, 'bold'))
+        canvas1.create_window(500, 100 + (25 * i), window=label, anchor=tk.E)
         i += 1
-    """
+    
     i = 0
     for line in f:
-        label = tk.Label(root, text=line, fg='blue', font=('helvetica', 12, 'bold'))
-        canvas1.create_window(500, 400 + (50 * i), window=label)
+        j = 0
+        for name in name_sample:        # replace initials with full names
+            line.replace(name, names[j])
+            j += 1
+        if "Round" in line:             # Color the line black if it's a round header
+            label = tk.Label(root, text=line, fg='black', font=('helvetica', 12, 'bold'))
+        else:
+            label = tk.Label(root, text=line, fg='blue', font=('helvetica', 12, 'bold'))
+        canvas1.create_window(700, 100 + (25 * i), window=label, anchor=tk.W)
         i += 1
         #players_label = tk.Label(root, text=f"{names[i]}'s score:", fg='blue', font=('helvetica', 12, 'bold'))
-        """
+        
 
     """
     while True:
@@ -611,8 +626,8 @@ def main():
 
     #label1 = tk.Label(root, text= '', fg='blue', font=('helvetica', 12, 'bold'))
     #canvas1.create_window(150, 200, window=label1)
-    """
-    players_sub = 8
+    
+    players_sub = 2
     for i in range(players_sub):
         players_label = tk.Label(root, text=f"{names[i][:10]}'s score:", fg='blue', font=('helvetica', 12, 'bold'), anchor=tk.W, width=19)
         #players_label = tk.Label(root, text="'s score:", fg='blue', font=('helvetica', 12, 'bold'), anchor=tk.W, width=19)
@@ -632,7 +647,7 @@ def main():
 
     button3 = tk.Button(text='Testing Mode', command=do_nothing, bg='green', fg='white')
     canvas1.create_window(150, 250, window=button3)
-  
+    """
     root.mainloop()
     
     """exit = 0
