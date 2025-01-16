@@ -23,6 +23,7 @@ names = name_sample
 mode_options = ["Double", "Triple", "Quadruple", "Pentuple", "Hextuple", "Septuple"]
 player_names_var = [tk.StringVar() for _ in range(100)]
 player_names = ["" for _ in range(100)] 
+player_scores = [tk.StringVar() for _ in range(100)]
 players_var = tk.StringVar()
 rounds_var = tk.StringVar()
 game_mode_var = tk.StringVar()
@@ -51,9 +52,45 @@ class Mode(Enum):
 
 # New game -> new_game_input_screen -> submit_button -> player_name_input_screen -> submit_player_names -> newgame_create
 # Load game -> loadgame_button ->
+def submit_scores_button():
+    global rounds_played
+    random.seed(SEED)
+    
+    if rounds_played % 2 == 1:
+        f = open("GameFiles/scoreboard2", "r")
+        f2 = open("GameFiles/scoreboard", "w")
+    else:
+        f = open("GameFiles/scoreboard", "r")
+        f2 = open("GameFiles/scoreboard2", "w")
+
+    for i in range(1, players + 1):
+        x = player_scores[i].get()
+        print(f"[{x}]    ")
+
+    for i in range(1, players + 1):
+        buf = f.readline().strip()
+        y = int(player_scores[i].get())
+        f2.write(f"{buf}\t{y}\n")
+
+    f.close()
+    f2.close()
 
 def scores_input(players, round, names):
     global TEST
+    print("scores_input called\n")
+    clear_frame()
+    # if this doesn't work try including mode options as global variable
+    for i in range(1, players):
+        players_label = tk.Label(root, text=f"{names[i]}'s score:", fg='blue', font=('helvetica', 12, 'bold'))
+        player_scores[i] = tk.Entry(root, font=('helvetica', 12, 'bold'),width=3)
+        canvas1.create_window(100, 150 + (50 * i), window=players_label)
+        canvas1.create_window(200, 150 + (50 * i), window=player_scores[i])
+
+    sub_btn = tk.Button(root, text='Submit', command=submit_scores_button, bg='brown', fg='white')
+    canvas1.create_window(200, 150 + (50 * players), window=sub_btn)
+
+
+    """
     in_choice = 0
     if not TEST and round > 1:
         print("\n1: Exit\n2: Continue\n")
@@ -75,7 +112,8 @@ def scores_input(players, round, names):
             if not TEST:
                 print("\n")
                 print(f"{names[i - 1][0]}{names[i - 1][1]}'s score: ", end="")
-                y = int(input())
+                #y = int(input())
+                y = int(player_scores[i].get())
             else:
                 y = random.randint(1,52)
                 print("RANDOM SCORE: ",y)
@@ -93,7 +131,8 @@ def scores_input(players, round, names):
 
     f.close()
     f2.close()
-    return in_choice == 1
+    """
+    return 1
 
 def print_scores():
     f = open("GameFiles/best", "r")
@@ -308,7 +347,7 @@ def createGame():
     buf = ""
     
     #displaySaveList()  
-    display_saves_window()
+    #display_saves_window()
     #saveslot = int(input("Enter a save slot: "))     
     
     with open("GameFiles/saveList", "r+") as saveList:
@@ -320,7 +359,7 @@ def createGame():
         while first_input or len(buf) < 1 or len(buf) > 30:
             first_input = False
             print("\n(No spaces)\nName of save: ")
-            buf = input()
+            buf = save_name_var.get()
             if len(buf) > 30:
                 print("\nError: Save name too long. Must be under 30 characters.")
             else:
@@ -434,11 +473,26 @@ def submit_player_names():
 
 # New Game Screen 3
 def newgame_create(): 
+    global rounds_played
     clear_frame()
     Game.game(players, rounds, 2000, ppg, names)  
     createGame()
     makeTemplate(players)  
     reset() 
+    for i in range(rounds_played + 1, rounds + 1):
+
+        #print_scores(10*players, 8*rounds)
+        print_scores() 
+        exit = scores_input(players, i, names)  
+        if exit == 0 or i == 1:
+            Scoreboard.scoreBoard(i, players, ppg, names)
+            #print_scores(10*players, 8*rounds)
+            print_scores() 
+        else:
+            break
+    
+        saveGame(players, rounds, ppg, i-1, names)
+        print("Game Saved.")
     
 
 def clear_frame():
@@ -525,8 +579,10 @@ def player_name_input_screen():
 
     
 def main():
+
     #label1 = tk.Label(root, text= '', fg='blue', font=('helvetica', 12, 'bold'))
     #canvas1.create_window(150, 200, window=label1)
+
     button1 = tk.Button(text='New Game', command=new_game_input_screen, bg='brown',fg='white')
     canvas1.create_window(150, 150, window=button1)
 
@@ -535,6 +591,7 @@ def main():
 
     button3 = tk.Button(text='Testing Mode', command=do_nothing, bg='green', fg='white')
     canvas1.create_window(150, 250, window=button3)
+
 
     root.mainloop()
     """exit = 0
@@ -570,6 +627,8 @@ def main():
         makeTemplate(players)  
         reset() 
     
+        
+    
     """
     for i in range(rounds_played + 1, rounds + 1):
         #print_scores(10*players, 8*rounds)
@@ -587,3 +646,22 @@ def main():
         
 if __name__ == "__main__":
     main()
+
+
+"""
+        if not TEST:
+            y = int(player_scores[i].get())
+        else:
+            y = random.randint(1,52)
+
+        if not TEST:
+            print("\n0: Yes\n1: No\nFinalize Scores?")
+            x = int(input())
+            print("\n\n\n\n")
+        else:
+            x = 0
+
+        if x == 1:
+            scores_input(players, round, names)
+            
+"""
