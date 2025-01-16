@@ -54,6 +54,7 @@ class Mode(Enum):
 # Load game -> loadgame_button ->
 def submit_scores_button():
     global rounds_played
+    rounds_played += 1
     random.seed(SEED)
     
     if rounds_played % 2 == 1:
@@ -63,11 +64,11 @@ def submit_scores_button():
         f = open("GameFiles/scoreboard", "r")
         f2 = open("GameFiles/scoreboard2", "w")
 
-    for i in range(1, players + 1):
+    for i in range(players):
         x = player_scores[i].get()
         print(f"[{x}]    ")
 
-    for i in range(1, players + 1):
+    for i in range(players):
         buf = f.readline().strip()
         y = int(player_scores[i].get())
         f2.write(f"{buf}\t{y}\n")
@@ -75,19 +76,25 @@ def submit_scores_button():
     f.close()
     f2.close()
 
-def scores_input(players, round, names):
+    Scoreboard.scoreBoard(rounds_played, players, ppg, names)
+    saveGame(players, rounds, ppg, rounds_played, names)     # Maybe should be rounds_played - 1, not rounds_played??? 
+
+    print_scores()
+
+def scores_input(names):
     global TEST
+    global players
     print("scores_input called\n")
     clear_frame()
     # if this doesn't work try including mode options as global variable
-    for i in range(1, players):
-        players_label = tk.Label(root, text=f"{names[i]}'s score:", fg='blue', font=('helvetica', 12, 'bold'))
+    for i in range(players):
+        players_label = tk.Label(root, text=f"{names[i][:10]}'s score:", fg='blue', font=('helvetica', 12, 'bold'), anchor=tk.W, width=19)
         player_scores[i] = tk.Entry(root, font=('helvetica', 12, 'bold'),width=3)
-        canvas1.create_window(100, 150 + (50 * i), window=players_label)
-        canvas1.create_window(200, 150 + (50 * i), window=player_scores[i])
+        canvas1.create_window(125, 150 + (25 * i), window=players_label)
+        canvas1.create_window(200, 150 + (25 * i), window=player_scores[i])
 
     sub_btn = tk.Button(root, text='Submit', command=submit_scores_button, bg='brown', fg='white')
-    canvas1.create_window(200, 150 + (50 * players), window=sub_btn)
+    canvas1.create_window(200, 155 + (25 * players), window=sub_btn)
 
 
     """
@@ -127,7 +134,7 @@ def scores_input(players, round, names):
             x = 0
 
         if x == 1:
-            scores_input(players, round, names)
+            scores_input(names)
 
     f.close()
     f2.close()
@@ -142,9 +149,25 @@ def print_scores():
     buf2 = ""
     buf_end = False
 
-    for _ in range(10):
-        print("\n\n\n\n")
+    #for _ in range(10):
+    #    print("\n\n\n\n")
 
+    # Printing Scores, Pars, Standings
+    i = 0
+    for line in f2:
+        label = tk.Label(root, text=line, fg='blue', font=('helvetica', 12, 'bold'))
+        canvas1.create_window(500, 150 + (50 * i), window=label)
+        i += 1
+    """
+    i = 0
+    for line in f:
+        label = tk.Label(root, text=line, fg='blue', font=('helvetica', 12, 'bold'))
+        canvas1.create_window(500, 400 + (50 * i), window=label)
+        i += 1
+        #players_label = tk.Label(root, text=f"{names[i]}'s score:", fg='blue', font=('helvetica', 12, 'bold'))
+        """
+
+    """
     while True:
         buf2 = f2.readline()
         if not buf2:
@@ -164,12 +187,14 @@ def print_scores():
             print("\n")
             buf_end = True
 
+    # Printing Schedule
     while True:
         buf = f.readline()
         if not buf:
             break
         print(" " * 50, end="")
         print(buf, end="")
+    """
     
     print("\n")
     f.close()
@@ -474,6 +499,10 @@ def submit_player_names():
 # New Game Screen 3
 def newgame_create(): 
     global rounds_played
+    global players
+    global rounds
+    global ppg
+    global names
     clear_frame()
     Game.game(players, rounds, 2000, ppg, names)  
     createGame()
@@ -483,7 +512,7 @@ def newgame_create():
 
         #print_scores(10*players, 8*rounds)
         print_scores() 
-        exit = scores_input(players, i, names)  
+        exit = scores_input(names)  
         if exit == 0 or i == 1:
             Scoreboard.scoreBoard(i, players, ppg, names)
             #print_scores(10*players, 8*rounds)
@@ -582,6 +611,18 @@ def main():
 
     #label1 = tk.Label(root, text= '', fg='blue', font=('helvetica', 12, 'bold'))
     #canvas1.create_window(150, 200, window=label1)
+    """
+    players_sub = 8
+    for i in range(players_sub):
+        players_label = tk.Label(root, text=f"{names[i][:10]}'s score:", fg='blue', font=('helvetica', 12, 'bold'), anchor=tk.W, width=19)
+        #players_label = tk.Label(root, text="'s score:", fg='blue', font=('helvetica', 12, 'bold'), anchor=tk.W, width=19)
+        player_scores[i] = tk.Entry(root, font=('helvetica', 12, 'bold'),width=3)
+        canvas1.create_window(125, 150 + (25 * i), window=players_label)
+        canvas1.create_window(200, 150 + (25 * i), window=player_scores[i])
+
+    sub_btn = tk.Button(root, text='Submit', command=submit_scores_button, bg='brown', fg='white')
+    canvas1.create_window(200, 155 + (25 * players_sub), window=sub_btn)
+    """
 
     button1 = tk.Button(text='New Game', command=new_game_input_screen, bg='brown',fg='white')
     canvas1.create_window(150, 150, window=button1)
@@ -591,9 +632,9 @@ def main():
 
     button3 = tk.Button(text='Testing Mode', command=do_nothing, bg='green', fg='white')
     canvas1.create_window(150, 250, window=button3)
-
-
+  
     root.mainloop()
+    
     """exit = 0
     
     menu_select = getInput()  
@@ -633,7 +674,7 @@ def main():
     for i in range(rounds_played + 1, rounds + 1):
         #print_scores(10*players, 8*rounds)
         print_scores() 
-        exit = scores_input(players, i, names)  
+        exit = scores_input(names)  
         if exit == 0 or i == 1:
             Scoreboard.scoreBoard(i, players, ppg, names)
             #print_scores(10*players, 8*rounds)
