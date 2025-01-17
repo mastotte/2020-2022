@@ -2,6 +2,7 @@ import random
 import Game
 import Scoreboard
 import tkinter as tk
+import re
 from enum import Enum
 root = tk.Tk()
 canvas1 = tk.Canvas(root, width = 2000, height = 1000)
@@ -45,9 +46,13 @@ class Mode(Enum):
 # For future: save and display full names, not just initials
 
 
-# PLAYER NAME INPUT screen still needs to be called after submit button is pushed,
-# and it needs its own submit button to move on to the game. The submit button doesn't have
-# to do anything, it just needs to move on to the next screen
+# 
+# To Do:
+#   display save list meta data
+#   save game after every round
+#   store full names in save file, so read for names at end of load game
+# 
+# 
 # 
 
 
@@ -77,19 +82,22 @@ def submit_scores_button():
     f.close()
     f2.close()
 
-    Scoreboard.scoreBoard(rounds_played, players, ppg, names)
-    saveGame(players, rounds, ppg, rounds_played, names)     # Maybe should be rounds_played - 1, not rounds_played??? 
+    Scoreboard.scoreBoard(rounds_played, players, ppg, player_names)
+    saveGame(players, rounds, ppg, rounds_played, player_names)     # Maybe should be rounds_played - 1, not rounds_played??? 
 
     print_scores()
 
-def scores_input(names):
+def scores_input():
+    global player_names
     global TEST
     global players
     print("scores_input called\n")
     clear_frame()
+    print_scores()
     # if this doesn't work try including mode options as global variable
     for i in range(players):
-        players_label = tk.Label(root, text=f"{names[i][:10]}'s score:", fg='blue', font=('helvetica', 12, 'bold'), anchor=tk.E, width=19)
+        players_label = tk.Label(root, text=f"{player_names[i][:10]}'s score:", fg='blue', font=('helvetica', 12, 'bold'), anchor=tk.W, width=19)
+
         player_scores[i] = tk.Entry(root, font=('helvetica', 12, 'bold'),width=3)
         canvas1.create_window(125, 150 + (25 * i), window=players_label)
         canvas1.create_window(200, 150 + (25 * i), window=player_scores[i])
@@ -145,10 +153,6 @@ def scores_input(names):
 def print_scores():
     f = open("GameFiles/best", "r")
     f2 = open("GameFiles/scOut", "r")
-    buf = ""
-    temp = ""
-    buf2 = ""
-    buf_end = False
 
     #for _ in range(10):
     #    print("\n\n\n\n")
@@ -158,28 +162,27 @@ def print_scores():
     for line in f2:
         j = 0
         for name in name_sample:        # replace initials with full names
-            line = line.replace(name, names[j][:10])
+            line = line.replace(name, player_names[j][:10])
             j += 1
         k = 0
         #---------------might not be needed-------------
-        for name in names:        # replace full names with shortened ones
-            print("Line: ",line)
-            line = line.replace(name, names[k][:10])
+        for name in player_names:        # replace full names with shortened ones
+            line = line.replace(name, player_names[k][:10])
             k += 1
         #-----------------------------------------------
-        print("New Line: ",line)
         if "Pars" in line or "Standings" in line or "Scores" in line:       # Color the line black if it's a header
             label = tk.Label(root, text=line, fg='black', font=('helvetica', 12, 'bold')) 
         else:
             label = tk.Label(root, text=line, fg='blue', font=('helvetica', 12, 'bold'))
-        canvas1.create_window(500, 100 + (25 * i), window=label, anchor=tk.E)
+        canvas1.create_window(600, 100 + (25 * i), window=label, anchor=tk.E)
         i += 1
     
+    # Print Round Schedules
     i = 0
     for line in f:
         j = 0
         for name in name_sample:        # replace initials with full names
-            line = line.replace(name, names[j][:10])
+            line = line.replace(name, player_names[j][:10])
             j += 1
 
         if "Round" in line:             # Color the line black if it's a round header
@@ -197,15 +200,7 @@ def print_scores():
                     canvas1.create_window(775 + (200 * m), 100 + (25 * (i-1)), window=label, anchor=tk.W)
                 m += 1
                     
-        
-
-        """if "Round" in line:             # Color the line black if it's a round header
-            label = tk.Label(root, text=line, fg='black', font=('helvetica', 12, 'bold'))
-        else:
-            label = tk.Label(root, text=line, fg='blue', font=('helvetica', 12, 'bold'))
-        canvas1.create_window(700, 100 + (25 * i), window=label, anchor=tk.W)"""
         i += 1
-        #players_label = tk.Label(root, text=f"{names[i]}'s score:", fg='blue', font=('helvetica', 12, 'bold'))
         
 
     """
@@ -237,7 +232,7 @@ def print_scores():
         print(buf, end="")
     """
     
-    print("\n")
+
     f.close()
     f2.close()
 
@@ -317,7 +312,7 @@ def loadGame():
     global players
     global rounds
     global ppg
-    global names
+    global player_names
     global saveslot
     global rounds_played
     global load_game
@@ -328,7 +323,7 @@ def loadGame():
     s2 = open("GameFiles/scoreboard2", "w")
     
     #displaySaveList()
-    display_saves_window()      # this calls select_save_slot() which sets saveslot
+    #display_saves_window()      # this calls select_save_slot() which sets saveslot
     #print("\nEnter a save slot: ")
     #saveslot = int(input())
 
@@ -397,14 +392,22 @@ def loadGame():
     print("\n------------PLAYERS------------")
     buf = save.readline()
     for i in range(players,2):
-        names[i] = buf[i:i+1]
-    print(buf)
-    print("Names3: ",names)
+        player_names[i] = buf[i:i+1]
+
+    # EXPIREMENTAL-----------------------------------
+    for i in range(players):
+        buf = save.readline()
+        player_names[i] = buf.strip()
+
+    #print(buf)
+    print("Names3: ",player_names)
 
     save.close()
     f2.close()
     s1.close()
     s2.close()
+    Scoreboard.scoreBoard(rounds_played, players, ppg, player_names)
+    scores_input()
 
 def createGame():
     global saveslot
@@ -434,7 +437,7 @@ def createGame():
     
 
 
-def saveGame(players, rounds, ppg, rounds_played, names):
+def saveGame(players, rounds, ppg, rounds_played, player_names):
     global saveslot
     BUFSIZE = (10 * rounds) + 5
     
@@ -464,7 +467,13 @@ def saveGame(players, rounds, ppg, rounds_played, names):
             # printing names
             for i in range(players):
                 for j in range(2):
-                    f.write(names[i][j])
+                    f.write(player_names[i][j])
+
+            # EXPIREMENTAL--------------------------------------------------
+            # Adding full names to end of save file
+            for i in range(players):
+                f.write("\n")
+                f.write(player_names[i])
 
 def do_nothing():
     pass
@@ -543,26 +552,23 @@ def newgame_create():
     global players
     global rounds
     global ppg
-    global names
+    global player_names
     clear_frame()
-    Game.game(players, rounds, 2000, ppg, names)  
+    Game.game(players, rounds, 2000, ppg, player_names)  
     createGame()
     makeTemplate(players)  
     reset() 
-    for i in range(rounds_played + 1, rounds + 1):
+    scores_input()
+    """for i in range(rounds_played + 1, rounds + 1):
 
-        #print_scores(10*players, 8*rounds)
+        print_scores()   
+        Scoreboard.scoreBoard(i, players, ppg, names)
+            
         print_scores() 
-        exit = scores_input(names)  
-        if exit == 0 or i == 1:
-            Scoreboard.scoreBoard(i, players, ppg, names)
-            #print_scores(10*players, 8*rounds)
-            print_scores() 
-        else:
-            break
-    
         saveGame(players, rounds, ppg, i-1, names)
         print("Game Saved.")
+        """
+        
     
 
 def clear_frame():
@@ -571,21 +577,22 @@ def clear_frame():
             widget.destroy()
 
 def loadgame_button():
-    clear_frame()
-    loadGame()  
-    Scoreboard.scoreBoard(rounds_played, players, ppg, names)  
+    global load_game
+    load_game = True
+    display_saves_window()
+    #loadGame()  
+    #Scoreboard.scoreBoard(rounds_played, players, ppg, player_names)  
     #print_scores(10*players, 8*rounds)
-    print_scores() 
-    pass
+    #print_scores() 
 
 # New Game Sceen 4
 def select_save_slot(selection):
     global saveslot
     saveslot = selection
+    print(saveslot)
     clear_frame()
     if(load_game):
-        pass
-        # This should continue with a loaded game !IMPLEMENT!
+        loadGame()
     else:
         enter_save_name()
         
@@ -593,17 +600,24 @@ def select_save_slot(selection):
 
 def display_saves_window():
     clear_frame()
-    button1 = tk.Button(text='Save 1', command=lambda: select_save_slot(1), bg='brown',fg='white')
-    button2 = tk.Button(text='Save 2', command=lambda: select_save_slot(2), bg='brown',fg='white')
-    button3 = tk.Button(text='Save 3', command=lambda: select_save_slot(3), bg='brown',fg='white')
-    button4 = tk.Button(text='Save 4', command=lambda: select_save_slot(4), bg='brown',fg='white')
-    button5 = tk.Button(text='Save 5', command=lambda: select_save_slot(5), bg='brown',fg='white')
+    f = open("GameFiles/saveList", "r")
+    # To Do item: put meta data
+    text = tk.Label(root, text='Select a save file:', fg='blue', font=('helvetica', 12, 'bold'))
+    canvas1.create_window(150, 100, window=text)
+    i = 0
+    for line in f:
+        i += 1
+        if not line.strip():        # for end of file
+            break
 
-    canvas1.create_window(150, 150, window=button1)
-    canvas1.create_window(150, 200, window=button2)
-    canvas1.create_window(150, 250, window=button3)
-    canvas1.create_window(150, 300, window=button4)
-    canvas1.create_window(150, 350, window=button5)
+        # only getting save name from line
+        save_name = re.match(r"\d+: ([a-zA-Z]+)_", line)
+
+        button1 = tk.Button(text=save_name.group(1), command=lambda i=i: select_save_slot(i), bg='brown',fg='white', anchor=tk.CENTER, width=20)
+        label1 = tk.Label(root, text=f"Save {i}:", fg='blue', font=('helvetica', 12, 'bold'), anchor=tk.CENTER)
+        canvas1.create_window(100, 100 + (50 * i), window=label1)
+        canvas1.create_window(225, 100 + (50 * i), window=button1)
+
 
 # New Game Screen 5
 def enter_save_name():
@@ -618,7 +632,9 @@ def enter_save_name():
 # New Game Screen 5
 def submit_save_name_button():
     global save_name
+    global load_game
     save_name = save_name_var.get()
+
     newgame_create()
 
 
@@ -652,8 +668,8 @@ def main():
 
     #label1 = tk.Label(root, text= '', fg='blue', font=('helvetica', 12, 'bold'))
     #canvas1.create_window(150, 200, window=label1)
-    
-    players_sub = 2
+    """
+    players_sub = 8
     for i in range(players_sub):
         players_label = tk.Label(root, text=f"{names[i][:10]}'s score:", fg='blue', font=('helvetica', 12, 'bold'), anchor=tk.W, width=19)
         #players_label = tk.Label(root, text="'s score:", fg='blue', font=('helvetica', 12, 'bold'), anchor=tk.W, width=19)
@@ -673,7 +689,7 @@ def main():
 
     button3 = tk.Button(text='Testing Mode', command=do_nothing, bg='green', fg='white')
     canvas1.create_window(150, 250, window=button3)
-    """
+    
     root.mainloop()
     
     """exit = 0
@@ -711,7 +727,7 @@ def main():
     
         
     
-    """
+    
     for i in range(rounds_played + 1, rounds + 1):
         #print_scores(10*players, 8*rounds)
         print_scores() 
@@ -725,6 +741,7 @@ def main():
     
         saveGame(players, rounds, ppg, i-1, names)
         print("Game Saved.")
+        """
         
 if __name__ == "__main__":
     main()
