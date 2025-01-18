@@ -43,16 +43,16 @@ class Mode(Enum):
 # NOTES
 # jan 13
 # ALL terminal inputs will have to be replaced with GUI inputs
-# LoadGame is in the process of being changed
-# For future: save and display full names, not just initials
+# bini bday
+# 
 
 
 # 
 # To Do:
 #   display save list meta data
-#   remove input for sitters
-#   store full names in save file, so read for names at end of load game
-#   make scores green or red, based on positive and negative
+#   
+#   
+#   
 # 
 # BUGS: 
 #  If a 0 Rounds Played game is loaded, the game will crash
