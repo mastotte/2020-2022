@@ -16,6 +16,7 @@ rounds = 0
 saveslot = 0
 rounds_played = 0
 name_sample = ['AA','AB','AC','AD','AE','AF','AG','AH','AI','AJ','AK','AL']
+sitters = [[] for _ in range(100)]
 input_wait_flag = False
 load_game = False
 
@@ -54,7 +55,7 @@ class Mode(Enum):
 #   make scores green or red, based on positive and negative
 # 
 # BUGS: 
-# 
+#  If a 0 Rounds Played game is loaded, the game will crash
 # 
 
 
@@ -93,15 +94,21 @@ def scores_input():
     global player_names
     global TEST
     global players
+    global sitters
+    global rounds_played
+    
+    print("SITTERS: ",sitters)
     print("scores_input called\n")
     clear_frame()
     print_scores()
     # if this doesn't work try including mode options as global variable
     for i in range(players):
         players_label = tk.Label(root, text=f"{player_names[i][:10]}'s score:", fg='blue', font=('helvetica', 12, 'bold'), anchor=tk.W, width=19)
+        canvas1.create_window(125, 170 + (25 * i), window=players_label)
+        if i in sitters[rounds_played]:
+            continue
 
         player_scores[i] = tk.Entry(root, font=('helvetica', 12, 'bold'),width=3)
-        canvas1.create_window(125, 170 + (25 * i), window=players_label)
         canvas1.create_window(200, 170 + (25 * i), window=player_scores[i])
 
     sub_btn = tk.Button(root, text='Submit', command=submit_scores_button, bg='brown', fg='white')
@@ -171,17 +178,55 @@ def print_scores():
             k += 1
         #-----------------------------------------------
         
-        if "Pars" in line or "Scores" in line:       # Color the line black if it's a header
+        if "Pars" in line or "Scores" in line or "Standings" in line:       # Color the line black if it's a header
             label = tk.Label(root, text=line, fg='black', font=('helvetica', font_size + 5, 'bold')) 
+            # increment i to move down the screen
+            i += 2
+            canvas1.create_window(500, 100 + (25 * i - 1), window=label, anchor=tk.W)
+            i += 1
+            
         elif "Standings" in line:
-            font_size += 5
-            label = tk.Label(root, text=line, fg='black', font=('helvetica', font_size + 5, 'bold'))
+            #font_size += 5
+            label = tk.Label(root, text=line, fg='black', font=('helvetica', font_size, 'bold'))
+            canvas1.create_window(600, 100 + (25 * i), window=label, anchor=tk.E)
         else:
-            label = tk.Label(root, text=line, fg='blue', font=('helvetica', font_size, 'bold'))
-        
-        canvas1.create_window(600, 100 + ((13 + font_size) * i), window=label, anchor=tk.E)
 
-        i += 1
+            # Printing Numbers, want good=green, bad=red
+            # Split the input string into parts (name and numbers)
+            parts = line.split(":")
+            if len(parts) < 2:
+                continue
+
+            name = parts[0].strip()  # "ALEX"
+            numbers = parts[1].strip().split()  # ["8", "-15", "5", "-2", "0", "0", "0"]
+
+            # Label to display the name
+            name_label = tk.Label(root, text=name, fg='black', font=('helvetica', font_size, 'bold'))
+            canvas1.create_window(400, 100 + (25 * i), window=name_label, anchor=tk.W)
+            label = tk.Label(root, text=line, fg='blue', font=('helvetica', font_size, 'bold'))
+
+            # Loop over the numbers and create a label for each
+            space_between_nums = 0
+            for idx, num in enumerate(numbers):
+                x = float(num)
+                print("X: ",x)
+                
+                number_value = float(num)  # Convert the string to a float
+                if number_value > 0.0:
+                    color = 'green'  # Positive numbers are green
+                elif number_value < 0.0:
+                    color = 'red'  # Negative numbers are red
+                else:
+                    color = 'black'  # Zero values are black
+                print("NUM: ",num)
+                
+                number_label = tk.Label(root, text=num, fg=color, font=('helvetica', 14, 'bold'))
+                canvas1.create_window(500 + (40 * space_between_nums) , 100 + (25 * i), window=number_label, anchor=tk.W)
+                space_between_nums += 1
+
+        
+
+            i += 1
         
     
     # Print Round Schedules
@@ -192,6 +237,9 @@ def print_scores():
         if line_num < 6:               
             continue
 
+        # Finding sitters for each round (relevant because entry is taken away from sitting players)
+        if line_num > 5 and line_num < 5 + rounds + 1:
+            determine_sitters(line, line_num - 5)
         # Converting numbers into player names for display
         matches = line.split("-")
 
@@ -611,6 +659,7 @@ def newgame_create():
     createGame()
     makeTemplate(players)  
     reset() 
+    saveGame(players, rounds, ppg, rounds_played, player_names)
     scores_input()
     """for i in range(rounds_played + 1, rounds + 1):
 
@@ -708,12 +757,16 @@ def player_name_input_screen():
     canvas1.create_window(170, 200 + (50 * players), window=sub_btn)
 
 
+def determine_sitters(line, round):
+    print("DETERMINE SITTERS CALLED")
+    global sitters
+    global players
+    global ppg
 
-
-
-
-
-
+    for i in range(1, players + 1):
+        if f"{i}" not in line:
+            print(f"Player {i} is sitting in round {round}")
+            sitters[round].append(i)
 
     
 def main():
