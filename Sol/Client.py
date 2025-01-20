@@ -5,7 +5,7 @@ import tkinter as tk
 import re
 from enum import Enum
 root = tk.Tk()
-canvas1 = tk.Canvas(root, width = 2000, height = 1000)
+canvas1 = tk.Canvas(root, width = 3000, height = 2000)
 canvas1.pack()
 SEED = 2022
 TEST = False
@@ -175,8 +175,12 @@ def scores_input():
 
 def print_scores():
     global saveslot
+    global players
     f = open(f"GameFiles/save{saveslot}", "r")
     f2 = open("GameFiles/scOut", "r")
+
+    # I want the scores to be their own color, at least not all red
+    past_scores_section = False
 
     #for _ in range(10):
     #    print("\n\n\n\n")
@@ -193,6 +197,8 @@ def print_scores():
         #-----------------------------------------------
         
         if "Pars" in line or "Scores" in line or "Standings" in line:       # Color the line black if it's a header
+            if "Pars" in line:
+                past_scores_section = True
             label = tk.Label(root, text=line, fg='black', font=('helvetica', font_size + 5, 'bold')) 
             # increment i to move down the screen
             i += 2
@@ -226,10 +232,13 @@ def print_scores():
                 print("X: ",x)
                 
                 number_value = float(num)  # Convert the string to a float
-                if number_value > 0.0:
-                    color = 'green'  # Positive numbers are green
+                if not past_scores_section:
+                    # Scores Color
+                    color = 'black'
+                elif number_value > 0.0:
+                    color = 'red'  # Positive numbers are red
                 elif number_value < 0.0:
-                    color = 'red'  # Negative numbers are red
+                    color = 'green'  # Negative numbers are green, lower score is good
                 else:
                     color = 'black'  # Zero values are black
                 print("NUM: ",num)
@@ -279,7 +288,12 @@ def print_scores():
             else:
                 label = tk.Label(root, text=match, fg='blue', font=('helvetica', 12, 'bold'))
 
-            canvas1.create_window(700 + (200 * m), 100 + (50 * (line_num - 6)), window=label, anchor=tk.W)
+            
+            canvas1.create_window(800 + (30 * players * m), 100 + (50 * (line_num - 6)), window=label, anchor=tk.W)
+
+        # printing "round" header
+        if(line_num - 5 <= rounds):
+            canvas1.create_text(1000, 100 + (50 * (line_num - 6)), text= f"Round {line_num - 5}", font=('helvetica', 15, 'bold'), anchor=tk.W)
 
             
         
@@ -454,25 +468,29 @@ def loadGame():
     print(line)
     buf_small = save.readline().strip()  # players 
     print(buf_small)
-    players = int(buf_small[0])
+    split = buf_small.split(" ")
+    players = int(split[0])
     f2.write(f"{players}\n")
     #print(f"{players} Players buf:({buf_small})")
 
     buf_small = save.readline().strip()  # rounds
-    print(buf_small)
-    rounds = int(buf_small[0])
+    split = buf_small.split(" ")
+    rounds = int(split[0])
+    
     f2.write(f"{rounds}\n")
     #print(f"{rounds} rounds buf:({buf_small})")
 
     buf_small = save.readline().strip()  # ppg
     print(buf_small)
-    ppg = int(buf_small[0])
+    split = buf_small.split(" ")
+    ppg = int(split[0])
     f2.write(f"{ppg}\n")
     #print(f"{ppg} ppg buf:({buf_small})")
 
     buf_small = save.readline().strip()  # rounds played
     print(buf_small)
-    rounds_played = int(buf_small[0])
+    split = buf_small.split(" ")
+    rounds_played = int(split[0])
     #print(f"{rounds_played} rounds played buf:({buf_small})")
 
     BUFSIZE = (10 * rounds) + 3
