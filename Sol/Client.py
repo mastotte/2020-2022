@@ -79,11 +79,21 @@ def submit_scores_button():
 
     for i in range(players):
         buf = f.readline().strip()
-        y = int(player_scores[i].get())
+
+        # Only read score if the player is not sitting
+        if (i + 1) not in sitters[rounds_played]:
+            y = int(player_scores[i].get())
+        else: 
+            y = 0
+
         f2.write(f"{buf}\t{y}\n")
 
     f.close()
     f2.close()
+    # Clearing fields after submit button pressed
+    for i in range(players):
+        if (i + 1) not in sitters[rounds_played]:
+            player_scores[i].delete(0, tk.END)
 
     Scoreboard.scoreBoard(rounds_played, players, ppg, player_names)
     saveGame(players, rounds, ppg, rounds_played, player_names)     # Maybe should be rounds_played - 1, not rounds_played??? 
@@ -96,16 +106,20 @@ def scores_input():
     global players
     global sitters
     global rounds_played
-    
-    print("SITTERS: ",sitters)
-    print("scores_input called\n")
     clear_frame()
     print_scores()
+
+    print("SITTERS: ",sitters)
+    print("Rounds Played: ", rounds_played)
+    print("scores_input called\n")
+    
     # if this doesn't work try including mode options as global variable
     for i in range(players):
         players_label = tk.Label(root, text=f"{player_names[i][:10]}'s score:", fg='blue', font=('helvetica', 12, 'bold'), anchor=tk.W, width=19)
         canvas1.create_window(125, 170 + (25 * i), window=players_label)
-        if i in sitters[rounds_played]:
+
+        if (i + 1) in sitters[rounds_played + 1]:
+            print("CONTINUE CALLED ON ", i)
             continue
 
         player_scores[i] = tk.Entry(root, font=('helvetica', 12, 'bold'),width=3)
