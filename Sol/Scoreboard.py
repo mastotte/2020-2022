@@ -127,10 +127,15 @@ def scoreBoard(rounds, p, ppg, names):
             sum_pars = 0.0
             sc_out.write("\n")
             sc_out.write(f"{names[i-1]}:")
+
             for j in range(1, r + 1):
                 par = pars[i][j]
                 sum_pars += par
-                sc_out.write(f" {int(par):3d}")
+
+                # FLAG
+                sc_out.write(f" {round(par):3d}")
+                #sc_out.write(f" {int(par):.1f}")
+
             standings[i][1] = i
             standings[i][2] = sum_pars
         
@@ -141,7 +146,7 @@ def scoreBoard(rounds, p, ppg, names):
                     standings[j], standings[j+1] = standings[j+1], standings[j]
         
         # Write standings
-        sc_out.write("\n      \nStandings:")
+        sc_out.write("\n      \nStandings")
         for i in range(1, p + 1):
             player_idx = int(standings[i][1]) - 1
             sc_out.write(f"\n{names[player_idx]}: {standings[i][2]:.1f}")
