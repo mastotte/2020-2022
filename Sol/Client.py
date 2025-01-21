@@ -5,7 +5,15 @@ import tkinter as tk
 import re
 from enum import Enum
 root = tk.Tk()
-canvas1 = tk.Canvas(root, width = 3000, height = 2000)
+
+# Full Screen
+root.attributes('-fullscreen', True)
+
+bg_color = 'powder blue'
+canvas1 = tk.Canvas(root, width = 3000, height = 2000, bg=bg_color)
+# create button to implement destroy() 
+close_button = tk.Button(root, text="Quit", command=root.destroy, anchor=tk.SW)
+canvas1.create_window(30, 30, window=close_button)
 canvas1.pack()
 SEED = 2022
 TEST = False
@@ -19,6 +27,7 @@ name_sample = ['AA','AB','AC','AD','AE','AF','AG','AH','AI','AJ','AK','AL']
 sitters = [[] for _ in range(100)]
 input_wait_flag = False
 load_game = False
+
 
 
 #names = name_sample
@@ -127,8 +136,8 @@ def scores_input():
     
     # if this doesn't work try including mode options as global variable
     for i in range(players):
-        players_label = tk.Label(root, text=f"{player_names[i][:10]}'s score:", fg='blue', font=('helvetica', 12, 'bold'), anchor=tk.W, width=19)
-        canvas1.create_window(125, 170 + (25 * i), window=players_label)
+        players_label = tk.Label(root, text=f"{player_names[i][:10]}'s score:", fg='blue', font=('helvetica', 12, 'bold'), anchor=tk.E, bg=bg_color, width=19)
+        canvas1.create_window(80, 170 + (25 * i), window=players_label)
 
         if (i + 1) in sitters[rounds_played + 1]:
             print("CONTINUE CALLED ON ", i)
@@ -168,7 +177,7 @@ def print_scores():
         if "Pars" in line or "Scores" in line or "Standings" in line:       # Color the line black if it's a header
             if "Pars" in line:
                 past_scores_section = True
-            label = tk.Label(root, text=line, fg='black', font=('helvetica', font_size + 5, 'bold')) 
+            label = tk.Label(root, text=line, fg='black', font=('helvetica', font_size + 5, 'bold'), bg=bg_color) 
             # increment i to move down the screen
             i += 2
             canvas1.create_window(500, 100 + (25 * i - 1), window=label, anchor=tk.W)
@@ -176,7 +185,7 @@ def print_scores():
             
         elif "Standings" in line:
             #font_size += 5
-            label = tk.Label(root, text=line, fg='black', font=('helvetica', font_size, 'bold'))
+            label = tk.Label(root, text=line, fg='black', font=('helvetica', font_size, 'bold'), bg=bg_color)
             canvas1.create_window(600, 100 + (25 * i), window=label, anchor=tk.E)
         else:
 
@@ -190,9 +199,9 @@ def print_scores():
             numbers = parts[1].strip().split()  # ["8", "-15", "5", "-2", "0", "0", "0"]
 
             # Label to display the name
-            name_label = tk.Label(root, text=name, fg='black', font=('helvetica', font_size, 'bold'))
+            name_label = tk.Label(root, text=name, fg='black', font=('helvetica', font_size, 'bold'), bg=bg_color)
             canvas1.create_window(400, 100 + (25 * i), window=name_label, anchor=tk.W)
-            label = tk.Label(root, text=line, fg='blue', font=('helvetica', font_size, 'bold'))
+            label = tk.Label(root, text=line, fg='blue', font=('helvetica', font_size, 'bold'), bg=bg_color)
 
             # Loop over the numbers and create a label for each
             space_between_nums = 0
@@ -212,7 +221,7 @@ def print_scores():
                     color = 'black'  # Zero values are black
                 print("NUM: ",num)
                 
-                number_label = tk.Label(root, text=num, fg=color, font=('helvetica', 14, 'bold'))
+                number_label = tk.Label(root, text=num, fg=color, font=('helvetica', 14, 'bold'), bg=bg_color, width=4)
                 canvas1.create_window(500 + (40 * space_between_nums) , 100 + (25 * i), window=number_label, anchor=tk.W)
                 space_between_nums += 1
 
@@ -253,12 +262,12 @@ def print_scores():
 
             # Alternate colors for clarity
             if m%2==0:
-                label = tk.Label(root, text=match, fg='red', font=('helvetica', 12, 'bold'))
+                label = tk.Label(root, text=match, fg='red', font=('helvetica', 12, 'bold'), bg=bg_color)
             else:
-                label = tk.Label(root, text=match, fg='blue', font=('helvetica', 12, 'bold'))
+                label = tk.Label(root, text=match, fg='blue', font=('helvetica', 12, 'bold'), bg=bg_color)
 
             
-            canvas1.create_window(1000 + (30 * players * m), 100 + (50 * (line_num - 6)), window=label, anchor=tk.W)
+            canvas1.create_window(1100 + (100 * (m-1) * ppg), 100 + (50 * (line_num - 6)), window=label, anchor=tk.W)
 
         # printing "round" header
         if(line_num - 5 <= rounds):
@@ -578,9 +587,9 @@ def new_game_input_screen():
     global players_var
     global game_mode_var
     # if this doesn't work try including mode options as global variable
-    players_label = tk.Label(root, text='Enter number of players:', fg='blue', font=('helvetica', 12, 'bold'))
+    players_label = tk.Label(root, text='Enter number of players:', fg='blue', font=('helvetica', 12, 'bold'), bg=bg_color)
     players_entry = tk.Entry(root, textvariable= players_var, font=('helvetica', 12, 'bold'))
-    rounds_label = tk.Label(root, text='Enter number of rounds:', fg='blue', font=('helvetica', 12, 'bold'))
+    rounds_label = tk.Label(root, text='Enter number of rounds:', fg='blue', font=('helvetica', 12, 'bold'), bg=bg_color)
     rounds_entry = tk.Entry(root, textvariable= rounds_var, font=('helvetica', 12, 'bold'))
 
     game_mode_var.set("Double")
@@ -618,7 +627,7 @@ def player_name_input_screen():
     global player_names
     print("player name input screen called\n")
 
-    player_name_label = tk.Label(root, text='Enter player names:', fg='blue', font=('helvetica', 12, 'bold'))
+    player_name_label = tk.Label(root, text='Enter player names:', fg='blue', font=('helvetica', 12, 'bold'), bg=bg_color)
     canvas1.create_window(170, 170, window=player_name_label)
     # pe stands for player entry
     for i in range(players):
@@ -638,7 +647,7 @@ def submit_player_names():
         print("NAME ",i, ": ",player_names[i], "   len: ",len(player_names[i]))
         if (len(player_names[i]) < 2):
             print("ERRORRRRRRR")
-            error_label = tk.Label(root, text='Error: Player Names must be at least 2 characters long.', fg='red', font=('helvetica', 12, 'bold'))
+            error_label = tk.Label(root, text='Error: Player Names must be at least 2 characters long.', fg='red', font=('helvetica', 12, 'bold'), bg=bg_color)
             canvas1.create_window(500, 500, window=error_label)
             error = True
             player_name_input_screen()
@@ -677,7 +686,7 @@ def newgame_create():
 
 def clear_frame():
     for widget in root.winfo_children():
-        if widget != canvas1:
+        if widget != canvas1 and widget != close_button:
             widget.destroy()
 
 def loadgame_button():
@@ -706,8 +715,8 @@ def display_saves_window():
     clear_frame()
     f = open("GameFiles/saveList", "r")
     # To Do item: put meta data
-    text = tk.Label(root, text='Select a save file:', fg='blue', font=('helvetica', 12, 'bold'))
-    canvas1.create_window(170, 100, window=text)
+    text = tk.Label(root, text='Select a save file:', fg='blue', font=('helvetica', 12, 'bold'), bg=bg_color)
+    canvas1.create_window(170, 100, window=text,  )
     i = 0
     for line in f:
         i += 1
@@ -718,7 +727,7 @@ def display_saves_window():
         save_name = re.match(r"\d+: ([\w\W]+?)_", line)
 
         button1 = tk.Button(text=save_name.group(1), command=lambda i=i: select_save_slot(i), bg='brown',fg='white', anchor=tk.CENTER, width=20)
-        label1 = tk.Label(root, text=f"Save {i}:", fg='blue', font=('helvetica', 12, 'bold'), anchor=tk.CENTER)
+        label1 = tk.Label(root, text=f"Save {i}:", fg='blue', font=('helvetica', 12, 'bold'), anchor=tk.CENTER, bg=bg_color)
         canvas1.create_window(100, 100 + (50 * i), window=label1)
         canvas1.create_window(225, 100 + (50 * i), window=button1)
 
@@ -726,7 +735,7 @@ def display_saves_window():
 # New Game Screen 5
 def enter_save_name():
     clear_frame()
-    name_label = tk.Label(root, text='Enter a name for the save:', fg='blue', font=('helvetica', 12, 'bold'))
+    name_label = tk.Label(root, text='Enter a name for the save:', fg='blue', font=('helvetica', 12, 'bold'), bg=bg_color)
     name_entry = tk.Entry(root, textvariable= save_name_var, font=('helvetica', 12, 'bold'))
     sub_btn = tk.Button(root, text='Submit', command=submit_save_name_button, bg='brown', fg='white')
     canvas1.create_window(170, 400, window=name_label)
@@ -748,7 +757,7 @@ def player_name_input_screen():
     global player_names
     print("player name input screen called\n")
 
-    player_name_label = tk.Label(root, text='Enter player names:', fg='blue', font=('helvetica', 12, 'bold'))
+    player_name_label = tk.Label(root, text='Enter player names:', fg='blue', font=('helvetica', 12, 'bold'), bg=bg_color)
     canvas1.create_window(170, 170, window=player_name_label)
     # pe stands for player entry
     for i in range(players):
