@@ -55,7 +55,8 @@ class Mode(Enum):
 #   
 # 
 # BUGS: 
-#  If a 0 Rounds Played game is loaded, the game will crash
+# 
+#
 # 
 
 
@@ -74,17 +75,23 @@ def submit_scores_button():
         f2 = open("GameFiles/scoreboard2", "w")
 
     for i in range(players):
-        x = player_scores[i].get()
+        try:
+            x = player_scores[i].get()
+        except:
+            x = 0
         print(f"[{x}]    ")
 
     for i in range(players):
         buf = f.readline().strip()
 
         # Only read score if the player is not sitting
-        if (i + 1) not in sitters[rounds_played]:
+        #if (i + 1) not in sitters[rounds_played]:
+        try:
             y = int(player_scores[i].get())
-        else: 
+        except:
             y = 0
+        #else: 
+            #y = 0
 
         f2.write(f"{buf}\t{y}\n")
 
@@ -92,13 +99,18 @@ def submit_scores_button():
     f2.close()
     # Clearing fields after submit button pressed
     for i in range(players):
-        if (i + 1) not in sitters[rounds_played]:
+        try:
             player_scores[i].delete(0, tk.END)
+        except:
+            pass
+        #if (i + 1) not in sitters[rounds_played]:
+        #    player_scores[i].delete(0, tk.END)
 
     Scoreboard.scoreBoard(rounds_played, players, ppg, player_names)
     saveGame(players, rounds, ppg, rounds_played, player_names)     # Maybe should be rounds_played - 1, not rounds_played??? 
 
-    print_scores()
+    #print_scores()
+    scores_input()
 
 def scores_input():
     global player_names
@@ -128,49 +140,6 @@ def scores_input():
     sub_btn = tk.Button(root, text='Submit', command=submit_scores_button, bg='brown', fg='white')
     canvas1.create_window(200, 175 + (25 * players), window=sub_btn)
 
-
-    """
-    in_choice = 0
-    if not TEST and round > 1:
-        print("\n1: Exit\n2: Continue\n")
-        in_choice = int(input())
-        print("\n")
-
-    random.seed(SEED)
-    
-    if round % 2 == 1:
-        f = open("GameFiles/scoreboard2", "r")
-        f2 = open("GameFiles/scoreboard", "w")
-    else:
-        f = open("GameFiles/scoreboard", "r")
-        f2 = open("GameFiles/scoreboard2", "w")
-
-    if in_choice != 1:
-        for i in range(1, players + 1):
-            buf = f.readline().strip()
-            if not TEST:
-                print("\n")
-                print(f"{names[i - 1][0]}{names[i - 1][1]}'s score: ", end="")
-                #y = int(input())
-                y = int(player_scores[i].get())
-            else:
-                y = random.randint(1,52)
-                print("RANDOM SCORE: ",y)
-            f2.write(f"{buf}\t{y}\n")
-
-        if not TEST:
-            print("\n0: Yes\n1: No\nFinalize Scores?")
-            x = int(input())
-            print("\n\n\n\n")
-        else:
-            x = 0
-
-        if x == 1:
-            scores_input(names)
-
-    f.close()
-    f2.close()
-    """
     return 1
 
 def print_scores():
@@ -271,7 +240,7 @@ def print_scores():
 
         m = 0
         line_length = 0
-        print("Matches: ",matches)
+        print("Matches5: ",matches)
         for match in matches:
             m += 1
             # Replace player numbers with names
@@ -289,10 +258,11 @@ def print_scores():
                 label = tk.Label(root, text=match, fg='blue', font=('helvetica', 12, 'bold'))
 
             
-            canvas1.create_window(800 + (30 * players * m), 100 + (50 * (line_num - 6)), window=label, anchor=tk.W)
+            canvas1.create_window(1000 + (30 * players * m), 100 + (50 * (line_num - 6)), window=label, anchor=tk.W)
 
         # printing "round" header
         if(line_num - 5 <= rounds):
+            print("CONDITION PASSED")
             canvas1.create_text(1000, 100 + (50 * (line_num - 6)), text= f"Round {line_num - 5}", font=('helvetica', 15, 'bold'), anchor=tk.W)
 
             
