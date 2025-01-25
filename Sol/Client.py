@@ -803,8 +803,8 @@ def main():
     button2 = tk.Button(text='Load Game', command=loadgame_button, bg='blue', fg='white')
     canvas1.create_window(170, 200, window=button2)
 
-    button3 = tk.Button(text='Testing Mode', command=do_nothing, bg='green', fg='white')
-    canvas1.create_window(170, 250, window=button3)
+    #button3 = tk.Button(text='Testing Mode', command=do_nothing, bg='green', fg='white')
+    #canvas1.create_window(170, 250, window=button3)
     
     root.mainloop()
     
