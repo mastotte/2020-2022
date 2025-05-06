@@ -61,7 +61,7 @@ void output(int best_round, int n, int rounds, FILE* p, int ppg, int players, ch
                                         	fprintf(bestOutput,"%c",buf[i]);
                                 	}
                         	}
-				//fprintf(bestOutput,"\nbuf:%s(len:%ld)",buf,strlen(buf));
+				//fprintf(bestOutput,"\nbuf:%s(len:%ld)",buf,strlen(buf));;
 				fprintf(f2Output,"%s",buf);
     			fprintf(p,"%s",buf);
 				c++;
